@@ -616,13 +616,13 @@ public class FormController {
                             break group_skip;
                         case FormEntryController.EVENT_GROUP:
                         case FormEntryController.EVENT_REPEAT:
-                            try {
-                                if (indexIsInFieldList() && getQuestionPrompts().length != 0) {
-                                    break group_skip;
-                                }
-                            } catch (FormDesignException e) {
-                                break group_skip;
-                            }
+//                            try {
+//                                if (indexIsInFieldList() && getQuestionPrompts().length != 0) {
+//                                    break group_skip;
+//                                }
+//                            } catch (FormDesignException e) {
+//                                break group_skip;
+//                            }
                             // otherwise it's not a field-list group, so just skip it
                             break;
                         case FormEntryController.EVENT_REPEAT_JUNCTURE:
@@ -904,7 +904,7 @@ public class FormController {
      * elements if there is a group.
      *
      * @throws FormDesignException if there is a group at this {@link FormIndex} and it contains
-     *                          elements that are not questions or regular (non-repeat) groups.
+     *                             elements that are not questions or regular (non-repeat) groups.
      */
     public FormEntryPrompt[] getQuestionPrompts() throws FormDesignException {
         // For questions, there is only one.
@@ -913,6 +913,7 @@ public class FormController {
 
         IFormElement element = formEntryController.getModel().getForm().getChild(getFormIndex());
         if (element instanceof GroupDef) {
+            Timber.d("CLASSIFIED AS GROUPDEF ");
             GroupDef gd = (GroupDef) element;
             // we only display relevant questions
             List<FormEntryPrompt> questionList = new ArrayList<>();
@@ -926,16 +927,41 @@ public class FormController {
 
                 // we only display relevant questions
                 if (formEntryController.getModel().isIndexRelevant(index)) {
-                    questionList.add(getQuestionPrompt(index));
+                    FormEntryPrompt getQsn = getQuestionPrompt(index);
+
+                    questionList.add(getQsn);
                 }
                 questions = new FormEntryPrompt[questionList.size()];
                 questionList.toArray(questions);
             }
         } else {
+            Timber.d("NOT A GROUP DEF");
             // We have a question, so just get the one prompt
             questions = new FormEntryPrompt[1];
             questions[0] = getQuestionPrompt();
         }
+
+
+
+
+//        for (int x = 0; x < element.size() - 1; x++) {
+//
+//            FormIndex nextIndex = formEntryController.getModel().incrementIndex(current, false);
+//
+//            current = nextIndex;
+//
+//                query = getQuestionPrompt(nextIndex);
+//
+//
+//            if(query != null) {
+//                questionList.add(query);
+//                Timber.d("ADDING -> %s", query.getQuestionText());
+//            }else{
+//                Timber.d("NO QUESTION here");
+//            }
+//
+//
+//        }
 
         return questions;
     }

@@ -1,14 +1,18 @@
 package org.odk.collect.android.formentry.backgroundlocation;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.javarosa.form.api.FormEntryPrompt;
 import org.odk.collect.android.activities.FormEntryActivity;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.location.client.GoogleFusedLocationClient;
 import org.odk.collect.android.permissions.PermissionsProvider;
 import org.odk.collect.android.preferences.source.Settings;
+
+import java.util.List;
 
 import static org.odk.collect.android.preferences.keys.GeneralKeys.KEY_BACKGROUND_LOCATION;
 
@@ -23,6 +27,9 @@ import static org.odk.collect.android.preferences.keys.GeneralKeys.KEY_BACKGROUN
 public class BackgroundLocationViewModel extends ViewModel {
     @NonNull
     private final BackgroundLocationManager locationManager;
+
+    public MutableLiveData<List<FormEntryPrompt>> questions = new MutableLiveData<>();
+
 
     public BackgroundLocationViewModel(BackgroundLocationManager locationManager) {
         this.locationManager = locationManager;

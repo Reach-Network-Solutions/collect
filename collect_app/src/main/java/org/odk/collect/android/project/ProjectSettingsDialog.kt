@@ -1,4 +1,4 @@
-package org.odk.collect.android.projects
+package org.odk.collect.android.project
 
 import android.content.Context
 import android.content.Intent
@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.button.MaterialButton
 import org.odk.collect.android.R
 import org.odk.collect.android.activities.AboutActivity
-import org.odk.collect.android.databinding.ProjectSettingsDialogLayoutBinding
 import org.odk.collect.android.injection.DaggerUtils
 import org.odk.collect.android.preferences.dialogs.AdminPasswordDialogFragment
 import org.odk.collect.android.preferences.screens.AdminPreferencesActivity
@@ -26,11 +26,6 @@ class ProjectSettingsDialog : DialogFragment() {
     @Inject
     lateinit var adminPasswordProvider: AdminPasswordProvider
 
-    @Inject
-    lateinit var projectsRepository: ProjectsRepository
-
-    private lateinit var binding: ProjectSettingsDialogLayoutBinding
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         DaggerUtils.getComponent(context).inject(this)
@@ -38,25 +33,22 @@ class ProjectSettingsDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        binding = ProjectSettingsDialogLayoutBinding.inflate(inflater)
-        return binding.root
+        return inflater.inflate(R.layout.project_settings_dialog_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        inflateListOfInActiveProjects()
-
-        binding.closeIcon.setOnClickListener {
+        view.findViewById<ImageView>(R.id.close_icon).setOnClickListener {
             dismiss()
         }
 
-        binding.generalSettingsButton.setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.general_settings_button).setOnClickListener {
             startActivity(Intent(requireContext(), GeneralPreferencesActivity::class.java))
             dismiss()
         }
 
-        binding.adminSettingsButton.setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.admin_settings_button).setOnClickListener {
             if (adminPasswordProvider.isAdminPasswordSet) {
                 val args = Bundle().also {
                     it.putSerializable(AdminPasswordDialogFragment.ARG_ACTION, AdminPasswordDialogFragment.Action.ADMIN_SETTINGS)
@@ -68,24 +60,9 @@ class ProjectSettingsDialog : DialogFragment() {
             dismiss()
         }
 
-        binding.addProjectButton.setOnClickListener {
-            DialogUtils.showIfNotShowing(AddProjectDialog::class.java, requireActivity().supportFragmentManager)
-            dismiss()
-        }
-
-        binding.aboutButton.setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.about_button).setOnClickListener {
             startActivity(Intent(requireContext(), AboutActivity::class.java))
             dismiss()
-        }
-    }
-
-    private fun inflateListOfInActiveProjects() {
-        projectsRepository.getAll().forEach { project ->
-            val projectView = LayoutInflater.from(context).inflate(R.layout.project_list_item, null)
-
-            projectView.findViewById<TextView>(R.id.project_name).text = project.name
-
-            binding.projectList.addView(projectView)
         }
     }
 }

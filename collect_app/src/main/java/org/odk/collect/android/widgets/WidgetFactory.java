@@ -201,8 +201,7 @@ public class WidgetFactory {
                 }
                 break;
             case Constants.CONTROL_OSM_CAPTURE:
-                questionWidget = new OSMWidget(context, questionDetails, waitingForDataRegistry,
-                        new ActivityAvailability(context), Collect.getInstance().getFormController());
+                questionWidget = new OSMWidget(context, questionDetails, waitingForDataRegistry);
                 break;
             case Constants.CONTROL_AUDIO_CAPTURE:
                 RecordingRequester recordingRequester = recordingRequesterProvider.create(prompt, useExternalRecorder);

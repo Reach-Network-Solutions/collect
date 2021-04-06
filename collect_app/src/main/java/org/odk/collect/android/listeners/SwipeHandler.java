@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import androidx.core.widget.NestedScrollView;
 
 import org.odk.collect.android.R;
-import org.odk.collect.android.formentry.ODKView;
+//import org.odk.collect.android.formentry.ODKView;
 import org.odk.collect.android.preferences.keys.GeneralKeys;
 import org.odk.collect.android.utilities.FlingRegister;
 import org.odk.collect.android.utilities.ScreenUtils;
@@ -18,7 +18,7 @@ public class SwipeHandler {
 
     private final GestureDetector gestureDetector;
     private final OnSwipeListener onSwipe;
-    private ODKView odkView;
+    //private ODKView odkView;
     private boolean allowSwiping = true;
     private boolean beenSwiped;
     private final String navigationMode;
@@ -34,9 +34,9 @@ public class SwipeHandler {
         this.navigationMode = navigationMode;
     }
 
-    public void setOdkView(ODKView odkView) {
-        this.odkView = odkView;
-    }
+//    public void setOdkView(ODKView odkView) {
+//        this.odkView = odkView;
+//    }
 
     public void setAllowSwiping(boolean allowSwiping) {
         this.allowSwiping = allowSwiping;
@@ -69,9 +69,9 @@ public class SwipeHandler {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             // The onFling() captures the 'up' event so our view thinks it gets long pressed. We don't want that, so cancel it.
-            if (odkView != null) {
-                odkView.cancelLongPress();
-            }
+//            if (odkView != null) {
+//                odkView.cancelLongPress();
+//            }
             return false;
         }
 
@@ -96,10 +96,10 @@ public class SwipeHandler {
                 // For all screens a swipe is left/right of at least .25" and up/down of less than .25" OR left/right of > .5"
                 int xpixellimit = (int) (ScreenUtils.xdpi() * .25);
                 int ypixellimit = (int) (ScreenUtils.ydpi() * .25);
-
-                if (odkView != null && odkView.suppressFlingGesture(e1, e2, velocityX, velocityY)) {
-                    return false;
-                }
+//
+//                if (odkView != null && odkView.suppressFlingGesture(e1, e2, velocityX, velocityY)) {
+//                    return false;
+//                }
 
                 if (beenSwiped) {
                     return false;
@@ -108,9 +108,9 @@ public class SwipeHandler {
                 float diffX = Math.abs(e1.getX() - e2.getX());
                 float diffY = Math.abs(e1.getY() - e2.getY());
 
-                if (odkView != null && canScrollVertically() && getGestureAngle(diffX, diffY) > 30) {
-                    return false;
-                }
+//                if (odkView != null && canScrollVertically() && getGestureAngle(diffX, diffY) > 30) {
+//                    return false;
+//                }
 
                 if ((diffX > xpixellimit && diffY < ypixellimit) || diffX > xpixellimit * 2) {
                     beenSwiped = true;
@@ -140,11 +140,11 @@ public class SwipeHandler {
             return Math.toDegrees(Math.atan2(diffY, diffX));
         }
 
-        public boolean canScrollVertically() {
-            NestedScrollView scrollView = odkView.findViewById(R.id.odk_view_container);
-            int screenHeight = scrollView.getHeight();
-            int viewHeight = scrollView.getChildAt(0).getHeight();
-            return viewHeight > screenHeight;
-        }
+//        public boolean canScrollVertically() {
+//            NestedScrollView scrollView = odkView.findViewById(R.id.odk_view_container);
+//            int screenHeight = scrollView.getHeight();
+//            int viewHeight = scrollView.getChildAt(0).getHeight();
+//            return viewHeight > screenHeight;
+//        }
     }
 }

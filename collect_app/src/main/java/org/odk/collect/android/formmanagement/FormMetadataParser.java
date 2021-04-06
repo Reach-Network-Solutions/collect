@@ -46,6 +46,8 @@ public class FormMetadataParser {
         referenceManager.reset();
         tmpLastSaved.delete();
 
+        Timber.d("FETCHED FIELDS %s", metadata.toString());
+
         return metadata;
     }
 }

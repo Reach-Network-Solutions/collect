@@ -111,7 +111,7 @@ import static org.odk.collect.android.utilities.ApplicationConstants.RequestCode
  * {@code field-list} appearance.
  */
 @SuppressLint("ViewConstructor")
-public class ODKView extends FrameLayout implements OnLongClickListener, WidgetValueChangedListener {
+class ODKpView extends FrameLayout implements OnLongClickListener, WidgetValueChangedListener {
 
     private final LinearLayout widgetsList;
     private final LinearLayout.LayoutParams layout;
@@ -149,13 +149,18 @@ public class ODKView extends FrameLayout implements OnLongClickListener, WidgetV
      * @param advancingPage   whether this view is being created after a forward swipe through the
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    public ODKView(ComponentActivity context, final FormEntryPrompt[] questionPrompts, FormEntryCaption[] groups, boolean advancingPage, QuestionMediaManager questionMediaManager, WaitingForDataRegistry waitingForDataRegistry, AudioPlayer audioPlayer, AudioRecorder audioRecorder, FormEntryViewModel formEntryViewModel, InternalRecordingRequester internalRecordingRequester, ExternalAppRecordingRequester externalAppRecordingRequester) {
+    public ODKpView(ComponentActivity context, final FormEntryPrompt[] questionPrompts, FormEntryCaption[] groups, boolean advancingPage, QuestionMediaManager questionMediaManager, WaitingForDataRegistry waitingForDataRegistry, AudioPlayer audioPlayer, AudioRecorder audioRecorder, FormEntryViewModel formEntryViewModel, InternalRecordingRequester internalRecordingRequester, ExternalAppRecordingRequester externalAppRecordingRequester) {
         super(context);
+
+        for(FormEntryPrompt qs : questionPrompts){
+
+        Timber.d("QUESTIONS %s", qs.getQuestionText());
+        }
         viewLifecycle = ((ScreenContext) context).getViewLifecycle();
         this.audioRecorder = audioRecorder;
         this.formEntryViewModel = formEntryViewModel;
 
-        getComponent(context).inject(this);
+//        getComponent(context).inject(this);
         this.audioHelper = audioHelperFactory.create(context);
         inflate(getContext(), R.layout.odk_view, this); // keep in an xml file to enable the vertical scrollbar
 

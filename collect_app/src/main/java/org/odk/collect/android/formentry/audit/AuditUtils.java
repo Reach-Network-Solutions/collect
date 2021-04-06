@@ -18,15 +18,15 @@ public class AuditUtils {
         if (formController.getEvent() == EVENT_QUESTION
                 || formController.getEvent() == EVENT_GROUP
                 || formController.getEvent() == EVENT_REPEAT) {
-            try {
-                FormEntryPrompt[] prompts = formController.getQuestionPrompts();
-                for (FormEntryPrompt question : prompts) {
-                    String answer = question.getAnswerValue() != null ? question.getAnswerValue().getDisplayText() : null;
-                    auditEventLogger.logEvent(AuditEvent.AuditEventType.QUESTION, question.getIndex(), true, answer, currentTime, null);
-                }
-            } catch (FormDesignException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
+//            try {
+//                FormEntryPrompt[] prompts = formController.getQuestionPrompts();
+//                for (FormEntryPrompt question : prompts) {
+//                    String answer = question.getAnswerValue() != null ? question.getAnswerValue().getDisplayText() : null;
+//                    auditEventLogger.logEvent(AuditEvent.AuditEventType.QUESTION, question.getIndex(), true, answer, currentTime, null);
+//                }
+//            } catch (FormDesignException e) {
+//                throw new RuntimeException(e.getMessage(), e);
+//            }
         }
     }
 }

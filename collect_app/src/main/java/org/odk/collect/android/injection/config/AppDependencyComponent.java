@@ -31,7 +31,7 @@ import org.odk.collect.android.configure.qr.QRCodeScannerFragment;
 import org.odk.collect.android.configure.qr.QRCodeTabsActivity;
 import org.odk.collect.android.configure.qr.ShowQRCodeFragment;
 import org.odk.collect.android.formentry.BackgroundAudioPermissionDialogFragment;
-import org.odk.collect.android.formentry.ODKView;
+//mport org.odk.collect.android.formentry.ODKView;
 import org.odk.collect.android.formentry.QuitFormDialogFragment;
 import org.odk.collect.android.formentry.saving.SaveAnswerFileErrorDialogFragment;
 import org.odk.collect.android.formentry.saving.SaveFormProgressDialogFragment;
@@ -65,8 +65,7 @@ import org.odk.collect.android.preferences.screens.IdentityPreferencesFragment;
 import org.odk.collect.android.preferences.screens.ServerPreferencesFragment;
 import org.odk.collect.android.preferences.screens.UserInterfacePreferencesFragment;
 import org.odk.collect.android.preferences.source.SettingsProvider;
-import org.odk.collect.android.projects.AddProjectDialog;
-import org.odk.collect.android.projects.ProjectSettingsDialog;
+import org.odk.collect.android.project.ProjectSettingsDialog;
 import org.odk.collect.android.provider.FormsProvider;
 import org.odk.collect.android.provider.InstanceProvider;
 import org.odk.collect.android.storage.StorageInitializer;
@@ -147,7 +146,7 @@ public interface AppDependencyComponent {
 
     void inject(ExStringWidget exStringWidget);
 
-    void inject(ODKView odkView);
+    //void inject(ODKView odkView);
 
     void inject(FormMetadataPreferencesFragment formMetadataPreferencesFragment);
 
@@ -254,8 +253,6 @@ public interface AppDependencyComponent {
     void inject(AndroidShortcutsActivity androidShortcutsActivity);
 
     void inject(ProjectSettingsDialog projectSettingsDialog);
-
-    void inject(AddProjectDialog addProjectDialog);
 
     OpenRosaHttpInterface openRosaHttpInterface();
 

@@ -45,10 +45,10 @@ public class MainMenuPage extends Page<MainMenuPage> {
         return this;
     }
 
-    public ProjectSettingsDialogPage openProjectSettingsDialog() {
+    public MainMenuPage openProjectSettingsDialog() {
         assertOnPage(); // Make sure we've waited for the application load correctly
         onView(withId(R.id.projects)).perform(click());
-        return new ProjectSettingsDialogPage(rule).assertOnPage();
+        return this;
     }
 
     public FormEntryPage startBlankForm(String formName) {
@@ -71,6 +71,23 @@ public class MainMenuPage extends Page<MainMenuPage> {
         return new OkDialog(rule).assertOnPage();
     }
 
+    public GeneralSettingsPage clickGeneralSettings() {
+        clickOnString(R.string.general_preferences);
+        return new GeneralSettingsPage(rule).assertOnPage();
+    }
+
+    public AdminSettingsPage clickAdminSettings() {
+        clickOnString(R.string.admin_preferences);
+        return new AdminSettingsPage(rule).assertOnPage();
+    }
+
+    public AdminSettingsPage clickAdminSettingsWithPassword(String password) {
+        clickOnString(R.string.admin_preferences);
+        inputText(password);
+        clickOKOnDialog();
+        return new AdminSettingsPage(rule).assertOnPage();
+    }
+
     public FillBlankFormPage clickFillBlankForm() {
         onView(withId(R.id.enter_data)).perform(click());
         return new FillBlankFormPage(rule).assertOnPage();
@@ -89,6 +106,11 @@ public class MainMenuPage extends Page<MainMenuPage> {
     public EditSavedFormPage clickEditSavedForm(int formCount) {
         assertNumberOfEditableForms(formCount);
         return clickEditSavedForm();
+    }
+
+    public AboutPage clickAbout() {
+        clickOnString(R.string.about_preferences);
+        return new AboutPage(rule).assertOnPage();
     }
 
     public MainMenuPage assertNumberOfFinalizedForms(int number) {

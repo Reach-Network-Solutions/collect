@@ -43,7 +43,7 @@ import org.odk.collect.android.adapters.HierarchyListAdapter;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.exception.JavaRosaException;
 import org.odk.collect.android.formentry.FormEntryViewModel;
-import org.odk.collect.android.formentry.ODKView;
+//import org.odk.collect.android.formentry.ODKView;
 import org.odk.collect.android.formentry.repeats.DeleteRepeatDialogFragment;
 import org.odk.collect.android.javarosawrapper.FormController;
 import org.odk.collect.android.logic.HierarchyElement;
@@ -403,7 +403,11 @@ public class FormHierarchyActivity extends CollectAbstractActivity implements De
         // If the repeat picker is showing, don't show an item number for the current index.
         boolean hideLastMultiplicity = shouldShowRepeatGroupPicker();
 
-        return ODKView.getGroupsPath(groups.toArray(new FormEntryCaption[groups.size()]), hideLastMultiplicity);
+        for(FormEntryCaption entity : groups) {
+            Timber.d("GROUPS FETCHED -> " + entity.getQuestionText() + " on FormIndex -> "+ entity.getIndex());
+        }
+
+        return "Nothing serious here FormHierarchyActivity";//ODKView.getGroupsPath(groups.toArray(new FormEntryCaption[groups.size()]), hideLastMultiplicity);
     }
 
     /**
@@ -549,6 +553,7 @@ public class FormHierarchyActivity extends CollectAbstractActivity implements De
                         }
 
                         FormEntryPrompt fp = formController.getQuestionPrompt();
+                        Timber.d("PASSED BY QSN -> "+ fp.getQuestionText()+ " at Index "+ fp.getIndex());
                         String label = fp.getShortText();
                         String answerDisplay = FormEntryPromptUtils.getAnswerText(fp, this, formController);
                         elementsToDisplay.add(

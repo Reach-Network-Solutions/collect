@@ -24,23 +24,23 @@ public class AudioRecorderRecordingStatusHandler implements RecordingStatusHandl
 
     @Override
     public void onBlockedStatusChange(Consumer<Boolean> blockedStatusListener) {
-        audioRecorder.getCurrentSession().observe(lifecycleOwner, session -> {
-            if (formEntryViewModel.hasBackgroundRecording().getValue()) {
-                blockedStatusListener.accept(true);
-            } else {
-                blockedStatusListener.accept(session != null && session.getFile() == null);
-            }
-        });
+//        audioRecorder.getCurrentSession().observe(lifecycleOwner, session -> {
+//            if (formEntryViewModel.hasBackgroundRecording().getValue()) {
+//                blockedStatusListener.accept(true);
+//            } else {
+//                blockedStatusListener.accept(session != null && session.getFile() == null);
+//            }
+//        });
     }
 
     @Override
     public void onRecordingStatusChange(FormEntryPrompt prompt, Consumer<Pair<Long, Integer>> statusListener) {
-        audioRecorder.getCurrentSession().observe(lifecycleOwner, session -> {
-            if (session != null && session.getId().equals(prompt.getIndex())) {
-                statusListener.accept(new Pair<>(session.getDuration(), session.getAmplitude()));
-            } else {
-                statusListener.accept(null);
-            }
-        });
+//        audioRecorder.getCurrentSession().observe(lifecycleOwner, session -> {
+//            if (session != null && session.getId().equals(prompt.getIndex())) {
+//                statusListener.accept(new Pair<>(session.getDuration(), session.getAmplitude()));
+//            } else {
+//                statusListener.accept(null);
+//            }
+//        });
     }
 }

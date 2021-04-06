@@ -1,5 +1,7 @@
 package org.odk.collect.android.audio;
 
+import android.app.Activity;
+import android.content.Context;
 import android.media.MediaPlayer;
 
 import androidx.fragment.app.FragmentActivity;
@@ -8,6 +10,7 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import org.odk.collect.android.widgets.utilities.AudioPlayer;
@@ -50,9 +53,9 @@ public class AudioHelper {
 
         AudioClipViewModel.Factory factory = new AudioClipViewModel.Factory(mediaPlayerFactory, scheduler);
 
-        viewModel = ViewModelProviders
-                .of(activity, factory)
-                .get(AudioClipViewModel.class);
+        viewModel = new  ViewModelProvider(activity, factory).get(AudioClipViewModel.class);
+
+
 
         registerLifecycleCallbacks(activity, lifecycleOwner);
     }

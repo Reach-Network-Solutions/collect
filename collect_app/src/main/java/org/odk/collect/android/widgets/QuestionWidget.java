@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LifecycleOwner;
 
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.ReferenceManager;
@@ -113,7 +114,7 @@ public abstract class QuestionWidget extends FrameLayout implements Widget {
         setId(View.generateViewId());
         questionTextSizeHelper = new QuestionTextSizeHelper(settingsProvider.getGeneralSettings());
         this.audioHelper = audioHelperFactory.create(context);
-
+        Timber.d("QUESTION WIDGET PASSING CONTEXT IN AUDIO %s", context.toString());
         themeUtils = new ThemeUtils(context);
 
         this.questionDetails = questionDetails;
