@@ -14,6 +14,7 @@
 
 package org.odk.collect.android.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,6 +57,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.GroupDef;
@@ -81,6 +83,7 @@ import org.odk.collect.android.dao.helpers.InstancesDaoHelper;
 import org.odk.collect.android.events.ReadPhoneStatePermissionRxEvent;
 import org.odk.collect.android.events.RxEventBus;
 import org.odk.collect.android.exception.JavaRosaException;
+import org.odk.collect.android.external.ExternalAppsUtils;
 import org.odk.collect.android.formentry.BackgroundAudioPermissionDialogFragment;
 import org.odk.collect.android.formentry.BackgroundAudioViewModel;
 import org.odk.collect.android.formentry.FormEndView;
@@ -147,6 +150,7 @@ import org.odk.collect.android.utilities.ApplicationConstants;
 import org.odk.collect.android.utilities.DestroyableLifecyleOwner;
 import org.odk.collect.android.utilities.DialogUtils;
 import org.odk.collect.android.utilities.ExternalAppIntentProvider;
+import org.odk.collect.android.utilities.FileUtils;
 import org.odk.collect.android.utilities.FormEntryPromptUtils;
 import org.odk.collect.android.utilities.MultiClickGuard;
 import org.odk.collect.android.utilities.PlayServicesChecker;
@@ -156,7 +160,11 @@ import org.odk.collect.android.utilities.SoftKeyboardController;
 import org.odk.collect.android.utilities.ToastUtils;
 import org.odk.collect.android.widgets.DateTimeWidget;
 import org.odk.collect.android.widgets.QuestionWidget;
+import org.odk.collect.android.widgets.RangePickerDecimalWidget;
+import org.odk.collect.android.widgets.RangePickerIntegerWidget;
+import org.odk.collect.android.widgets.StringWidget;
 import org.odk.collect.android.widgets.WidgetFactory;
+import org.odk.collect.android.widgets.interfaces.WidgetDataReceiver;
 import org.odk.collect.android.widgets.utilities.ExternalAppRecordingRequester;
 import org.odk.collect.android.widgets.utilities.FormControllerWaitingForDataRegistry;
 import org.odk.collect.android.widgets.utilities.InternalRecordingRequester;
@@ -175,6 +183,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -391,6 +400,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     private FormIndex repeatGroupPickerIndex;
 
     private FormIndex startIndex;
+
+    QuestionsAdapter questionsAdapter;
+
+    RecyclerView recycler;
 
     /**
      * The index of the question that is being displayed in the hierarchy. On first launch, it is
@@ -1160,15 +1173,18 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 }
                 break;
             case RequestCodes.EX_GROUP_CAPTURE:
-//                try {
-//                    Bundle extras = intent.getExtras();
-//                    if (getCurrentViewIfODKView() != null) {
-//                       // getCurrentViewIfODKView().setDataForFields(extras);
-//                    }
-//                } catch (JavaRosaException e) {
-//                    Timber.e(e);
-//                    createErrorDialog(e.getCause().getMessage(), false);
-//                }
+                try {
+                    Bundle extras = intent.getExtras();
+                    if (currentView!= null) {
+                      setDataForFields(extras);
+                      Timber.d("SERIOUS some data found %s", extras.toString());
+                    }else{
+                        Timber.d("NOT SERIOUS - current view is null");
+                    }
+                } catch (JavaRosaException e) {
+                    Timber.e(e);
+                    createErrorDialog(e.getCause().getMessage(), false);
+                }
                 break;
             case RequestCodes.DRAW_IMAGE:
             case RequestCodes.ANNOTATE_IMAGE:
@@ -1198,6 +1214,88 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
     }
 
+    //Load from Intent
+    public void setDataForFields(Bundle bundle) throws JavaRosaException {
+        FormController formController = Collect.getInstance().getFormController();
+        if (formController == null) {
+            return;
+        }
+
+        if (bundle != null) {
+            Set<String> keys = bundle.keySet();
+            for (String key : keys) {
+                Object answer = bundle.get(key);
+                if (answer == null) {
+                    continue;
+                }
+                for (QuestionWidget questionWidget : questionWidgetArrayList) {
+                    FormEntryPrompt prompt = questionWidget.getFormEntryPrompt();
+                    TreeReference treeReference =
+                            (TreeReference) prompt.getFormElement().getBind().getReference();
+
+                    if (treeReference.getNameLast().equals(key)) {
+                        switch (prompt.getDataType()) {
+                            case Constants.DATATYPE_TEXT:
+                                formController.saveAnswer(prompt.getIndex(),
+                                        ExternalAppsUtils.asStringData(answer));
+                                ((StringWidget) questionWidget).setDisplayValueFromModel();
+                                questionWidget.showAnswerContainer();
+                                break;
+                            case Constants.DATATYPE_INTEGER:
+                                formController.saveAnswer(prompt.getIndex(),
+                                        ExternalAppsUtils.asIntegerData(answer));
+                                ((StringWidget) questionWidget).setDisplayValueFromModel();
+                                questionWidget.showAnswerContainer();
+                                break;
+                            case Constants.DATATYPE_DECIMAL:
+                                formController.saveAnswer(prompt.getIndex(),
+                                        ExternalAppsUtils.asDecimalData(answer));
+                                ((StringWidget) questionWidget).setDisplayValueFromModel();
+                                questionWidget.showAnswerContainer();
+                                break;
+                            case Constants.DATATYPE_BINARY:
+                                try {
+                                    Uri uri;
+                                    if (answer instanceof Uri) {
+                                        uri = (Uri) answer;
+                                    } else if (answer instanceof String) {
+                                        uri = Uri.parse(bundle.getString(key));
+                                    } else {
+                                        throw new RuntimeException("The value for " + key + " must be a URI but it is " + answer);
+                                    }
+
+                                    permissionsProvider.requestReadUriPermission((Activity) getApplicationContext(), uri, getApplicationContext().getContentResolver(), new PermissionListener() {
+                                        @Override
+                                        public void granted() {
+                                            File destFile = FileUtils.createDestinationMediaFile(formController.getInstanceFile().getParent(), ContentResolverHelper.getFileExtensionFromUri(uri));
+                                            //TODO might be better to use QuestionMediaManager in the future
+                                            FileUtils.saveAnswerFileFromUri(uri, destFile, getApplicationContext());
+                                            ((WidgetDataReceiver) questionWidget).setData(destFile);
+
+                                            questionWidget.showAnswerContainer();
+                                        }
+
+                                        @Override
+                                        public void denied() {
+
+                                        }
+                                    });
+                                } catch (Exception | Error e) {
+                                    Timber.w(e);
+                                }
+                                break;
+                            default:
+                                throw new RuntimeException(
+                                        getApplicationContext().getString(R.string.ext_assign_value_error,
+                                                treeReference.toString(false)));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private void loadFile(Uri uri) {
         permissionsProvider.requestReadUriPermission(this, uri, getContentResolver(), new PermissionListener() {
             @Override
@@ -1217,46 +1315,45 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     }
 
     public QuestionWidget getWidgetWaitingForBinaryData() {
-//        ODKView odkView = getCurrentViewIfODKView();
-//
-//        if (odkView != null) {
-//            for (QuestionWidget qw : odkView.getWidgets()) {
-//                if (waitingForDataRegistry.isWaitingForData(qw.getFormEntryPrompt().getIndex())) {
-//                    return qw;
-//                }
-//            }
-//        } else {
-//            Timber.e("currentView returned null.");
-//        }
+
+        if (currentView != null) {
+            for (QuestionWidget qw : questionWidgetArrayList) {
+                if (waitingForDataRegistry.isWaitingForData(qw.getFormEntryPrompt().getIndex())) {
+                    return qw;
+                }
+            }
+        } else {
+            Timber.e("currentView returned null.");
+        }
         return null;
     }
 
     public void setWidgetData(Object data) {
-//        ODKView currentViewIfODKView = getCurrentViewIfODKView();
-//
-//        if (currentViewIfODKView != null) {
-//            boolean set = false;
-//            for (QuestionWidget widget : currentViewIfODKView.getWidgets()) {
-//                if (widget instanceof WidgetDataReceiver) {
-//                    if (waitingForDataRegistry.isWaitingForData(widget.getFormEntryPrompt().getIndex())) {
-//                        try {
-//                            ((WidgetDataReceiver) widget).setData(data);
-//                            waitingForDataRegistry.cancelWaitingForData();
-//                        } catch (Exception e) {
-//                            Timber.e(e);
-//                            ToastUtils.showLongToast(currentViewIfODKView.getContext().getString(R.string.error_attaching_binary_file,
-//                                    e.getMessage()));
-//                        }
-//                        set = true;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            if (!set) {
-//                Timber.e("Attempting to return data to a widget or set of widgets not looking for data");
-//            }
-//        }
+        Timber.d("RESULT RECEIVED %s", data.toString());
+
+        if (currentView != null) {
+            boolean set = false;
+            for (QuestionWidget widget : questionWidgetArrayList) {
+                if (widget instanceof WidgetDataReceiver) {
+                    if (waitingForDataRegistry.isWaitingForData(widget.getFormEntryPrompt().getIndex())) {
+                        try {
+                            ((WidgetDataReceiver) widget).setData(data);
+                            waitingForDataRegistry.cancelWaitingForData();
+                        } catch (Exception e) {
+                            Timber.e(e);
+                            ToastUtils.showLongToast(getApplicationContext().getString(R.string.error_attaching_binary_file,
+                                    e.getMessage()));
+                        }
+                        set = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!set) {
+                Timber.e("Attempting to return data to a widget or set of widgets not looking for data");
+            }
+        }
     }
 
     @Override
@@ -1309,6 +1406,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         // only try to save if the current event is a question or a field-list group
         // and current view is an ODKView (occasionally we show blank views that do not have any
         // controls to save data from)
+//
+//
 //        if (formController != null && formController.currentPromptIsQuestion()
 //                && getCurrentViewIfODKView() != null) {
 //            HashMap<FormIndex, IAnswerData> answers = getAnswers();
@@ -1472,11 +1571,11 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
 
 
-        QuestionsAdapter questionsAdapter;
 
-        questionsAdapter = new QuestionsAdapter( questionWidgetArrayList);
 
-        RecyclerView recycler = questionsView.findViewById(R.id.recycler_view_questions);
+        questionsAdapter = new QuestionsAdapter( questionWidgetArrayList, getFormController());
+
+        recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -2783,21 +2882,23 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     @Override
     public void onNumberPickerValueSelected(int widgetId, int value) {
+
         if (currentView != null) {
-//            for (QuestionWidget qw : ((ODKView) currentView).getWidgets()) {
-//
-//                if (qw instanceof RangePickerIntegerWidget && widgetId == qw.getId()) {
-//                    ((RangePickerIntegerWidget) qw).setNumberPickerValue(value);
-//                    widgetValueChanged(qw);
-//                    return;
-//                } else if (qw instanceof RangePickerDecimalWidget && widgetId == qw.getId()) {
-//                    ((RangePickerDecimalWidget) qw).setNumberPickerValue(value);
-//                    widgetValueChanged(qw);
-//                    return;
-//               }
+
+            for (QuestionWidget qw : questionWidgetArrayList) {
+
+                if (qw instanceof RangePickerIntegerWidget && widgetId == qw.getId()) {
+                    ((RangePickerIntegerWidget) qw).setNumberPickerValue(value);
+                    widgetValueChanged(qw);
+                    return;
+                } else if (qw instanceof RangePickerDecimalWidget && widgetId == qw.getId()) {
+                    ((RangePickerDecimalWidget) qw).setNumberPickerValue(value);
+                    widgetValueChanged(qw);
+                    return;
+               }
 
 
-            //}
+            }
         }
     }
 
@@ -2822,12 +2923,12 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      */
     @Override
     public void updateSelectedItems(List<Selection> items) {
-//        ODKView odkView = getCurrentViewIfODKView();
-//        if (odkView != null) {
-//            QuestionWidget widgetGettingNewValue = getWidgetWaitingForBinaryData();
-//            setWidgetData(items);
-//            widgetValueChanged(widgetGettingNewValue);
-//        }
+
+        if (currentView != null) {
+            QuestionWidget widgetGettingNewValue = getWidgetWaitingForBinaryData();
+            setWidgetData(items);
+            widgetValueChanged(widgetGettingNewValue);
+        }
     }
 
     @Override
@@ -2843,12 +2944,11 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     }
 
     private void onDataChanged(Object data) {
-//        ODKView odkView = getCurrentViewIfODKView();
-//        if (odkView != null) {
-//            QuestionWidget widgetGettingNewValue = getWidgetWaitingForBinaryData();
-//            setWidgetData(data);
-//            widgetValueChanged(widgetGettingNewValue);
-//        }
+        if (currentView != null) {
+            QuestionWidget widgetGettingNewValue = getWidgetWaitingForBinaryData();
+            setWidgetData(data);
+            widgetValueChanged(widgetGettingNewValue);
+        }
     }
 
     /**
@@ -3030,8 +3130,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     }
 
     private HashMap<FormIndex, IAnswerData> getAnswers() {
-        //ODKView currentViewIfODKView = getCurrentViewIfODKView();
-
+//        ODKView currentViewIfODKView = getCurrentViewIfODKView();
+//
 //        if (currentViewIfODKView != null) {
 //            return currentViewIfODKView.getAnswers();
 //        } else {
