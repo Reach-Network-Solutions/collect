@@ -14,7 +14,6 @@
 
 package org.odk.collect.android.activities;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -63,7 +62,6 @@ import org.javarosa.core.model.GroupDef;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.helper.Selection;
-import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
@@ -72,7 +70,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.odk.collect.analytics.Analytics;
 import org.odk.collect.android.R;
-import org.odk.collect.android.adapters.HierarchyListAdapter;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.audio.AMRAppender;
 import org.odk.collect.android.audio.AudioControllerView;
@@ -124,7 +121,6 @@ import org.odk.collect.android.fragments.dialogs.ProgressDialogFragment;
 import org.odk.collect.android.fragments.dialogs.RankingWidgetDialog;
 import org.odk.collect.android.fragments.dialogs.SelectMinimalDialog;
 import org.odk.collect.android.javarosawrapper.FormController;
-import org.odk.collect.android.javarosawrapper.FormController.FailedConstraint;
 import org.odk.collect.android.listeners.AdvanceToNextListener;
 import org.odk.collect.android.listeners.FormLoaderListener;
 import org.odk.collect.android.listeners.PermissionListener;
@@ -191,7 +187,6 @@ import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.animation.AnimationUtils.loadAnimation;
 import static org.javarosa.form.api.FormEntryController.EVENT_PROMPT_NEW_REPEAT;
-import static org.odk.collect.android.analytics.AnalyticsEvents.SAVE_INCOMPLETE;
 import static org.odk.collect.android.formentry.FormIndexAnimationHandler.Direction.BACKWARDS;
 import static org.odk.collect.android.formentry.FormIndexAnimationHandler.Direction.FORWARDS;
 import static org.odk.collect.android.javarosawrapper.FormIndexUtils.getPreviousLevel;
@@ -308,11 +303,11 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     ViewModelAudioPlayer viewModelAudioPlayer;
 
-    private  ArrayList<QuestionWidget> widgets;
+    private  ArrayList<QuestionWidget> questionWidgetArrayList;
 
-     private LinearLayout widgetsList;
+     private LinearLayout widgetsListLinearLayout;
 
-    private LinearLayout.LayoutParams layout;
+    private LinearLayout.LayoutParams layoutParams;
 
     private  AudioHelper audioHelper;
 
@@ -472,11 +467,11 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         loadForm();
         //refreshView(true);
 
-        widgets = new ArrayList<>();
+        questionWidgetArrayList = new ArrayList<>();
 
 
 
-        layout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
 
 
@@ -790,9 +785,9 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         });
 
         backgroundLocationViewModel.questions.observe(this, questions -> {
-                    View recy = displayAllQuestionsInForm(questions);
+                    View populatedViewUsingRecycler = displayAllQuestionsInForm(questions);
 
-                    showView(recy, AnimationType.FADE);
+                    showView(populatedViewUsingRecycler, AnimationType.FADE);
                 }
 
 
@@ -1441,17 +1436,14 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      */
 
     private View displayAllQuestionsInForm(List<FormEntryPrompt> questions) {
-        Timber.d("PASSING OBSERVER %s", audioRecorder.toString() );
+
+        questionWidgetArrayList.clear();
+
         View questionsView = View.inflate(getApplicationContext(), R.layout.nexus_questions_layout, (ViewGroup) currentView);
 
         odkViewLifecycleFox.start();
 
         audioHelper = audioHelperFactory.create((Context) screenContext);
-
-        if(audioRecorder == null){
-            Timber.d("TERMINATING");
-            return questionsView;
-        }
 
         this.widgetFactory = new WidgetFactory(this
                 ,
@@ -1471,29 +1463,25 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
         );
 
-         widgetsList = questionsView.findViewById(R.id.widgets);
-
         for(FormEntryPrompt question : questions) {
 
             QuestionWidget qw = widgetFactory.createWidgetFromPrompt(question, permissionsProvider);
 
-            widgets.add(qw);
-
-            widgetsList.addView(qw, layout);
+            questionWidgetArrayList.add(qw);
 
         }
 
 
+        QuestionsAdapter questionsAdapter;
 
-//        QuestionsAdapter questionsAdapter;
-//
-//        questionsAdapter = new QuestionsAdapter(getApplicationContext(), questions);
-//
-//        RecyclerView recycler = questionsView.findViewById(R.id.nexus_recycler);
-//
-//        recycler.setLayoutManager(new LinearLayoutManager(this));
-//
-//        recycler.setAdapter(questionsAdapter);
+        questionsAdapter = new QuestionsAdapter( questionWidgetArrayList);
+
+        RecyclerView recycler = questionsView.findViewById(R.id.recycler_view_questions);
+
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+
+        recycler.setAdapter(questionsAdapter);
+
 
         return questionsView;
 
