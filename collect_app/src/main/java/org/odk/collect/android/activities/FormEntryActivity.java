@@ -38,6 +38,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -69,6 +70,7 @@ import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.odk.collect.analytics.Analytics;
@@ -459,8 +461,15 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
         nextButton = findViewById(R.id.form_forward_button);
         nextButton.setOnClickListener(v -> {
-            swipeHandler.setBeenSwiped(true);
-            onSwipeForward();
+            //swipeHandler.setBeenSwiped(true);
+            //onSwipeForward();
+
+            FormController controller = getFormController();
+
+            if (controller != null) {
+                displayFormEndDialog(controller, false);
+            }
+
         });
 
         backButton = findViewById(R.id.form_back_button);
@@ -1386,7 +1395,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
             case R.id.menu_save:
                 // don't exit
-                saveForm(false, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
+                onSaveChangesClicked();
+                //saveForm(false, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
                 return true;
         }
 
@@ -1574,10 +1584,23 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
         recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+
+                    nextButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
         recycler.setAdapter(questionsAdapter);
 
+        DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
 
         return questionsView;
 
@@ -1729,7 +1752,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      * name for the instance and to decide whether the form should be finalized or not. Presents
      * a button for saving and exiting.
      */
-    private Void createViewForFormEnd(FormController formController) {
+    private Void displayFormEndDialog(FormController formController, Boolean isInstanceCalledFromCompletion) {
+
         if (formController.getSubmissionMetadata().instanceName != null) {
             saveName = formController.getSubmissionMetadata().instanceName;
         } else {
@@ -1765,24 +1789,35 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             }
         }
 
-        FormEndView endView = new FormEndView(this, formSaveViewModel.getFormName(),
-                saveName, InstancesDaoHelper.isInstanceComplete(true,
-                settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), new FormEndView.Listener() {
-            @Override
-            public void onSaveAsChanged(String saveAs) {
-                // Seems like this is needed for rotation?
-                saveName = saveAs;
-            }
 
-            @Override
-            public void onSaveClicked(boolean markAsFinalized) {
-                if (saveName.length() < 1) {
-                    showShortToast(R.string.save_as_error);
-                } else {
-                    formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
-                }
-            }
-        });
+        FormEndView endView = new FormEndView(this, formSaveViewModel.getFormName(),
+                saveName, InstancesDaoHelper.isInstanceComplete(isInstanceCalledFromCompletion,
+                settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)),
+
+                new FormEndView.Listener() {
+
+                    @Override
+                    public void onSaveAsChanged(String saveAs) {
+                        // Seems like this is needed for rotation?
+                        saveName = saveAs;
+                    }
+
+                    @Override
+                    public void onSaveClicked(boolean markAsFinalized) {
+                        Timber.d("STARTING SAVE");
+                        if (saveName.length() < 1) {
+
+                            //endView.saveAs.setError(R.string.save_as_error);
+
+                            showShortToast(R.string.save_as_error);
+                        } else {
+                            Timber.d("SAVING FORM... ");
+                            formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
+                        }
+                    }
+                });
+
+        endView.show();
 
         if (!settingsProvider.getAdminSettings().getBoolean(AdminKeys.KEY_MARK_AS_FINALIZED)) {
             endView.findViewById(R.id.mark_finished).setVisibility(View.GONE);
@@ -2231,7 +2266,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     /**
      * Saves data and writes it to disk. If exit is set, program will exit after
      * save completes. Complete indicates whether the user has marked the
-     * isntancs as complete. If updatedSaveName is non-null, the instances
+     * isntances as complete. If updatedSaveName is non-null, the instances
      * content provider is updated with the new name
      */
     private boolean saveForm(boolean exit, boolean complete, String updatedSaveName,
@@ -2333,7 +2368,12 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     @Override
     public void onSaveChangesClicked() {
-        saveForm(true, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
+       // saveForm(true, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
+
+        FormController controller = getFormController();
+        if (controller != null) {
+            displayFormEndDialog(controller, false);
+        }
     }
 
     @Nullable
@@ -2664,7 +2704,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      */
     @Override
     public void loadingComplete(FormLoaderTask task, FormDef formDef, String warningMsg) {
-        DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
 
         final FormController formController = task.getFormController();
 
@@ -2680,7 +2719,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
                     @Override
                     public void denied() {
+                        DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
+
                         finish();
+
                     }
                 });
             } else {
@@ -2746,6 +2788,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                     if (instanceFile != null) {
                         formController.setInstanceFile(instanceFile);
                     } else {
+                        DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
+
                         showFormLoadErrorAndExit(getString(R.string.loading_form_failed));
                     }
 
@@ -2810,6 +2854,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 }
             }
         } else {
+           // DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
+
             Timber.e("FormController is null");
             showLongToast(R.string.loading_form_failed);
             finish();

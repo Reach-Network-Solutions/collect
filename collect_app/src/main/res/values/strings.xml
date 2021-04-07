@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="showing_this">SHOWING THIS</string>
+    <string name="save_progress">"Save progress of %s"</string>
 </resources>

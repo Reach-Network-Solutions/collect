@@ -1,6 +1,8 @@
 package org.odk.collect.android.formentry;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -9,14 +11,19 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import org.odk.collect.android.R;
 import org.odk.collect.android.utilities.FormNameUtils;
 
-public class FormEndView extends FrameLayout {
+import timber.log.Timber;
+
+public class FormEndView extends Dialog {
 
     private final Listener listener;
     private final String formTitle;
     private final String defaultInstanceName;
+    public EditText saveAs;
 
     public FormEndView(Context context, String formTitle, String defaultInstanceName, boolean instanceComplete, Listener listener) {
         super(context);
@@ -26,12 +33,22 @@ public class FormEndView extends FrameLayout {
         init(context, instanceComplete);
     }
 
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+    }
+
+
     private void init(Context context, boolean instanceComplete) {
-        inflate(context, R.layout.form_entry_end, this);
+        this.setContentView(R.layout.form_entry_end);
 
-        ((TextView) findViewById(R.id.description)).setText(context.getString(R.string.save_enter_data_description, formTitle));
+        if (instanceComplete) {
+            ((TextView) findViewById(R.id.description)).setText(context.getString(R.string.save_enter_data_description, formTitle));
+        } else {
+            ((TextView) findViewById(R.id.description)).setText(context.getString(R.string.save_progress, formTitle));
+        }
 
-        EditText saveAs = findViewById(R.id.save_name);
+        saveAs = findViewById(R.id.save_name);
 
         // disallow carriage returns in the name
         InputFilter returnFilter = (source, start, end, dest, dstart, dend) -> FormNameUtils.normalizeFormName(source.toString().substring(start, end), true);
@@ -54,10 +71,14 @@ public class FormEndView extends FrameLayout {
         });
 
         final CheckBox markAsFinalized = findViewById(R.id.mark_finished);
+
         markAsFinalized.setChecked(instanceComplete);
+
 
         findViewById(R.id.save_exit_button).setOnClickListener(v -> {
             listener.onSaveClicked(markAsFinalized.isChecked());
+            Timber.d("MARKED AS FINAL %s", markAsFinalized.isChecked());
+
         });
     }
 
