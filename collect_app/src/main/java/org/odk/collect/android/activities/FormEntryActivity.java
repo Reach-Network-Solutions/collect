@@ -35,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
@@ -308,17 +309,17 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     private List<HierarchyElement> hierarchyElementsToDisplay;
 
-    private  WidgetFactory widgetFactory;
+    private WidgetFactory widgetFactory;
 
     ViewModelAudioPlayer viewModelAudioPlayer;
 
-    private  ArrayList<QuestionWidget> questionWidgetArrayList;
+    private ArrayList<QuestionWidget> questionWidgetArrayList;
 
-     private LinearLayout widgetsListLinearLayout;
+    private LinearLayout widgetsListLinearLayout;
 
     private LinearLayout.LayoutParams layoutParams;
 
-    private  AudioHelper audioHelper;
+    private AudioHelper audioHelper;
 
     private ScreenContext screenContext;
 
@@ -412,7 +413,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     private FormIndex currentIndex;
 
 
-
     private TreeReference contextGroupRef;
 
     /**
@@ -481,7 +481,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         //refreshView(true);
 
         questionWidgetArrayList = new ArrayList<>();
-
 
 
         layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -800,7 +799,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         backgroundLocationViewModel.questions.observe(this, questions -> {
                     View populatedViewUsingRecycler = displayAllQuestionsInForm(questions);
 
-                    showView(populatedViewUsingRecycler, AnimationType.FADE);
+                    renderQuestions(populatedViewUsingRecycler);
                 }
 
 
@@ -1175,10 +1174,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             case RequestCodes.EX_GROUP_CAPTURE:
                 try {
                     Bundle extras = intent.getExtras();
-                    if (currentView!= null) {
-                      setDataForFields(extras);
-                      Timber.d("SERIOUS some data found %s", extras.toString());
-                    }else{
+                    if (currentView != null) {
+                        setDataForFields(extras);
+                        Timber.d("SERIOUS some data found %s", extras.toString());
+                    } else {
                         Timber.d("NOT SERIOUS - current view is null");
                     }
                 } catch (JavaRosaException e) {
@@ -1562,7 +1561,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
         );
 
-        for(FormEntryPrompt question : questions) {
+        for (FormEntryPrompt question : questions) {
 
             QuestionWidget qw = widgetFactory.createWidgetFromPrompt(question, permissionsProvider);
 
@@ -1571,9 +1570,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
 
 
-
-
-        questionsAdapter = new QuestionsAdapter( questionWidgetArrayList, getFormController());
+        questionsAdapter = new QuestionsAdapter(questionWidgetArrayList, getFormController());
 
         recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
@@ -1968,6 +1965,36 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
 
         return false;
+    }
+
+    public void renderQuestions(View preparedView) {
+        currentView = preparedView;
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+//        ViewParent layoutParent = questionHolder.getParent();
+//
+//        if (layoutParent != null) {
+//            ((ViewGroup) layoutParent).removeView(questionHolder);
+//
+//        }
+
+        ViewParent currentViewParent = null;
+
+        currentViewParent = currentView.getParent();
+
+
+        if (currentViewParent != null) {
+            ((ViewGroup) currentViewParent).removeView(currentView);
+
+        }
+
+        //(layoutParent as ViewGroup).addView(holder.linearLayoutContainer)
+
+
+        questionHolder.addView(currentView, lp);
+
     }
 
     /**
@@ -2758,8 +2785,9 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                                     formController.getAuditEventLogger().logEvent(AuditEvent.AuditEventType.HIERARCHY, true, System.currentTimeMillis());
 
 
+                                    onScreenRefresh();
 
-                                    startActivityForResult(new Intent(this, FormHierarchyActivity.class), RequestCodes.HIERARCHY_ACTIVITY);
+                                    //startActivityForResult(new Intent(this, FormHierarchyActivity.class), RequestCodes.HIERARCHY_ACTIVITY);
                                 }
                             });
 
@@ -2895,7 +2923,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                     ((RangePickerDecimalWidget) qw).setNumberPickerValue(value);
                     widgetValueChanged(qw);
                     return;
-               }
+                }
 
 
             }
@@ -3039,6 +3067,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Timber.d("CHANGED WIDGET %s", changedWidget.getQuestionDetails().getPrompt().getQuestionText());
                     try {
                         updateFieldListQuestions(changedWidget.getFormEntryPrompt().getIndex());
 

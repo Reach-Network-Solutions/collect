@@ -3,6 +3,7 @@ package org.odk.collect.android.nexus_view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import androidx.recyclerview.widget.RecyclerView
@@ -46,13 +47,16 @@ class QuestionsAdapter(
 
         questionWidget.setValueChangedListener (this)
 
-        if (holder.linearLayoutContainer.parent != null) {
-            (holder.linearLayoutContainer.parent as ViewGroup).removeView(holder.itemView)
+        val layoutParent : ViewParent? = questionWidget?.parent
 
-            holder.linearLayoutContainer.addView(questionWidget)
-        }else{
-            holder.linearLayoutContainer.addView(questionWidget)
+        if (layoutParent != null) {
+            (layoutParent as ViewGroup).removeView(questionWidget)
+
         }
+
+        //(layoutParent as? ViewGroup)?.addView(holder.linearLayoutContainer)
+
+        holder.linearLayoutContainer.addView(questionWidget)
 
 
     }
