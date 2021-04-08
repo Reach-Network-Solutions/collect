@@ -325,6 +325,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     private ScreenContext screenContext;
 
+    private FormEndView endView;
+
     @Override
     public void allowSwiping(boolean doSwipe) {
         swipeHandler.setAllowSwiping(doSwipe);
@@ -467,7 +469,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             FormController controller = getFormController();
 
             if (controller != null) {
-                displayFormEndDialog(controller, false);
+                //displayFormEndDialog(controller, false);
+                displayFormEndDialog(controller, true);
             }
 
         });
@@ -1395,8 +1398,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
             case R.id.menu_save:
                 // don't exit
-                onSaveChangesClicked();
-                //saveForm(false, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
+//                onSaveChangesClicked();
+                saveForm(false, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null);
                 return true;
         }
 
@@ -1790,7 +1793,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
 
 
-        FormEndView endView = new FormEndView(this, formSaveViewModel.getFormName(),
+        endView = new FormEndView(this, formSaveViewModel.getFormName(),
                 saveName, InstancesDaoHelper.isInstanceComplete(isInstanceCalledFromCompletion,
                 settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)),
 
@@ -1813,6 +1816,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                         } else {
                             Timber.d("SAVING FORM... ");
                             formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
+                            //saveForm(true, InstancesDaoHelper.isInstanceComplete(markAsFinalized, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null);
                         }
                     }
                 });
@@ -2269,16 +2273,15 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      * isntances as complete. If updatedSaveName is non-null, the instances
      * content provider is updated with the new name
      */
-    private boolean saveForm(boolean exit, boolean complete, String updatedSaveName,
-                             boolean current) {
-        // save current answer
+    private boolean saveForm(boolean exit, boolean complete, String updatedSaveName) {
+       /* // save current answer
         if (current) {
             if (!saveAnswersForCurrentScreen(complete)) {
                 showShortToast(R.string.data_saved_error);
                 return false;
             }
         }
-
+*/
         formSaveViewModel.saveForm(getIntent().getData(), complete, updatedSaveName, exit);
 
         return true;
@@ -2287,6 +2290,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     private void handleSaveResult(FormSaveViewModel.SaveResult result) {
         if (result == null) {
             return;
+        }
+
+        if(endView != null){
+            endView.dismiss();
         }
 
         switch (result.getState()) {
@@ -2368,7 +2375,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     @Override
     public void onSaveChangesClicked() {
-       // saveForm(true, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
+        //saveForm(true, InstancesDaoHelper.isInstanceComplete(false, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null, true);
 
         FormController controller = getFormController();
         if (controller != null) {
@@ -3107,8 +3114,18 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             // TODO: As usual, no idea if/how this is possible.
             return;
         }
+        Timber.d("INDEEEX Changed %s", changedWidget.getQuestionDetails().getPrompt().getQuestionText());
+        Timber.d("INDEEEX %s", formController.indexIsInFieldList(changedWidget.getQuestionDetails().getPrompt().getIndex()) );
 
-        if (formController.indexIsInFieldList()) {
+        try {
+            pleaseSaveForUs(changedWidget);
+            //updateFieldListQuestions(changedWidget.getQuestionDetails().getPrompt().getIndex());
+        } catch (Exception e) {
+            Timber.e(e);
+            createErrorDialog(e.getMessage(), false);
+        }
+
+        if (formController.indexIsInFieldList(changedWidget.getQuestionDetails().getPrompt().getIndex())) {
             // Some widgets may call widgetValueChanged from a non-main thread but odkView can only be modified from the main thread
             runOnUiThread(new Runnable() {
                 @Override
@@ -3133,6 +3150,25 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 }
             });
         }
+    }
+
+    private void pleaseSaveForUs(QuestionWidget widget){
+
+        IAnswerData selectedAnswer = widget.getAnswer();
+
+        try {
+
+            Boolean answerSaved = getFormController().saveAnswer(widget.getQuestionDetails().getPrompt().getIndex(), selectedAnswer);
+
+            Timber.d("PROCESSING ANSWER FOR %s", widget.getQuestionDetails().getPrompt().getQuestionText());
+
+            Timber.d("ANSWER IS SAVED %s", answerSaved);
+
+            Timber.d("ANSWER %s", selectedAnswer.getDisplayText());
+        }catch (JavaRosaException exception){
+            Timber.d(exception);
+        }
+
     }
 
     /**
