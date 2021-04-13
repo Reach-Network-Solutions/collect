@@ -49,9 +49,9 @@ class QuestionsAdapter(
 
         val initialWidgetParent : ViewParent? = questionWidget.parent
 
-        (initialWidgetParent as? ViewGroup)?.removeView(questionWidget)
-
-        holder.linearLayoutContainer.addView(questionWidget)
+       if(initialWidgetParent == null) {
+           holder.linearLayoutContainer.addView(questionWidget)
+       }
 
     }
 
