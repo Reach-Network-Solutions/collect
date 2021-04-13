@@ -1593,8 +1593,9 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
                     nextButton.setVisibility(View.VISIBLE);
+                }else{
+                    nextButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
