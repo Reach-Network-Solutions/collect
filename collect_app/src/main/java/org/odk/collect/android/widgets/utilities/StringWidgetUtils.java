@@ -4,6 +4,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.method.DigitsKeyListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import org.javarosa.core.model.data.DecimalData;
@@ -128,6 +129,9 @@ public class StringWidgetUtils {
         }
         answerText.setFilters(fa);
 
+        //Sets the keyboard enter button to indicate input done
+        answerText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         Integer i = getIntegerAnswerValueFromIAnswerData(prompt.getAnswerValue());
 
         if (i != null) {
@@ -141,6 +145,9 @@ public class StringWidgetUtils {
         if (useThousandSeparator) {
             answerText.addTextChangedListener(new ThousandsSeparatorTextWatcher(answerText));
         }
+
+        //Sets the keyboard enter button to indicate input done
+        answerText.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         answerText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         // only numbers are allowed
@@ -173,6 +180,10 @@ public class StringWidgetUtils {
 
     public static void adjustEditTextAnswerToStringNumberWidget(EditText answerText, FormEntryPrompt prompt) {
         answerText.setInputType(InputType.TYPE_NUMBER_FLAG_SIGNED);
+
+        //Sets the keyboard enter button to indicate input done
+        answerText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         boolean useThousandSeparator = Appearances.useThousandSeparator(prompt);
         if (useThousandSeparator) {
             answerText.addTextChangedListener(new ThousandsSeparatorTextWatcher(answerText));
