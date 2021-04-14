@@ -40,26 +40,21 @@ class QuestionsAdapter(
 
     override fun onBindViewHolder(holder: QuestionWidgetViewHolder, position: Int) {
 
-        holder.linearLayoutContainer.removeAllViews()
+        holder.linearLayoutContainer.removeAllViewsInLayout()
 
         val questionWidget: QuestionWidget =
             dataSource[position]
 
-        questionWidget.setValueChangedListener (this)
+        questionWidget.setValueChangedListener(this)
 
-        val layoutParent : ViewParent? = questionWidget?.parent
+        val initialWidgetParent : ViewParent? = questionWidget.parent
 
-        if (layoutParent != null) {
-            (layoutParent as ViewGroup).removeView(questionWidget)
-
-        }
-
-        //(layoutParent as? ViewGroup)?.addView(holder.linearLayoutContainer)
-
-        holder.linearLayoutContainer.addView(questionWidget)
-
+       if(initialWidgetParent == null) {
+           holder.linearLayoutContainer.addView(questionWidget)
+       }
 
     }
+
 
     inner class QuestionWidgetViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
         val linearLayoutContainer: LinearLayout =
@@ -72,8 +67,7 @@ class QuestionsAdapter(
     }
 
 
-
-    fun getQuestionWidgetAt(position: Int) : QuestionWidget{
+    fun getQuestionWidgetAt(position: Int): QuestionWidget {
         return dataSource[position]
     }
 
