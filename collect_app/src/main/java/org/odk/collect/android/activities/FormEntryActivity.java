@@ -1463,7 +1463,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
                     highlightWidget(constraint.index);
                     if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1){
-                        //TODO(FIGURE OUT)
+                        //TODO(TO FIGURE OUT)
                     }
                     endView.dismiss();
                     return false;

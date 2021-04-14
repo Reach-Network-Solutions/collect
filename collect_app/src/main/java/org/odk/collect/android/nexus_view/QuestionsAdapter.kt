@@ -5,23 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.LinearLayout
-import android.widget.NumberPicker
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.javarosa.core.model.FormIndex
-import org.javarosa.core.model.data.IAnswerData
 import org.odk.collect.android.R
 import org.odk.collect.android.javarosawrapper.FormController
 import org.odk.collect.android.listeners.WidgetValueChangedListener
 import org.odk.collect.android.widgets.QuestionWidget
-import timber.log.Timber
-
-private const val TAG = "QuestionAdapterTag"
 
 class QuestionsAdapter(
     private val dataSource: MutableList<out QuestionWidget>,
     private val formController: FormController,
 
-    ) : RecyclerView.Adapter<QuestionsAdapter.QuestionWidgetViewHolder>(),
+    ) : ListAdapter<QuestionWidget,QuestionsAdapter.QuestionWidgetViewHolder>(QuestionWidgetDiffCallback()),
     WidgetValueChangedListener {
 
     override fun onCreateViewHolder(
@@ -67,9 +64,24 @@ class QuestionsAdapter(
         return indexPosition
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     inner class QuestionWidgetViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
         val linearLayoutContainer: LinearLayout =
             mView.findViewById(R.id.custom_question_widget_container)
+
+    }
+
+    class QuestionWidgetDiffCallback : DiffUtil.ItemCallback<QuestionWidget>() {
+        override fun areItemsTheSame(oldItem: QuestionWidget, newItem: QuestionWidget): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: QuestionWidget, newItem: QuestionWidget): Boolean {
+            return oldItem.formEntryPrompt.index == newItem.formEntryPrompt.index
+        }
 
     }
 
