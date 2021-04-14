@@ -7,6 +7,7 @@ import android.view.ViewParent
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import androidx.recyclerview.widget.RecyclerView
+import org.javarosa.core.model.FormIndex
 import org.javarosa.core.model.data.IAnswerData
 import org.odk.collect.android.R
 import org.odk.collect.android.javarosawrapper.FormController
@@ -55,6 +56,16 @@ class QuestionsAdapter(
 
     }
 
+    fun getItemPosition (index : FormIndex): Int {
+        var indexPosition : Int = 0
+        dataSource.forEach { questionWidget->
+            if(index == questionWidget.formEntryPrompt.index){
+                indexPosition =  dataSource.indexOf(questionWidget)
+            }
+        }
+
+        return indexPosition
+    }
 
     inner class QuestionWidgetViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
         val linearLayoutContainer: LinearLayout =

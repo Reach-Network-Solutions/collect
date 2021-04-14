@@ -14,6 +14,8 @@
 
 package org.odk.collect.android.activities;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,6 +28,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -38,7 +41,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -183,6 +185,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -326,6 +329,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     private ScreenContext screenContext;
 
     private FormEndView endView;
+    private List<FormEntryPrompt> questionsPrompt;
 
     @Override
     public void allowSwiping(boolean doSwipe) {
@@ -809,6 +813,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         });
 
         backgroundLocationViewModel.questions.observe(this, questions -> {
+
+                    questionsPrompt = questions;
                     View populatedViewUsingRecycler = displayAllQuestionsInForm(questions);
 
                     renderQuestions(populatedViewUsingRecycler);
@@ -1418,29 +1424,92 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         // only try to save if the current event is a question or a field-list group
         // and current view is an ODKView (occasionally we show blank views that do not have any
         // controls to save data from)
-//
-//
-//        if (formController != null && formController.currentPromptIsQuestion()
-//                && getCurrentViewIfODKView() != null) {
-//            HashMap<FormIndex, IAnswerData> answers = getAnswers();
-//            try {
-//                FailedConstraint constraint = formController.saveAllScreenAnswers(answers,
-//                        evaluateConstraints);
-//                if (constraint != null) {
-//                    createConstraintToast(constraint.index, constraint.status);
-//                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1) {
-//                        //getCurrentViewIfODKView().highlightWidget(constraint.index);
-//                    }
-//                    return false;
-//                }
-//            } catch (JavaRosaException | FormDesignException e) {
-//                Timber.e(e);
-//                createErrorDialog(e.getMessage(), false);
-//                return false;
-//            }
-//        }
+
+
+        /*if (formController != null && formController.currentPromptIsQuestion()
+                && getCurrentViewIfODKView() != null) {
+            HashMap<FormIndex, IAnswerData> answers = getAnswers();
+            try {
+                FormController.FailedConstraint constraint = formController.saveAllScreenAnswers(answers,
+                        evaluateConstraints);
+                if (constraint != null) {
+                    createConstraintToast(constraint.index, constraint.status);
+                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1) {
+                        //getCurrentViewIfODKView().highlightWidget(constraint.index);
+                    }
+                    return false;
+                }
+            } catch (JavaRosaException | FormDesignException e) {
+                Timber.e(e);
+                createErrorDialog(e.getMessage(), false);
+                return false;
+            }
+        }*/
 
         return true;
+    }
+
+    private boolean validateFormAnswers(boolean evaluateConstraints) {
+        FormController formController = getFormController();
+        if (formController != null) {
+            HashMap<FormIndex, IAnswerData> answers = getAnswers();
+            try {
+                FormController.FailedConstraint constraint = formController.saveAllScreenAnswers(answers, evaluateConstraints);
+
+                if (constraint != null) {
+                    createConstraintToast(constraint.index, constraint.status);
+                    int position = questionsAdapter.getItemPosition(constraint.index);
+                    recycler.scrollToPosition(position);
+
+                    highlightWidget(constraint.index);
+                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1) {
+
+                    }
+                    endView.dismiss();
+                    return false;
+                }
+            } catch (JavaRosaException | FormDesignException e) {
+                Timber.e(e);
+                createErrorDialog(e.getMessage(), false);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Highlights the question at the given {@link FormIndex} in red for 2.5 seconds, scrolls the
+     * view to display that question at the top and gives it focus.
+     */
+    public void highlightWidget(FormIndex formIndex) {
+        Timber.d("QuestionWidgetError");
+
+        QuestionWidget qw = getQuestionWidget(formIndex);
+
+        Timber.d("QuestionWidgetError %s", qw.getQuestionDetails().getPrompt().getQuestionText());
+
+        if (qw != null) {
+            // postDelayed is needed because otherwise scrolling may not work as expected in case when
+            // answers are validated during form finalization.
+            qw.setFocus(qw.getContext());
+            ValueAnimator va = new ValueAnimator();
+            va.setIntValues(getResources().getColor(R.color.red_500), qw.getDrawingCacheBackgroundColor());
+            va.setEvaluator(new ArgbEvaluator());
+            va.addUpdateListener(valueAnimator -> qw.setBackgroundColor((int) valueAnimator.getAnimatedValue()));
+            va.setDuration(2500);
+            va.start();
+
+        }
+    }
+
+    private QuestionWidget getQuestionWidget(FormIndex formIndex) {
+        for (QuestionWidget qw : questionWidgetArrayList) {
+            if (formIndex.equals(qw.getFormEntryPrompt().getIndex())) {
+                return qw;
+            }
+        }
+        return null;
     }
 
     // The method saves questions one by one in order to support calculations in field-list groups
@@ -1594,7 +1663,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     nextButton.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     nextButton.setVisibility(View.INVISIBLE);
                 }
             }
@@ -1816,7 +1885,16 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                             showShortToast(R.string.save_as_error);
                         } else {
                             Timber.d("SAVING FORM... ");
-                            formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
+
+                            if (markAsFinalized) {
+                                if (validateFormAnswers(true)) {
+                                    formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
+                                }
+                            } else {
+                                formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
+                            }
+
+
                             //saveForm(true, InstancesDaoHelper.isInstanceComplete(markAsFinalized, settingsProvider.getGeneralSettings().getBoolean(KEY_COMPLETED_DEFAULT)), null);
                         }
                     }
@@ -2293,7 +2371,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             return;
         }
 
-        if(endView != null){
+        if (endView != null) {
             endView.dismiss();
         }
 
@@ -2862,7 +2940,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 }
             }
         } else {
-           // DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
+            // DialogUtils.dismissDialog(FormLoadingDialogFragment.class, getSupportFragmentManager());
 
             Timber.e("FormController is null");
             showLongToast(R.string.loading_form_failed);
@@ -3116,7 +3194,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             return;
         }
         Timber.d("INDEEEX Changed %s", changedWidget.getQuestionDetails().getPrompt().getQuestionText());
-        Timber.d("INDEEEX %s", formController.indexIsInFieldList(changedWidget.getQuestionDetails().getPrompt().getIndex()) );
+        Timber.d("INDEEEX %s", formController.indexIsInFieldList(changedWidget.getQuestionDetails().getPrompt().getIndex()));
 
         try {
             pleaseSaveForUs(changedWidget);
@@ -3153,7 +3231,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
     }
 
-    private void pleaseSaveForUs(QuestionWidget widget){
+    private void pleaseSaveForUs(QuestionWidget widget) {
 
         IAnswerData selectedAnswer = widget.getAnswer();
 
@@ -3166,7 +3244,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             Timber.d("ANSWER IS SAVED %s", answerSaved);
 
             Timber.d("ANSWER %s", selectedAnswer.getDisplayText());
-        }catch (JavaRosaException exception){
+        } catch (JavaRosaException exception) {
             Timber.d(exception);
         }
 
@@ -3250,6 +3328,16 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 //            return new HashMap<>();
 //        }
 
-        return new HashMap<>();
+        HashMap<FormIndex, IAnswerData> answers = new HashMap<>();
+        if (questionWidgetArrayList.isEmpty()) {
+            return new HashMap<>();
+        } else {
+            for (int i = 0; i < questionWidgetArrayList.size(); i++) {
+                FormEntryPrompt formEntry = questionWidgetArrayList.get(i).getFormEntryPrompt();
+                answers.put(formEntry.getIndex(), formEntry.getAnswerValue());
+            }
+
+            return answers;
+        }
     }
 }
