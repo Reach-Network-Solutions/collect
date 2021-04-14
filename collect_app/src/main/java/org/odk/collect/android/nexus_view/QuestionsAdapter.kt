@@ -7,8 +7,12 @@ import android.view.ViewParent
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import androidx.recyclerview.widget.RecyclerView
+import org.javarosa.core.model.FormElementStateListener
+import org.javarosa.core.model.IFormElement
 import org.javarosa.core.model.data.IAnswerData
+import org.javarosa.core.model.instance.TreeElement
 import org.odk.collect.android.R
+import org.odk.collect.android.activities.FormEntryActivity
 import org.odk.collect.android.javarosawrapper.FormController
 import org.odk.collect.android.listeners.WidgetValueChangedListener
 import org.odk.collect.android.widgets.QuestionWidget
@@ -19,8 +23,9 @@ private const val TAG = "QuestionAdapterTag"
 class QuestionsAdapter(
     private val dataSource: MutableList<out QuestionWidget>,
     private val formController: FormController,
+    private val notifyAnswerChanged: (changedWidget: QuestionWidget?) -> Int
 
-    ) : RecyclerView.Adapter<QuestionsAdapter.QuestionWidgetViewHolder>(),
+) : RecyclerView.Adapter<QuestionsAdapter.QuestionWidgetViewHolder>(),
     WidgetValueChangedListener {
 
     override fun onCreateViewHolder(
@@ -47,11 +52,12 @@ class QuestionsAdapter(
 
         questionWidget.setValueChangedListener(this)
 
-        val initialWidgetParent : ViewParent? = questionWidget.parent
+        val initialWidgetParent: ViewParent? = questionWidget.parent
 
-       if(initialWidgetParent == null) {
-           holder.linearLayoutContainer.addView(questionWidget)
-       }
+        (initialWidgetParent as? ViewGroup)?.removeView(questionWidget)
+
+        holder.linearLayoutContainer.addView(questionWidget)
+
 
     }
 
@@ -71,14 +77,9 @@ class QuestionsAdapter(
         return dataSource[position]
     }
 
+
     override fun widgetValueChanged(changedWidget: QuestionWidget?) {
-
-        val notifiedAnswer = changedWidget?.answer
-
-        val notifiedIndex = changedWidget?.formEntryPrompt?.index
-
-        formController.saveAnswer(notifiedIndex, notifiedAnswer)
-
+        notifyAnswerChanged(changedWidget)
     }
 
 
