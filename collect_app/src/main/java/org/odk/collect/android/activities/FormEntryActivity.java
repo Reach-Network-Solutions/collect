@@ -1459,11 +1459,11 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 if (constraint != null) {
                     createConstraintToast(constraint.index, constraint.status);
                     int position = questionsAdapter.getItemPosition(constraint.index);
-                    recycler.scrollToPosition(position);
+                    recycler.smoothScrollToPosition(position);
 
                     highlightWidget(constraint.index);
-                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1) {
-
+                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1){
+                        //TODO(FIGURE OUT)
                     }
                     endView.dismiss();
                     return false;
@@ -1483,11 +1483,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      * view to display that question at the top and gives it focus.
      */
     public void highlightWidget(FormIndex formIndex) {
-        Timber.d("QuestionWidgetError");
-
         QuestionWidget qw = getQuestionWidget(formIndex);
-
-        Timber.d("QuestionWidgetError %s", qw.getQuestionDetails().getPrompt().getQuestionText());
 
         if (qw != null) {
             // postDelayed is needed because otherwise scrolling may not work as expected in case when
@@ -2249,7 +2245,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 return;
         }
 
-        ToastUtils.showShortToastInMiddle(constraintText);
+        ToastUtils.showShortToast(constraintText);
     }
 
     /**
@@ -3328,7 +3324,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 //            return new HashMap<>();
 //        }
 
-        HashMap<FormIndex, IAnswerData> answers = new HashMap<>();
+        HashMap<FormIndex, IAnswerData> answers = new LinkedHashMap<>();
         if (questionWidgetArrayList.isEmpty()) {
             return new HashMap<>();
         } else {
