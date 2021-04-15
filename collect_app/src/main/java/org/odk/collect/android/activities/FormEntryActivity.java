@@ -3376,7 +3376,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
             getFormController().saveAnswer(widget.getQuestionDetails().getPrompt().getIndex(), selectedAnswer);
 
-        } catch (JavaRosaException exception) {
+        } catch (JavaRosaException | NullPointerException exception) {
             Timber.d(exception);
         }
 
