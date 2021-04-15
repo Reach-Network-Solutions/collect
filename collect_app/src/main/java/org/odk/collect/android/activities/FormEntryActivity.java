@@ -1478,7 +1478,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                     recycler.smoothScrollToPosition(position);
 
                     highlightWidget(constraint.index);
-                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1){
+                    if (formController.indexIsInFieldList() && formController.getQuestionPrompts().length > 1) {
                         //TODO(TO FIGURE OUT)
                     }
                     endView.dismiss();
@@ -3233,15 +3233,25 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         if (formController == null) return;
         try {
 
-            FormIndex currentIndexForQuestion = changedWidget.getFormEntryPrompt().getIndex();
+            FormIndex currentIndexForQuestion = changedWidget.getQuestionDetails().getPrompt().getIndex();
 
             FormIndex previousLevel = currentIndexForQuestion.getPreviousLevel();
+
+            int level = currentIndexForQuestion.getDepth();
+
+            Timber.d("EVALUATING LEVEL: %s for fIndex %s", level, currentIndexForQuestion.toString());
+
+            if(level < 2){
+                pleaseSaveForUs(changedWidget);
+                return;
+            }
 
             formController.jumpToIndex(previousLevel);
 
             FormEntryPrompt[] promptsBeforeSave = formController.getQuestionPrompts();
 
             List<ImmutableDisplayableQuestion> immutableQuestionsBeforeSave = new ArrayList<>();
+            List<ImmutableDisplayableQuestion> immutableQuestionsAfterSave = new ArrayList<>();
 
             for (FormEntryPrompt questionBeforeSave : promptsBeforeSave) {
                 immutableQuestionsBeforeSave.add(new ImmutableDisplayableQuestion(questionBeforeSave));
@@ -3251,6 +3261,12 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             pleaseSaveForUs(changedWidget);
 
             FormEntryPrompt[] promptsAfterSave = formController.getQuestionPrompts();
+
+            for (FormEntryPrompt questionAfterSave : promptsAfterSave) {
+                immutableQuestionsAfterSave.add(new ImmutableDisplayableQuestion(questionAfterSave));
+            }
+
+            if(immutableQuestionsAfterSave.containsAll(immutableQuestionsBeforeSave))return;
 
             Map<FormIndex, FormEntryPrompt> questionsAfterSaveByIndex = new HashMap<>();
 
@@ -3379,9 +3395,22 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
                         int indexFactor = positionOfRelatedQsn + differentialForNewInsertion; //positionOfRelatedQsn + indexPointer;
 
-                        questionWidgetArrayList.add(indexFactor, addition);
+                        if (indexFactor > questionWidgetArrayList.size()) {
 
-                        questionsAdapter.notifyItemInserted(indexFactor);
+                            questionWidgetArrayList.add(questionWidgetArrayList.size() - 1, addition);
+
+                            questionsAdapter.notifyItemInserted(questionWidgetArrayList.size() - 1);
+
+                        } else if(indexFactor < 0) {
+                            questionWidgetArrayList.add(positionOfRelatedQsn, addition);
+
+                            questionsAdapter.notifyItemInserted(positionOfRelatedQsn);
+
+                        }else{
+                            questionWidgetArrayList.add(indexFactor, addition);
+
+                            questionsAdapter.notifyItemInserted(indexFactor);
+                        }
 
                     }
 
