@@ -234,7 +234,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         AudioControllerView.SwipableParent, FormIndexAnimationHandler.Listener,
         QuitFormDialogFragment.Listener, DeleteRepeatDialogFragment.DeleteRepeatDialogCallback,
         SelectMinimalDialog.SelectMinimalDialogListener, CustomDatePickerDialog.DateChangeListener,
-        CustomTimePickerDialog.TimeChangeListener {
+        CustomTimePickerDialog.TimeChangeListener, View.OnFocusChangeListener {
 
     private static final boolean EVALUATE_CONSTRAINTS = true;
     public static final boolean DO_NOT_EVALUATE_CONSTRAINTS = false;
@@ -331,9 +331,22 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     private FormEndView endView;
     private List<FormEntryPrompt> questionsPrompt;
 
+
     @Override
     public void allowSwiping(boolean doSwipe) {
         swipeHandler.setAllowSwiping(doSwipe);
+    }
+
+
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        if (view instanceof QuestionWidget) {
+            Timber.d("FOCUS CHANGE ON QW");
+        } else {
+            Timber.d("FOCUS CHANGE - NOT QW");
+            //updateQuestionsInViewPerRelevance();
+        }
+
     }
 
     enum AnimationType {
@@ -423,6 +436,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     private TreeReference contextGroupRef;
 
+    List<FormEntryPrompt> readyProcessedQuestions;
+
     /**
      * Called when the activity is first created.
      */
@@ -509,6 +524,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
 
     }
+
 
     private boolean isScreenEvent(FormController formController, FormIndex index) {
         // Beginning of form.
@@ -813,8 +829,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         });
 
         backgroundLocationViewModel.questions.observe(this, questions -> {
+                    readyProcessedQuestions = questions;
 
-                    questionsPrompt = questions;
                     View populatedViewUsingRecycler = displayAllQuestionsInForm(questions);
 
                     renderQuestions(populatedViewUsingRecycler);
@@ -1601,6 +1617,16 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         return null;
     }
 
+    private Integer notifyFromRecycler(QuestionWidget changedWidget) {
+        if (changedWidget != null) {
+            widgetValueChanged(changedWidget);
+            return 1;
+        }
+        return 0;
+
+    }
+
+
     /**
      * Creates and returns a new view based on the event type passed in. The view returned is
      * of type {@link View} if the event passed in represents the end of the form or of type
@@ -1648,7 +1674,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         }
 
 
-        questionsAdapter = new QuestionsAdapter(questionWidgetArrayList, getFormController());
+        questionsAdapter = new QuestionsAdapter(questionWidgetArrayList, this::notifyFromRecycler);
 
         recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
@@ -3182,6 +3208,195 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         SnackbarUtils.showLongSnackbar(findViewById(R.id.llParent), snackBarText);
     }
 
+    /**
+     * A new answer is posted
+     * <p>
+     * Take a stock of all the questions provided by controller.getQuestionPrompts()
+     * <p>
+     * Save the answer - this will trigger the FromDef triggerables to evaluate the relevance
+     * of all the questions in the fieldList(in this case, the whole form)
+     * <p>
+     * Ask the FormDef again for the new prompts, check the difference - Add/Eject based on the difference
+     * <p>
+     * Start the factory for any extra questions - don't process all the questions afresh.
+     * <p>
+     * Inject/Purge any changes on the recycler, notify the changes
+     * <p>
+     * Done.
+     *
+     * @param changedWidget
+     */
+    public void updateQuestionsInViewPerRelevance(QuestionWidget changedWidget) {
+
+        FormController formController = getFormController();
+
+        if (formController == null) return;
+        try {
+
+            FormIndex currentIndexForQuestion = changedWidget.getFormEntryPrompt().getIndex();
+
+            FormIndex previousLevel = currentIndexForQuestion.getPreviousLevel();
+
+            formController.jumpToIndex(previousLevel);
+
+            FormEntryPrompt[] promptsBeforeSave = formController.getQuestionPrompts();
+
+            List<ImmutableDisplayableQuestion> immutableQuestionsBeforeSave = new ArrayList<>();
+
+            for (FormEntryPrompt questionBeforeSave : promptsBeforeSave) {
+                immutableQuestionsBeforeSave.add(new ImmutableDisplayableQuestion(questionBeforeSave));
+            }
+
+
+            pleaseSaveForUs(changedWidget);
+
+            FormEntryPrompt[] promptsAfterSave = formController.getQuestionPrompts();
+
+            Map<FormIndex, FormEntryPrompt> questionsAfterSaveByIndex = new HashMap<>();
+
+            for (FormEntryPrompt question : promptsAfterSave) {
+                questionsAfterSaveByIndex.put(question.getIndex(), question);
+            }
+
+            List<FormEntryPrompt> questionsThatHaveNotChanged = new ArrayList<>();
+            List<FormIndex> formIndexesToRemove = new ArrayList<>();
+
+            for (ImmutableDisplayableQuestion questionBeforeSave : immutableQuestionsBeforeSave) {
+                FormEntryPrompt questionAtSameFormIndex = questionsAfterSaveByIndex.get(questionBeforeSave.getFormIndex());
+
+                // Always rebuild questions that use database-driven external data features since they
+                // bypass SelectChoices stored in ImmutableDisplayableQuestion
+                if (questionBeforeSave.sameAs(questionAtSameFormIndex)
+                        && !getFormController().usesDatabaseExternalDataFeature(questionBeforeSave.getFormIndex())) {
+
+                    questionsThatHaveNotChanged.add(questionAtSameFormIndex);
+
+                } else if (!currentIndexForQuestion.equals(questionBeforeSave.getFormIndex())) {
+                    formIndexesToRemove.add(questionBeforeSave.getFormIndex());
+                }
+            }
+
+            ArrayList<FormIndex> indexesToRemoveFinal = new ArrayList<>();
+
+            for (int i = immutableQuestionsBeforeSave.size() - 1; i >= 0; i--) {
+                ImmutableDisplayableQuestion questionBeforeSave = immutableQuestionsBeforeSave.get(i);
+
+                if (formIndexesToRemove.contains(questionBeforeSave.getFormIndex())) {
+
+                    ImmutableDisplayableQuestion toEject = immutableQuestionsBeforeSave.get(i);
+
+                    FormIndex indexForItemToRemove = toEject.getFormIndex();
+
+                    indexesToRemoveFinal.add(indexForItemToRemove);
+
+                }
+            }
+
+            ArrayList<QuestionWidget> listToModify = questionWidgetArrayList;
+
+
+            for (int ind = questionWidgetArrayList.size() - 1; ind >= 0; ind--) {
+                FormEntryPrompt pointedPrompt = questionWidgetArrayList.get(ind).getQuestionDetails().getPrompt();
+
+                if (indexesToRemoveFinal.contains(pointedPrompt.getIndex())) {
+
+                    int finalInd = ind;
+                    readyProcessedQuestions.removeIf(providedEntry -> providedEntry.getIndex() ==
+                            questionWidgetArrayList.get(finalInd).getQuestionDetails().getPrompt().getIndex());
+
+                    listToModify.remove(questionWidgetArrayList.get(ind));
+
+                    questionsAdapter.notifyItemRemoved(ind);
+
+                }
+
+            }
+
+            questionWidgetArrayList = listToModify;//after mod.
+
+            ArrayList<QuestionWidget> promptsToBeAdded = new ArrayList<>();
+
+            ArrayList<FormIndex> indexesOfReadyProcessedQns = new ArrayList<>();
+
+            for (FormEntryPrompt entryPrompt : readyProcessedQuestions) {
+                indexesOfReadyProcessedQns.add(entryPrompt.getIndex());
+            }
+
+            for (FormEntryPrompt formEntryPrompt : promptsAfterSave) {
+                if (!questionsThatHaveNotChanged.contains(formEntryPrompt)
+                        && !formEntryPrompt.getIndex().equals(currentIndexForQuestion)) {
+                    // The values of widgets in intent groups are set by the view so widgetValueChanged
+                    // is never called. This means readOnlyOverride can always be set to false.
+
+                    if (!indexesOfReadyProcessedQns.contains(formEntryPrompt.getIndex())) {
+
+                        readyProcessedQuestions.add(formEntryPrompt);
+
+                        QuestionWidget addedQuestion = this.widgetFactory.createWidgetFromPrompt(formEntryPrompt, permissionsProvider);
+
+                        promptsToBeAdded.add(addedQuestion);
+                    }
+                }
+            }
+
+
+            if (promptsToBeAdded.size() > 0) {
+                int positionOfRelatedQsn = questionsAdapter.getPositionForWidget(currentIndexForQuestion);
+
+                if (positionOfRelatedQsn != -1) {
+
+                    for (int c = promptsToBeAdded.size() - 1; c >= 0; c--) {
+                        /**
+                         * Insertion of new questions
+                         * get the index for the new insertion,
+                         * check the closeness of its index to other siblings
+                         * Insert next to the closest related question.
+                         */
+
+                        ArrayList<String> stackOfFamilyIndices = new ArrayList<>();
+
+                        QuestionWidget addition = promptsToBeAdded.get(c);
+
+                        FormIndex insertionQuestionIndex = addition.getQuestionDetails().getPrompt().getIndex();
+
+                        String positionOfCallingWidgetInStack = currentIndexForQuestion.toString();
+
+                        for (FormEntryPrompt qsn : promptsAfterSave) {
+                            String toAdd = qsn.getIndex().toString();
+
+                            stackOfFamilyIndices.add(toAdd);
+
+                        }
+
+                        Collections.sort(stackOfFamilyIndices);
+
+                        int positionOfCurrentCallerInStack = stackOfFamilyIndices.indexOf(positionOfCallingWidgetInStack);
+
+                        int relativePositionOfWidgetToBeInserted = stackOfFamilyIndices.indexOf(insertionQuestionIndex.toString());
+
+                        int differentialForNewInsertion = (relativePositionOfWidgetToBeInserted - positionOfCurrentCallerInStack);
+
+
+                        int indexFactor = positionOfRelatedQsn + differentialForNewInsertion; //positionOfRelatedQsn + indexPointer;
+
+                        questionWidgetArrayList.add(indexFactor, addition);
+
+                        questionsAdapter.notifyItemInserted(indexFactor);
+
+                    }
+
+                }
+            }
+
+
+        } catch (FormDesignException exception) {
+            Timber.e(exception);
+        }
+
+
+    }
+
+
     @Override
     public void widgetValueChanged(QuestionWidget changedWidget) {
         FormController formController = getFormController();
@@ -3189,11 +3404,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             // TODO: As usual, no idea if/how this is possible.
             return;
         }
-        Timber.d("INDEEEX Changed %s", changedWidget.getQuestionDetails().getPrompt().getQuestionText());
-        Timber.d("INDEEEX %s", formController.indexIsInFieldList(changedWidget.getQuestionDetails().getPrompt().getIndex()));
 
         try {
-            pleaseSaveForUs(changedWidget);
+            updateQuestionsInViewPerRelevance(changedWidget);
+
             //updateFieldListQuestions(changedWidget.getQuestionDetails().getPrompt().getIndex());
         } catch (Exception e) {
             Timber.e(e);
@@ -3232,15 +3446,9 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         IAnswerData selectedAnswer = widget.getAnswer();
 
         try {
+            getFormController().saveAnswer(widget.getQuestionDetails().getPrompt().getIndex(), selectedAnswer);
 
-            Boolean answerSaved = getFormController().saveAnswer(widget.getQuestionDetails().getPrompt().getIndex(), selectedAnswer);
-
-            Timber.d("PROCESSING ANSWER FOR %s", widget.getQuestionDetails().getPrompt().getQuestionText());
-
-            Timber.d("ANSWER IS SAVED %s", answerSaved);
-
-            Timber.d("ANSWER %s", selectedAnswer.getDisplayText());
-        } catch (JavaRosaException exception) {
+        } catch (JavaRosaException | NullPointerException exception) {
             Timber.d(exception);
         }
 

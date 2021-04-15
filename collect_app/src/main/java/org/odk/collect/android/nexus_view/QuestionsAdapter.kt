@@ -5,20 +5,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.LinearLayout
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+
 import androidx.recyclerview.widget.RecyclerView
 import org.javarosa.core.model.FormIndex
 import org.odk.collect.android.R
-import org.odk.collect.android.javarosawrapper.FormController
 import org.odk.collect.android.listeners.WidgetValueChangedListener
 import org.odk.collect.android.widgets.QuestionWidget
 
+
+private const val TAG = "QuestionAdapterTag"
+
+
 class QuestionsAdapter(
     private val dataSource: MutableList<out QuestionWidget>,
-    private val formController: FormController,
+    private val notifyAnswerChanged: (changedWidget: QuestionWidget?) -> Int
 
-    ) : ListAdapter<QuestionWidget,QuestionsAdapter.QuestionWidgetViewHolder>(QuestionWidgetDiffCallback()),
+
+    ) : ListAdapter<QuestionWidget, QuestionsAdapter.QuestionWidgetViewHolder>(QuestionWidgetDiffCallback()),
+
     WidgetValueChangedListener {
 
     override fun onCreateViewHolder(
@@ -45,11 +52,12 @@ class QuestionsAdapter(
 
         questionWidget.setValueChangedListener(this)
 
-        val initialWidgetParent : ViewParent? = questionWidget.parent
+        val initialWidgetParent: ViewParent? = questionWidget.parent
 
-       if(initialWidgetParent == null) {
-           holder.linearLayoutContainer.addView(questionWidget)
-       }
+        (initialWidgetParent as? ViewGroup)?.removeView(questionWidget)
+
+        holder.linearLayoutContainer.addView(questionWidget)
+
 
     }
 
@@ -89,19 +97,38 @@ class QuestionsAdapter(
         return position.toLong()
     }
 
+    fun getPositionForWidget(candidateWidget: FormIndex): Int {
+        return binarySearch(candidateWidget)
+    }
+
+    private fun binarySearch(x: FormIndex): Int {
+        var l = 0
+        val r = dataSource.size - 1
+
+        while (l <= r) {
+            // Check if x is present at mid
+            if(r > (dataSource.size -1))return  -1
+
+            val checking  = dataSource[l].questionDetails.prompt
+
+            if (checking.index == x) return l
+            l += 1
+        }
+
+        // if we reach here, then element was
+        // not present
+        return -1
+    }
+
+
 
     fun getQuestionWidgetAt(position: Int): QuestionWidget {
         return dataSource[position]
     }
 
+
     override fun widgetValueChanged(changedWidget: QuestionWidget?) {
-
-        val notifiedAnswer = changedWidget?.answer
-
-        val notifiedIndex = changedWidget?.formEntryPrompt?.index
-
-        formController.saveAnswer(notifiedIndex, notifiedAnswer)
-
+        notifyAnswerChanged(changedWidget)
     }
 
 
