@@ -1605,16 +1605,12 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
             QuestionWidget qw = widgetFactory.createWidgetFromPrompt(question, permissionsProvider);
 
-            qw.setValueChangedListener(this);
-
-            qw.setOnFocusChangeListener(this);
-
             questionWidgetArrayList.add(qw);
 
         }
 
 
-        questionsAdapter = new QuestionsAdapter(questionWidgetArrayList, getFormController(), this::notifyFromRecycler);
+        questionsAdapter = new QuestionsAdapter(questionWidgetArrayList, this::notifyFromRecycler);
 
         recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
@@ -3225,19 +3221,25 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 }
             }
 
+            ArrayList<QuestionWidget> listToModify = questionWidgetArrayList;
 
 
-                for (QuestionWidget candidateWidget : questionWidgetArrayList) {
-                    if (indexesToRemoveFinal.contains(candidateWidget.getQuestionDetails().getPrompt().getIndex())) {
+            for (int ind = questionWidgetArrayList.size() -1 ; ind >= 0 ; ind--) {
+                FormEntryPrompt pointedPrompt = questionWidgetArrayList.get(ind).getQuestionDetails().getPrompt();
 
-                        readyProcessedQuestions.removeIf(providedEntry -> providedEntry.getIndex() ==
-                                candidateWidget.getQuestionDetails().getPrompt().getIndex());
+                if (indexesToRemoveFinal.contains(pointedPrompt.getIndex())) {
 
-                        questionWidgetArrayList.remove(candidateWidget);
+                    int finalInd = ind;
+                    readyProcessedQuestions.removeIf(providedEntry -> providedEntry.getIndex() ==
+                            questionWidgetArrayList.get(finalInd).getQuestionDetails().getPrompt().getIndex());
 
-                    }
+                    listToModify.remove(questionWidgetArrayList.get(ind));
+
+                }
 
             }
+
+            questionWidgetArrayList = listToModify;//after mod.
 
             ArrayList<QuestionWidget> promptsToBeAdded = new ArrayList<>();
 
@@ -3252,7 +3254,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                         && !formEntryPrompt.getIndex().equals(currentIndexForQuestion)) {
                     // The values of widgets in intent groups are set by the view so widgetValueChanged
                     // is never called. This means readOnlyOverride can always be set to false.
-                    //odkView.addWidgetForQuestion(questionsAfterSave[i], i);
 
                     if (!indexesOfReadyProcessedQns.contains(formEntryPrompt.getIndex())) {
 
@@ -3265,13 +3266,44 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 }
             }
 
-            if (indexesToRemoveFinal.size() > 0 || promptsToBeAdded.size() > 0) {
 
-                questionWidgetArrayList.addAll(promptsToBeAdded);
+//            if (indexesToRemoveFinal.size() > 0) {
+//                for (FormIndex index : indexesToRemoveFinal) {
+//
+//                    int targetPosition = questionsAdapter.getPositionForWidget(index);
+//                    //Timber.d("DETERMINING pos for item with index %s for removal - found pos %s", index, targetPosition);
+//
+//                    if (targetPosition > -1) {
+//                        //Timber.d("POINTED QSN FOR REMOVAL %s", questionsAdapter.getQuestionWidgetAt(targetPosition).getQuestionDetails().getPrompt().getQuestionText());
+//
+//                        questionWidgetArrayList.remove(targetPosition);
+//
+//                        questionsAdapter.notifyItemRemoved(targetPosition);
+//                    }
+//                }
+//            }
 
-                questionsAdapter.notifyDataSetChanged();
+            if (promptsToBeAdded.size() > 0) {
+                int positionOfRelatedQsn = questionsAdapter.getPositionForWidget(currentIndexForQuestion);
 
+                if (positionOfRelatedQsn != -1) {
+
+                    for (int c = promptsToBeAdded.size() -1 ; c >= 0 ; c--) {
+                        QuestionWidget addition = promptsToBeAdded.get(c);
+
+                        int indexPointer = c + 1;//starts at 0, caller + 0 will insert at the caller index.
+
+                        int indexFactor = positionOfRelatedQsn + indexPointer;
+
+                        questionWidgetArrayList.add(indexFactor, addition);
+
+                        questionsAdapter.notifyItemInserted(indexFactor);
+
+                    }
+
+                }
             }
+
 
         } catch (FormDesignException exception) {
             Timber.e(exception);

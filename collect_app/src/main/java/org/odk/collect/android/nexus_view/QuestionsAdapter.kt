@@ -5,24 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.LinearLayout
-import android.widget.NumberPicker
 import androidx.recyclerview.widget.RecyclerView
-import org.javarosa.core.model.FormElementStateListener
-import org.javarosa.core.model.IFormElement
-import org.javarosa.core.model.data.IAnswerData
-import org.javarosa.core.model.instance.TreeElement
+import org.javarosa.core.model.FormIndex
 import org.odk.collect.android.R
-import org.odk.collect.android.activities.FormEntryActivity
-import org.odk.collect.android.javarosawrapper.FormController
 import org.odk.collect.android.listeners.WidgetValueChangedListener
 import org.odk.collect.android.widgets.QuestionWidget
-import timber.log.Timber
 
 private const val TAG = "QuestionAdapterTag"
 
 class QuestionsAdapter(
     private val dataSource: MutableList<out QuestionWidget>,
-    private val formController: FormController,
     private val notifyAnswerChanged: (changedWidget: QuestionWidget?) -> Int
 
 ) : RecyclerView.Adapter<QuestionsAdapter.QuestionWidgetViewHolder>(),
@@ -71,6 +63,27 @@ class QuestionsAdapter(
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+
+    fun getPositionForWidget(candidateWidget: FormIndex): Int {
+        return binarySearch(candidateWidget)
+    }
+
+    private fun binarySearch(x: FormIndex): Int {
+        var l = 0
+        val r = dataSource.size - 1
+
+        while (l <= r) {
+            // Check if x is present at mid
+            val checking  = dataSource[l].questionDetails.prompt
+            if (checking.index === x) return l
+            l += 1
+        }
+
+        // if we reach here, then element was
+        // not present
+        return -1
+    }
+
 
 
     fun getQuestionWidgetAt(position: Int): QuestionWidget {
