@@ -3167,7 +3167,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             formController.jumpToIndex(previousLevel);
 
             FormEntryPrompt[] promptsBeforeSave = formController.getQuestionPrompts();
-            Timber.d("BEFORE SAVE -> %s", promptsBeforeSave.length);
 
             List<ImmutableDisplayableQuestion> immutableQuestionsBeforeSave = new ArrayList<>();
 
@@ -3179,7 +3178,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             pleaseSaveForUs(changedWidget);
 
             FormEntryPrompt[] promptsAfterSave = formController.getQuestionPrompts();
-            Timber.d("AFTER SAVE -> %s", promptsAfterSave.length);
 
             Map<FormIndex, FormEntryPrompt> questionsAfterSaveByIndex = new HashMap<>();
 
@@ -3224,7 +3222,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             ArrayList<QuestionWidget> listToModify = questionWidgetArrayList;
 
 
-            for (int ind = questionWidgetArrayList.size() -1 ; ind >= 0 ; ind--) {
+            for (int ind = questionWidgetArrayList.size() - 1; ind >= 0; ind--) {
                 FormEntryPrompt pointedPrompt = questionWidgetArrayList.get(ind).getQuestionDetails().getPrompt();
 
                 if (indexesToRemoveFinal.contains(pointedPrompt.getIndex())) {
@@ -3269,35 +3267,44 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             }
 
 
-//            if (indexesToRemoveFinal.size() > 0) {
-//                for (FormIndex index : indexesToRemoveFinal) {
-//
-//                    int targetPosition = questionsAdapter.getPositionForWidget(index);
-//                    Timber.d("DETERMINING pos for item with index %s for removal - found pos %s", index, targetPosition);
-//
-//                    if (targetPosition != -1) {
-//                        FormEntryPrompt selection = questionsAdapter.getQuestionWidgetAt(targetPosition).getQuestionDetails().getPrompt();
-//
-//                        Timber.d("POINTED QSN FOR REMOVAL %s with fIndex %s", selection.getQuestionText(), selection.getIndex());
-//
-//                        questionWidgetArrayList.remove(targetPosition);
-//
-//
-//                    }
-//                }
-//            }
-
             if (promptsToBeAdded.size() > 0) {
                 int positionOfRelatedQsn = questionsAdapter.getPositionForWidget(currentIndexForQuestion);
 
                 if (positionOfRelatedQsn != -1) {
 
-                    for (int c = promptsToBeAdded.size() -1 ; c >= 0 ; c--) {
+                    for (int c = promptsToBeAdded.size() - 1; c >= 0; c--) {
+                        /**
+                         * Insertion of new questions
+                         * get the index for the new insertion,
+                         * check the closeness of its index to other siblings
+                         * Insert next to the closest related question.
+                         */
+
+                        ArrayList<String> stackOfFamilyIndices = new ArrayList<>();
+
                         QuestionWidget addition = promptsToBeAdded.get(c);
 
-                        int indexPointer = c + 1;//starts at 0, caller + 0 will insert at the caller index.
+                        FormIndex insertionQuestionIndex = addition.getQuestionDetails().getPrompt().getIndex();
 
-                        int indexFactor = positionOfRelatedQsn + indexPointer;
+                        String positionOfCallingWidgetInStack = currentIndexForQuestion.toString();
+
+                        for (FormEntryPrompt qsn : promptsAfterSave) {
+                            String toAdd = qsn.getIndex().toString();
+
+                            stackOfFamilyIndices.add(toAdd);
+
+                        }
+
+                        Collections.sort(stackOfFamilyIndices);
+
+                        int positionOfCurrentCallerInStack = stackOfFamilyIndices.indexOf(positionOfCallingWidgetInStack);
+
+                        int relativePositionOfWidgetToBeInserted = stackOfFamilyIndices.indexOf(insertionQuestionIndex.toString());
+
+                        int differentialForNewInsertion = (relativePositionOfWidgetToBeInserted - positionOfCurrentCallerInStack);
+
+
+                        int indexFactor = positionOfRelatedQsn + differentialForNewInsertion; //positionOfRelatedQsn + indexPointer;
 
                         questionWidgetArrayList.add(indexFactor, addition);
 
