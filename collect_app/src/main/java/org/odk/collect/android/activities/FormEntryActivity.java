@@ -3235,6 +3235,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
                     listToModify.remove(questionWidgetArrayList.get(ind));
 
+                    questionsAdapter.notifyItemRemoved(ind);
+
                 }
 
             }
@@ -3271,14 +3273,16 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 //                for (FormIndex index : indexesToRemoveFinal) {
 //
 //                    int targetPosition = questionsAdapter.getPositionForWidget(index);
-//                    //Timber.d("DETERMINING pos for item with index %s for removal - found pos %s", index, targetPosition);
+//                    Timber.d("DETERMINING pos for item with index %s for removal - found pos %s", index, targetPosition);
 //
-//                    if (targetPosition > -1) {
-//                        //Timber.d("POINTED QSN FOR REMOVAL %s", questionsAdapter.getQuestionWidgetAt(targetPosition).getQuestionDetails().getPrompt().getQuestionText());
+//                    if (targetPosition != -1) {
+//                        FormEntryPrompt selection = questionsAdapter.getQuestionWidgetAt(targetPosition).getQuestionDetails().getPrompt();
+//
+//                        Timber.d("POINTED QSN FOR REMOVAL %s with fIndex %s", selection.getQuestionText(), selection.getIndex());
 //
 //                        questionWidgetArrayList.remove(targetPosition);
 //
-//                        questionsAdapter.notifyItemRemoved(targetPosition);
+//
 //                    }
 //                }
 //            }

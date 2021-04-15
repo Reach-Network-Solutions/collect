@@ -74,8 +74,11 @@ class QuestionsAdapter(
 
         while (l <= r) {
             // Check if x is present at mid
+            if(r > (dataSource.size -1))return  -1
+
             val checking  = dataSource[l].questionDetails.prompt
-            if (checking.index === x) return l
+
+            if (checking.index == x) return l
             l += 1
         }
 
