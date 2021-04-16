@@ -1,0 +1,311 @@
+/*
+ * Copyright 2018 Nafundi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package app.nexusforms.android.widgets;
+
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.StringData;
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.odk.collect.android.R;
+
+import app.nexusforms.android.activities.DrawActivity;
+import app.nexusforms.android.formentry.questions.QuestionDetails;
+import app.nexusforms.android.formentry.questions.WidgetViewUtils;
+import app.nexusforms.android.utilities.ApplicationConstants;
+import app.nexusforms.android.utilities.FileUtils;
+import app.nexusforms.android.utilities.MediaUtils;
+import app.nexusforms.android.utilities.MultiClickGuard;
+import app.nexusforms.android.utilities.QuestionMediaManager;
+import app.nexusforms.android.widgets.interfaces.FileWidget;
+import app.nexusforms.android.widgets.interfaces.WidgetDataReceiver;
+import app.nexusforms.android.widgets.utilities.WaitingForDataRegistry;
+import app.nexusforms.android.storage.StoragePathProvider;
+
+import java.io.File;
+
+import timber.log.Timber;
+
+public abstract class BaseImageWidget extends QuestionWidget implements FileWidget, WidgetDataReceiver {
+
+    @Nullable
+    protected ImageView imageView;
+    protected String binaryName;
+    protected TextView errorTextView;
+    protected LinearLayout answerLayout;
+
+    protected ImageClickHandler imageClickHandler;
+    protected ExternalImageCaptureHandler imageCaptureHandler;
+
+    private final WaitingForDataRegistry waitingForDataRegistry;
+    private final QuestionMediaManager questionMediaManager;
+    private final MediaUtils mediaUtils;
+
+    public BaseImageWidget(Context context, QuestionDetails prompt, QuestionMediaManager questionMediaManager,
+                           WaitingForDataRegistry waitingForDataRegistry, MediaUtils mediaUtils) {
+        super(context, prompt);
+        this.questionMediaManager = questionMediaManager;
+        this.waitingForDataRegistry = waitingForDataRegistry;
+        this.mediaUtils = mediaUtils;
+    }
+
+    @Override
+    public IAnswerData getAnswer() {
+        return binaryName == null ? null : new StringData(binaryName);
+    }
+
+    @Override
+    public void clearAnswer() {
+        deleteFile();
+        if (imageView != null) {
+            imageView.setImageDrawable(null);
+        }
+
+        errorTextView.setVisibility(View.GONE);
+        widgetValueChanged();
+    }
+
+    @Override
+    public void deleteFile() {
+        questionMediaManager.deleteAnswerFile(getFormEntryPrompt().getIndex().toString(),
+                        getInstanceFolder() + File.separator + binaryName);
+        binaryName = null;
+    }
+
+    @Override
+    public void setData(Object object) {
+        if (binaryName != null) {
+            deleteFile();
+        }
+
+        if (object instanceof File) {
+            File newImage = (File) object;
+            if (newImage.exists()) {
+                questionMediaManager.replaceAnswerFile(getFormEntryPrompt().getIndex().toString(), newImage.getAbsolutePath());
+                binaryName = newImage.getName();
+                addCurrentImageToLayout();
+                widgetValueChanged();
+            } else {
+                Timber.e("NO IMAGE EXISTS at: %s", newImage.getAbsolutePath());
+            }
+        } else {
+            Timber.e("ImageWidget's setBinaryData must receive a File object.");
+        }
+    }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        if (imageView != null) {
+            imageView.setOnLongClickListener(l);
+        }
+    }
+
+    @Override
+    public void cancelLongPress() {
+        super.cancelLongPress();
+        if (imageView != null) {
+            imageView.cancelLongPress();
+        }
+    }
+
+    protected void addCurrentImageToLayout() {
+        answerLayout.removeView(imageView);
+
+        if (binaryName != null) {
+            DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+            int screenWidth = metrics.widthPixels;
+            int screenHeight = metrics.heightPixels;
+
+            File f = getFile();
+            if (f.exists()) {
+                Bitmap bmp = FileUtils.getBitmapScaledToDisplay(f, screenHeight, screenWidth);
+                if (bmp == null) {
+                    errorTextView.setVisibility(View.VISIBLE);
+                } else {
+                    imageView = WidgetViewUtils.createAnswerImageView(getContext(), bmp);
+                    imageView.setOnClickListener(v -> {
+                        if (imageClickHandler != null) {
+                            imageClickHandler.clickImage("viewImage");
+                        }
+                    });
+
+                    answerLayout.addView(imageView);
+                }
+            }
+        }
+    }
+
+    protected void setUpLayout() {
+        errorTextView = new TextView(getContext());
+        errorTextView.setId(View.generateViewId());
+        errorTextView.setText(R.string.selected_invalid_image);
+
+        answerLayout = new LinearLayout(getContext());
+        answerLayout.setOrientation(LinearLayout.VERTICAL);
+
+        binaryName = getFormEntryPrompt().getAnswerText();
+    }
+
+    /**
+     * Enables a subclass to add extras to the intent before launching the draw activity.
+     *
+     * @param intent to add extras
+     * @return intent with added extras
+     */
+    public abstract Intent addExtrasToIntent(@NonNull Intent intent);
+
+    /**
+     * Interface for Clicking on Images
+     */
+    protected interface ImageClickHandler {
+        void clickImage(String context);
+    }
+
+    /**
+     * Class to implement launching of viewing an image Activity
+     */
+    protected class ViewImageClickHandler implements ImageClickHandler {
+
+        @Override
+        public void clickImage(String context) {
+            mediaUtils.openFile(getContext(), new File(getInstanceFolder() + File.separator + binaryName), "image/*");
+        }
+    }
+
+    /**
+     * Class to implement launching of drawing image Activity when clicked
+     */
+    protected class DrawImageClickHandler implements ImageClickHandler {
+
+        private final String drawOption;
+        private final int requestCode;
+        private final int stringResourceId;
+
+        public DrawImageClickHandler(String option, final int code, final int resourceId) {
+            drawOption = option;
+            requestCode = code;
+            stringResourceId = resourceId;
+        }
+
+        @Override
+        public void clickImage(String context) {
+            if (MultiClickGuard.allowClick(getClass().getName())) {
+                launchDrawActivity();
+            }
+        }
+
+        private void launchDrawActivity() {
+            errorTextView.setVisibility(View.GONE);
+            Intent i = new Intent(getContext(), DrawActivity.class);
+            i.putExtra(DrawActivity.OPTION, drawOption);
+            if (binaryName != null) {
+                i.putExtra(DrawActivity.REF_IMAGE, Uri.fromFile(getFile()));
+            }
+            i.putExtra(DrawActivity.EXTRA_OUTPUT, Uri.fromFile(new File(new StoragePathProvider().getTmpImageFilePath())));
+            i = addExtrasToIntent(i);
+            launchActivityForResult(i, requestCode, stringResourceId);
+        }
+    }
+
+    /**
+     * Interface for choosing or capturing a new image
+     */
+    protected interface ExternalImageCaptureHandler {
+        void captureImage(Intent intent, int requestCode, int stringResource);
+
+        void chooseImage(int stringResource);
+    }
+
+    /**
+     * Class for launching the image capture or choose image activities
+     */
+    protected class ImageCaptureHandler implements ExternalImageCaptureHandler {
+
+        @Override
+        public void captureImage(Intent intent, final int requestCode, int stringResource) {
+            launchActivityForResult(intent, requestCode, stringResource);
+        }
+
+        @Override
+        public void chooseImage(@IdRes final int stringResource) {
+            errorTextView.setVisibility(View.GONE);
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.setType("image/*");
+            launchActivityForResult(i, ApplicationConstants.RequestCodes.IMAGE_CHOOSER, stringResource);
+        }
+    }
+
+    /**
+     * Standard method for launching an Activity.
+     *
+     * @param intent - The Intent to start
+     * @param resourceCode - Code to return when Activity exits
+     * @param errorStringResource - String resource for error toast
+     */
+    protected void launchActivityForResult(Intent intent, final int resourceCode, final int errorStringResource) {
+        try {
+            waitingForDataRegistry.waitForData(getFormEntryPrompt().getIndex());
+            ((Activity) getContext()).startActivityForResult(intent, resourceCode);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(),
+                    getContext().getString(R.string.activity_not_found, getContext().getString(errorStringResource)),
+                    Toast.LENGTH_SHORT).show();
+            waitingForDataRegistry.cancelWaitingForData();
+        }
+    }
+
+    private File getFile() {
+        File file = new File(getInstanceFolder() + File.separator + binaryName);
+        if (!file.exists() && doesSupportDefaultValues()) {
+            file = new File(getDefaultFilePath());
+        }
+
+        return file;
+    }
+
+    private String getDefaultFilePath() {
+        try {
+            return referenceManager.deriveReference(binaryName).getLocalURI();
+        } catch (InvalidReferenceException e) {
+            Timber.w(e);
+        }
+
+        return "";
+    }
+
+    protected abstract boolean doesSupportDefaultValues();
+
+    @Nullable
+    public ImageView getImageView() {
+        return imageView;
+    }
+}

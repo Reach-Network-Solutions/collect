@@ -1,0 +1,199 @@
+package app.nexusforms.collect.android.instancemanagement;
+
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import app.nexusforms.android.forms.Form;
+import app.nexusforms.android.forms.FormsRepository;
+import app.nexusforms.android.instancemanagement.InstanceDeleter;
+import app.nexusforms.android.instances.Instance;
+import app.nexusforms.collect.android.support.FormUtils;
+import app.nexusforms.collect.android.support.InMemFormsRepository;
+import app.nexusforms.collect.android.support.InMemInstancesRepository;
+
+import app.nexusforms.collect.android.support.InstanceUtils;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static app.nexusforms.collect.android.support.InstanceUtils.buildInstance;
+
+public class InstanceDeleterTest {
+
+    private final FormsRepository formsRepository = new InMemFormsRepository();
+    private final InMemInstancesRepository instancesRepository = new InMemInstancesRepository();
+    private final InstanceDeleter instanceDeleter = new InstanceDeleter(instancesRepository, formsRepository);
+
+    @Test
+    public void whenFormForInstanceIsSoftDeleted_andThereIsAnotherInstance_doesNotDeleteForm() {
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .deleted(true)
+                .formFilePath(FormUtils.createXFormFile("1", "version").getAbsolutePath())
+                .build()
+        );
+
+        instancesRepository.save(InstanceUtils.buildInstance("1", "version").build());
+        instancesRepository.save(InstanceUtils.buildInstance("1", "version").build());
+
+        Long id = instancesRepository.getAll().get(0).getId();
+        instanceDeleter.delete(id);
+        assertThat(formsRepository.getAll().size(), is(1));
+    }
+
+    @Test
+    public void whenFormForInstanceIsSoftDeleted_andThereIsAnotherSoftDeletedInstance_deletesForm() {
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .deleted(true)
+                .formFilePath(FormUtils.createXFormFile("1", "version").getAbsolutePath())
+                .build()
+        );
+
+        instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .deletedDate(0L)
+                .jrVersion("version")
+                .build()
+        );
+
+        Instance instanceToDelete = instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .build()
+        );
+
+        instanceDeleter.delete(instanceToDelete.getId());
+        assertThat(formsRepository.getAll().size(), is(0));
+    }
+
+    @Test
+    public void whenFormForInstanceIsSoftDeleted_andThereAreNoOtherInstances_deletesForm() {
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .deleted(true)
+                .formFilePath(FormUtils.createXFormFile("1", "version").getAbsolutePath())
+                .build()
+        );
+
+        Instance instanceToDelete = instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .build()
+        );
+
+        instanceDeleter.delete(instanceToDelete.getId());
+        assertThat(formsRepository.getAll().isEmpty(), is(true));
+    }
+
+    @Test
+    public void whenFormForInstanceIsSoftDeleted_andThereAreNoOtherInstancesForThisVersion_deletesForm() {
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("1")
+                .deleted(true)
+                .formFilePath(FormUtils.createXFormFile("1", "1").getAbsolutePath())
+                .build()
+        );
+
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("2")
+                .formFilePath(FormUtils.createXFormFile("1", "2").getAbsolutePath())
+                .deleted(true)
+                .build()
+        );
+
+        Instance instanceToDelete = instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .jrVersion("1")
+                .build()
+        );
+
+        instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .jrVersion("2")
+                .build()
+        );
+
+        instanceDeleter.delete(instanceToDelete.getId());
+        assertThat(formsRepository.getAll().size(), is(1));
+        assertThat(formsRepository.getAll().get(0).getJrVersion(), is("2"));
+    }
+
+    @Test
+    public void whenFormForInstanceIsNotSoftDeleted_andThereAreNoOtherInstances_doesNotDeleteForm() {
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .deleted(false)
+                .formFilePath(FormUtils.createXFormFile("1", "version").getAbsolutePath())
+                .build()
+        );
+
+        Instance instanceToDelete = instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .jrVersion("version")
+                .build()
+        );
+
+        instanceDeleter.delete(instanceToDelete.getId());
+        assertThat(formsRepository.getAll().size(), is(1));
+    }
+
+    @Test
+    public void whenFormVersionForInstanceIsNotSoftDeleted_andThereAreNoOtherInstances_doesNotDeleteForm() {
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("1")
+                .deleted(true)
+                .formFilePath(FormUtils.createXFormFile("1", "1").getAbsolutePath())
+                .build()
+        );
+
+        formsRepository.save(new Form.Builder()
+                .jrFormId("1")
+                .jrVersion("2")
+                .deleted(false)
+                .formFilePath(FormUtils.createXFormFile("1", "2").getAbsolutePath())
+                .build()
+        );
+
+        Instance instanceToDelete = instancesRepository.save(new Instance.Builder()
+                .jrFormId("1")
+                .jrVersion("2")
+                .build()
+        );
+
+        instanceDeleter.delete(instanceToDelete.getId());
+        assertThat(formsRepository.getAll().size(), is(2));
+    }
+
+    @Test
+    public void whenInstanceIsSubmitted_softDeletesInstance() {
+        Instance instance = instancesRepository.save(InstanceUtils.buildInstance("1", "version")
+                .status(Instance.STATUS_SUBMITTED)
+                .build());
+
+        instanceDeleter.delete(instance.getId());
+        MatcherAssert.assertThat(instancesRepository.get(instance.getId()).getDeletedDate(), notNullValue());
+    }
+
+    @Test
+    public void whenInstanceIsSubmitted_clearsGeometryData() {
+        Instance instance = instancesRepository.save(InstanceUtils.buildInstance("1", "version")
+                .status(Instance.STATUS_SUBMITTED)
+                .geometryType("Point")
+                .geometry("{\"type\":\"Point\",\"coordinates\":[127.6, 11.1]}")
+                .build());
+
+        instanceDeleter.delete(instance.getId());
+
+        Instance deletedInstance = instancesRepository.get(instance.getId());
+        assertThat(deletedInstance.getGeometry(), nullValue());
+        assertThat(deletedInstance.getGeometryType(), nullValue());
+    }
+}
