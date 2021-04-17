@@ -36,7 +36,7 @@ import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.utilities.CompressionUtils;

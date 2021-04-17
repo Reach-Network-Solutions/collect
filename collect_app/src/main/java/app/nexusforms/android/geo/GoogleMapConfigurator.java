@@ -9,7 +9,7 @@ import androidx.preference.Preference;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.preferences.PrefUtils;
 import app.nexusforms.android.preferences.keys.GeneralKeys;

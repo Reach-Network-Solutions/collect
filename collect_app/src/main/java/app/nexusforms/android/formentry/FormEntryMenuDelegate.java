@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formentry.backgroundlocation.BackgroundLocationViewModel;
 import app.nexusforms.android.formentry.questions.AnswersProvider;

@@ -18,7 +18,7 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.osm.OSMTag;
 import org.javarosa.core.model.osm.OSMTagItem;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.formentry.questions.QuestionDetails;

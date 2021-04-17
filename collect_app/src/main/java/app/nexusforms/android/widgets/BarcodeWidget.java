@@ -25,7 +25,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.ScannerWithFlashlightActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
@@ -36,7 +36,7 @@ import app.nexusforms.android.utilities.ToastUtils;
 import app.nexusforms.android.widgets.interfaces.WidgetDataReceiver;
 import app.nexusforms.android.widgets.utilities.WaitingForDataRegistry;
 
-import org.odk.collect.android.databinding.BarcodeWidgetAnswerBinding;
+import app.nexusforms.android.databinding.BarcodeWidgetAnswerBinding;
 
 /**
  * Widget that allows user to scan barcodes and add them to the form.

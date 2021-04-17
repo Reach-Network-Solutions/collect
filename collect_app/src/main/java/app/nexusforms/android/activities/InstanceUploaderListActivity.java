@@ -34,7 +34,7 @@ import androidx.loader.content.Loader;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.backgroundwork.SchedulerFormUpdateAndSubmitManager;
 import app.nexusforms.android.preferences.keys.GeneralKeys;

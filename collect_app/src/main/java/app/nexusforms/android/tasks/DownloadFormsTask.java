@@ -16,7 +16,7 @@ package app.nexusforms.android.tasks;
 
 import android.os.AsyncTask;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.formmanagement.FormDownloadException;

@@ -32,7 +32,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.CollectAbstractActivity;
 import app.nexusforms.android.activities.FormEntryActivity;

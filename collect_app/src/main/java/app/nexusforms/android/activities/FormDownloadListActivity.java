@@ -33,7 +33,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.viewmodels.FormDownloadListViewModel;
 import app.nexusforms.android.application.Collect;

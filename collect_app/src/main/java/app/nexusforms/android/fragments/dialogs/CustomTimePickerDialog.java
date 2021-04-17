@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.widgets.utilities.DateTimeWidgetUtils;
 import app.nexusforms.android.widgets.viewmodels.DateTimeViewModel;
 

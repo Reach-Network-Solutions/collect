@@ -27,7 +27,7 @@ import android.widget.EditText;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.BearingActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
@@ -36,7 +36,7 @@ import app.nexusforms.android.utilities.ToastUtils;
 import app.nexusforms.android.widgets.interfaces.WidgetDataReceiver;
 import app.nexusforms.android.widgets.utilities.WaitingForDataRegistry;
 
-import org.odk.collect.android.databinding.BearingWidgetAnswerBinding;
+import app.nexusforms.android.databinding.BearingWidgetAnswerBinding;
 
 /**
  * BearingWidget is the widget that allows the user to get a compass heading.

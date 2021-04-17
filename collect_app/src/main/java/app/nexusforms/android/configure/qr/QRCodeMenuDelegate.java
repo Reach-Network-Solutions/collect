@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.preferences.source.SettingsProvider;
 
 import app.nexusforms.android.preferences.source.SettingsProvider;

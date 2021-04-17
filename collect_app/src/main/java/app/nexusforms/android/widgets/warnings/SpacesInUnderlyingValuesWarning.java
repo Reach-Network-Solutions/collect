@@ -7,7 +7,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 import org.javarosa.core.model.SelectChoice;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.utilities.UnderlyingValuesConcat;
 import app.nexusforms.android.widgets.QuestionWidget;

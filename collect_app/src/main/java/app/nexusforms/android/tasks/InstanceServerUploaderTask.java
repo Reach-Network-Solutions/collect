@@ -15,7 +15,7 @@
 package app.nexusforms.android.tasks;
 
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.util.HashMap;
 import java.util.List;

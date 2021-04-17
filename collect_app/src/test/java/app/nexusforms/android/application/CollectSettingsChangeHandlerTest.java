@@ -1,0 +1,60 @@
+package app.nexusforms.android.application;
+
+import org.junit.Test;
+
+import app.nexusforms.analytics.Analytics;
+import app.nexusforms.android.backgroundwork.FormUpdateManager;
+import app.nexusforms.android.configure.ServerRepository;
+import app.nexusforms.android.logic.PropertyManager;
+import app.nexusforms.android.preferences.keys.GeneralKeys;
+import app.nexusforms.android.preferences.source.SettingsProvider;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+
+public class CollectSettingsChangeHandlerTest {
+
+    private final PropertyManager propertyManager = mock(PropertyManager.class);
+    private final FormUpdateManager formUpdateManager = mock(FormUpdateManager.class);
+    private final ServerRepository serverRepository = mock(ServerRepository.class);
+
+    CollectSettingsChangeHandler handler = new CollectSettingsChangeHandler(propertyManager, formUpdateManager, serverRepository, mock(Analytics.class), mock(SettingsProvider.class));
+
+    @Test
+    public void updatesPropertyManager() {
+        handler.onSettingChanged("blah", "anything");
+        verify(propertyManager).reload();
+    }
+
+    @Test
+    public void doesNotDoAnythingElse() {
+        handler.onSettingChanged("blah", "anything");
+        verifyNoInteractions(formUpdateManager);
+        verifyNoInteractions(serverRepository);
+    }
+
+    @Test
+    public void whenChangedKeyIsFormUpdateMode_schedulesUpdates() {
+        handler.onSettingChanged(GeneralKeys.KEY_FORM_UPDATE_MODE, "anything");
+        verify(formUpdateManager).scheduleUpdates();
+    }
+
+    @Test
+    public void whenChangedKeyIsPeriodicUpdatesCheck_schedulesUpdates() {
+        handler.onSettingChanged(GeneralKeys.KEY_PERIODIC_FORM_UPDATES_CHECK, "anything");
+        verify(formUpdateManager).scheduleUpdates();
+    }
+
+    @Test
+    public void whenChangedKeyIsProtocol_schedulesUpdates() {
+        handler.onSettingChanged(GeneralKeys.KEY_PROTOCOL, "anything");
+        verify(formUpdateManager).scheduleUpdates();
+    }
+
+    @Test
+    public void whenChangedKeyIsServerURL_savesURLToServerRepository() {
+        handler.onSettingChanged(GeneralKeys.KEY_SERVER_URL, "http://newUrl");
+        verify(serverRepository).save("http://newUrl");
+    }
+}

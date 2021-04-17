@@ -21,7 +21,7 @@ import android.os.Bundle;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.activities.MainMenuActivity;
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.injection.DaggerUtils;

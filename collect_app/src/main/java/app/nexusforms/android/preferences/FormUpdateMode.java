@@ -2,7 +2,7 @@ package app.nexusforms.android.preferences;
 
 import android.content.Context;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public enum FormUpdateMode {
 

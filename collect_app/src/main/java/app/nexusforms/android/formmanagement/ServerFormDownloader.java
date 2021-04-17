@@ -2,7 +2,7 @@ package app.nexusforms.android.formmanagement;
 
 import org.jetbrains.annotations.NotNull;
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.forms.Form;
 import app.nexusforms.android.forms.FormSource;

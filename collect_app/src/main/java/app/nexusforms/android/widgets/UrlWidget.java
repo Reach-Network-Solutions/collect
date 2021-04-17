@@ -25,7 +25,7 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
 
-import org.odk.collect.android.databinding.UrlWidgetAnswerBinding;
+import app.nexusforms.android.databinding.UrlWidgetAnswerBinding;
 
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.ExternalWebPageHelper;

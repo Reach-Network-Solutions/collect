@@ -34,7 +34,7 @@ import android.widget.ListView;
 import com.google.common.collect.ImmutableList;
 import com.rarepebble.colorpicker.ColorPickerView;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.adapters.IconMenuListAdapter;
 import app.nexusforms.android.adapters.model.IconMenuItem;
 import app.nexusforms.android.utilities.AnimationUtils;

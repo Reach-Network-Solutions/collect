@@ -20,8 +20,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
-
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 /**
  * @author ctsims

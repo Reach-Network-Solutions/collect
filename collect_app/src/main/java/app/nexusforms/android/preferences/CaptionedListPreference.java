@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.util.List;
 import java.util.Objects;

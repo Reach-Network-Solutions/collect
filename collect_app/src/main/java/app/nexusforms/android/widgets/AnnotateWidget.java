@@ -24,8 +24,8 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 
-import org.odk.collect.android.BuildConfig;
-import org.odk.collect.android.R;
+import app.nexusforms.android.BuildConfig;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.DrawActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;

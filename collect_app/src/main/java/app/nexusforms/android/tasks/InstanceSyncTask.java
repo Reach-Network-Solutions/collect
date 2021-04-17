@@ -18,7 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.apache.commons.io.FileUtils;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.application.Collect;

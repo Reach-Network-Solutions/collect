@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import androidx.preference.PreferenceFragmentCompat;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.preferences.screens.ServerPreferencesFragment;
 

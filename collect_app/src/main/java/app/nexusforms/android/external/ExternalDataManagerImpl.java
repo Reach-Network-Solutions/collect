@@ -18,7 +18,7 @@
 
 package app.nexusforms.android.external;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.exception.ExternalDataException;

@@ -31,7 +31,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.adapters.SortDialogAdapter;
 import app.nexusforms.android.listeners.RecyclerViewClickListener;
 import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns;

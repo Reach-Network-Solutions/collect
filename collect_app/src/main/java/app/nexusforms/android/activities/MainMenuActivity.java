@@ -29,7 +29,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.viewmodels.MainMenuViewModel;
 import app.nexusforms.android.application.Collect;

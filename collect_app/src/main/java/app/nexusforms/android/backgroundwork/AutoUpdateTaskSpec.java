@@ -21,7 +21,7 @@ import android.content.Context;
 import androidx.work.WorkerParameters;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formmanagement.FormDownloadException;
 import app.nexusforms.android.formmanagement.FormDownloader;

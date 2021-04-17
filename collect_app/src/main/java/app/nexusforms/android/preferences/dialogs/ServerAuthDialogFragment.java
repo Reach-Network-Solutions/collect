@@ -10,8 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.ServerAuthDialogBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.ServerAuthDialogBinding;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.preferences.keys.GeneralKeys;
 import app.nexusforms.android.preferences.source.Settings;

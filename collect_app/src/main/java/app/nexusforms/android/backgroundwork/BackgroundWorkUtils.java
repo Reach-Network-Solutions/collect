@@ -2,7 +2,7 @@ package app.nexusforms.android.backgroundwork;
 
 import android.content.Context;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.utilities.TranslationHandler;
 
 public class BackgroundWorkUtils {

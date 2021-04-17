@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 /**
  * Custom Scannner Activity extending from Activity to display a custom layout form scanner view.

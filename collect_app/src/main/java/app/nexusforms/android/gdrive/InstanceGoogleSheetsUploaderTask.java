@@ -15,7 +15,7 @@
 package app.nexusforms.android.gdrive;
 
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.application.Collect;

@@ -25,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import timber.log.Timber;
 

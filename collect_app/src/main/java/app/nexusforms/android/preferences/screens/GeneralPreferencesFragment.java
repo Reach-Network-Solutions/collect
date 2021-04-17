@@ -24,7 +24,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.preferences.keys.AdminKeys;
 import app.nexusforms.android.utilities.MultiClickGuard;

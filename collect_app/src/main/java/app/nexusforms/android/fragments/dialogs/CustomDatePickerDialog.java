@@ -28,7 +28,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import org.joda.time.LocalDateTime;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.utilities.DateTimeUtils;
 import app.nexusforms.android.logic.DatePickerDetails;

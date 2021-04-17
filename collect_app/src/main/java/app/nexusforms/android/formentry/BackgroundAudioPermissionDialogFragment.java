@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.listeners.PermissionListener;

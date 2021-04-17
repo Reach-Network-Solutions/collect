@@ -26,7 +26,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.analytics.Analytics;
 
 import app.nexusforms.android.permissions.PermissionsProvider;

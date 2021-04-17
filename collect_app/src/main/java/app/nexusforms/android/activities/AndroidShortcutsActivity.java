@@ -22,7 +22,7 @@ import android.os.Parcelable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.forms.Form;
 import app.nexusforms.android.forms.FormsRepository;
 import app.nexusforms.android.injection.DaggerUtils;

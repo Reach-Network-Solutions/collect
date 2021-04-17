@@ -6,7 +6,7 @@ import androidx.preference.Preference;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.preferences.screens.UserInterfacePreferencesFragment;
 

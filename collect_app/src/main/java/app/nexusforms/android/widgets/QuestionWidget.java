@@ -29,7 +29,7 @@ import androidx.annotation.Nullable;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.FormEntryActivity;
 import app.nexusforms.android.analytics.AnalyticsEvents;

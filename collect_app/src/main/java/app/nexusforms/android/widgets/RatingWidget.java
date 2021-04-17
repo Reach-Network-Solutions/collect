@@ -26,7 +26,7 @@ import org.javarosa.core.model.RangeQuestion;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.databinding.RatingWidgetAnswerBinding;
+import app.nexusforms.android.databinding.RatingWidgetAnswerBinding;
 
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.ScreenUtils;

@@ -6,7 +6,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.formentry.FormEntryViewModel;

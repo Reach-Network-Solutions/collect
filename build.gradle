@@ -54,17 +54,17 @@ task checkTests(type: GradleBuild) {
 
 task checkFeature(type: GradleBuild) {
     tasks = ["connectedDebugAndroidTest"]
-    startParameter.projectProperties = ["android.testInstrumentationRunnerArguments.package": "org.odk.collect.android.feature"]
+    startParameter.projectProperties = ["android.testInstrumentationRunnerArguments.package": "app.nexusforms.android.feature"]
 }
 
 task checkRegression(type: GradleBuild) {
     tasks = ["connectedDebugAndroidTest"]
-    startParameter.projectProperties = ["android.testInstrumentationRunnerArguments.package": "org.odk.collect.android.regression"]
+    startParameter.projectProperties = ["android.testInstrumentationRunnerArguments.package": "app.nexusforms.android.regression"]
 }
 
 task checkInstrumented(type: GradleBuild) {
     tasks = ["connectedDebugAndroidTest"]
-    startParameter.projectProperties = ["android.testInstrumentationRunnerArguments.package": "org.odk.collect.android.instrumented"]
+    startParameter.projectProperties = ["android.testInstrumentationRunnerArguments.package": "app.nexusforms.android.instrumented"]
 }
 
 ext {

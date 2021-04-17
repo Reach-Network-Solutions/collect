@@ -9,7 +9,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formmanagement.FormSourceExceptionMapper;
 import app.nexusforms.android.formmanagement.ServerFormDetails;

@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.analytics.Analytics;
 
 import app.nexusforms.android.fragments.dialogs.ProgressDialogFragment;

@@ -18,7 +18,8 @@ import app.nexusforms.android.preferences.screens.GeneralPreferencesActivity
 import app.nexusforms.android.utilities.AdminPasswordProvider
 import app.nexusforms.android.utilities.DialogUtils
 import com.google.android.material.button.MaterialButton
-import org.odk.collect.android.R
+import app.nexusforms.android.R
+
 import javax.inject.Inject
 
 class ProjectSettingsDialog : DialogFragment() {

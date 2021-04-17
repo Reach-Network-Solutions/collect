@@ -32,8 +32,8 @@ import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.helper.Selection;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.SelectImageMapWidgetAnswerBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.SelectImageMapWidgetAnswerBinding;
 
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.StringUtils;

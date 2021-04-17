@@ -23,7 +23,9 @@ import androidx.annotation.Nullable;
 import androidx.multidex.MultiDex;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.BuildConfig;
+
+import app.nexusforms.android.BuildConfig;
+
 
 import app.nexusforms.android.injection.config.DaggerAppDependencyComponent;
 import app.nexusforms.android.javarosawrapper.FormController;

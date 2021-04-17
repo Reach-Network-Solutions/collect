@@ -39,7 +39,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.LocationListener;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.location.client.GoogleFusedLocationClient;

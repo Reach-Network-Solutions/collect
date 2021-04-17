@@ -14,7 +14,8 @@ import org.javarosa.core.util.JavaRosaCoreModule;
 import org.javarosa.model.xform.XFormsModule;
 import org.javarosa.xform.parse.XFormParser;
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.BuildConfig;
+//import org.odk.collect.android.BuildConfig;
+import app.nexusforms.android.BuildConfig;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.preferences.FormUpdateMode;

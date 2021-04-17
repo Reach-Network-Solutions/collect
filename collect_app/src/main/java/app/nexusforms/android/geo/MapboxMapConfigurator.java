@@ -7,7 +7,7 @@ import androidx.preference.Preference;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.io.File;
 import java.util.Collections;

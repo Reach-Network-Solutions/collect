@@ -18,7 +18,7 @@ package app.nexusforms.android.utilities;
 
 import android.content.Context;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.instances.Instance;

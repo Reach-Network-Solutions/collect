@@ -19,8 +19,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import org.odk.collect.android.BuildConfig;
-import org.odk.collect.android.R;
+import app.nexusforms.android.BuildConfig;
+import app.nexusforms.android.R;
 import app.nexusforms.android.dao.helpers.ContentResolverHelper;
 
 import java.io.File;

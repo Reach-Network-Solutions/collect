@@ -23,7 +23,7 @@ import android.graphics.Matrix;
 import androidx.exifinterface.media.ExifInterface;
 
 import org.javarosa.core.model.instance.TreeElement;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.widgets.QuestionWidget;
 
 import java.io.IOException;

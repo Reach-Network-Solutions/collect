@@ -13,12 +13,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.javarosa.core.model.data.helper.Selection;
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.fragments.viewmodels.SelectMinimalViewModel;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.adapters.AbstractSelectListAdapter;
-import org.odk.collect.android.databinding.SelectMinimalDialogLayoutBinding;
+import app.nexusforms.android.databinding.SelectMinimalDialogLayoutBinding;
 import app.nexusforms.android.formentry.media.AudioHelperFactory;
 import app.nexusforms.material.MaterialFullScreenDialogFragment;
 

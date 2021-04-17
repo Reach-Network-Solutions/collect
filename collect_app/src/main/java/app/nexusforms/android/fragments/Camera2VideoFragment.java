@@ -46,7 +46,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.fragments.dialogs.ErrorDialog;
 import app.nexusforms.android.utilities.MultiClickGuard;

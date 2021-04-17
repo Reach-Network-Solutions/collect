@@ -27,7 +27,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.CollectAbstractActivity;
 import app.nexusforms.android.injection.DaggerUtils;

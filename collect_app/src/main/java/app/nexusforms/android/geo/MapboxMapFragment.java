@@ -51,8 +51,8 @@ import com.mapbox.mapboxsdk.style.sources.TileSet;
 import com.mapbox.mapboxsdk.style.sources.VectorSource;
 import com.mapbox.mapboxsdk.utils.ColorUtils;
 
-import org.odk.collect.android.BuildConfig;
-import org.odk.collect.android.R;
+import app.nexusforms.android.BuildConfig;
+import app.nexusforms.android.R;
 
 import java.io.File;
 import java.io.IOException;

@@ -13,7 +13,7 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.utilities.AdminPasswordProvider;
 

@@ -22,7 +22,7 @@ import android.content.Intent;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.external.ExternalAppsUtils;
 import app.nexusforms.android.formentry.questions.QuestionDetails;

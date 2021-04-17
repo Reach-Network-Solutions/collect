@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.network.NetworkStateProvider;
 import app.nexusforms.android.utilities.MenuDelegate;
 

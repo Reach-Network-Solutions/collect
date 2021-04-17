@@ -18,7 +18,7 @@ package app.nexusforms.android.activities;
 
 import android.os.Bundle;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.utilities.ToastUtils;
 
 /**

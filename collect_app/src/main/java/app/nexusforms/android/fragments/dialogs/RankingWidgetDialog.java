@@ -37,8 +37,8 @@ import android.widget.TextView;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
-import org.odk.collect.android.R.string;
+import app.nexusforms.android.R;
+import app.nexusforms.android.R.string;
 
 import app.nexusforms.android.fragments.viewmodels.RankingViewModel;
 import app.nexusforms.android.utilities.QuestionFontSizeUtils;

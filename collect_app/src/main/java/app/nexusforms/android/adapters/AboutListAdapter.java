@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class AboutListAdapter extends RecyclerView.Adapter<AboutListAdapter.ViewHolder> {
 

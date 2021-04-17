@@ -16,7 +16,7 @@ import androidx.annotation.IdRes;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.utilities.MultiClickGuard;
 import app.nexusforms.android.utilities.ThemeUtils;

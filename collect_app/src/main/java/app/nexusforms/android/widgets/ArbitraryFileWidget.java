@@ -25,7 +25,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.databinding.ArbitraryFileWidgetAnswerBinding;
+import app.nexusforms.android.databinding.ArbitraryFileWidgetAnswerBinding;
 
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.ApplicationConstants;

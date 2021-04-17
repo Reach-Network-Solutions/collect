@@ -21,7 +21,7 @@ import android.util.AttributeSet;
 
 import androidx.preference.DialogPreference;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class ResetDialogPreference extends DialogPreference {
 

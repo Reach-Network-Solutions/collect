@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.formentry.BackgroundAudioViewModel;
@@ -22,7 +22,7 @@ import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.utilities.DialogUtils;
 import app.nexusforms.android.utilities.TranslationHandler;
 
-import org.odk.collect.android.databinding.AudioRecordingControllerFragmentBinding;
+import app.nexusforms.android.databinding.AudioRecordingControllerFragmentBinding;
 import app.nexusforms.audiorecorder.recording.AudioRecorder;
 import app.nexusforms.audiorecorder.recording.RecordingSession;
 import app.nexusforms.shared.data.Consumable;

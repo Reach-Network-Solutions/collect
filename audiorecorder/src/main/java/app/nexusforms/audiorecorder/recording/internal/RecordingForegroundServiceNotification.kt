@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import app.nexusforms.audiorecorder.recording.RecordingSession
 import app.nexusforms.strings.format.formatLength
 import app.nexusforms.strings.getLocalizedString
-import org.odk.collect.audiorecorder.R
+import app.nexusforms.audiorecorder.R
 
 internal class RecordingForegroundServiceNotification(private val service: Service, private val recordingRepository: RecordingRepository) {
 

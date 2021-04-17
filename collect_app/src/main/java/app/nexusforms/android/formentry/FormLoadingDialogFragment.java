@@ -18,7 +18,7 @@ package app.nexusforms.android.formentry;
 
 import android.content.Context;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formentry.saving.SaveFormProgressDialogFragment;
 import app.nexusforms.android.fragments.dialogs.ProgressDialogFragment;

@@ -18,7 +18,7 @@ package app.nexusforms.android.fragments.dialogs;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.chrono.IslamicChronology;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.utilities.DateTimeUtils;
 

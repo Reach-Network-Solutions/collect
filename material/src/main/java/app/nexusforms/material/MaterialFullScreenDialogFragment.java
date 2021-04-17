@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
-import org.odk.collect.material.R;
+import app.nexusforms.material.R;
 
 /**
  * Provides an implementation of Material's "Full Screen Dialog"

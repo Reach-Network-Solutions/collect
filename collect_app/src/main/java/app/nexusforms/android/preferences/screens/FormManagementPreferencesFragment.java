@@ -24,7 +24,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.analytics.Analytics;
 
 import app.nexusforms.android.backgroundwork.FormUpdateManager;

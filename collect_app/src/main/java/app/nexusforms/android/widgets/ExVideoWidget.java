@@ -10,7 +10,7 @@ import android.view.View;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
@@ -24,7 +24,7 @@ import app.nexusforms.android.widgets.interfaces.FileWidget;
 import app.nexusforms.android.widgets.interfaces.WidgetDataReceiver;
 import app.nexusforms.android.widgets.utilities.WaitingForDataRegistry;
 import app.nexusforms.android.dao.helpers.ContentResolverHelper;
-import org.odk.collect.android.databinding.ExVideoWidgetAnswerBinding;
+import app.nexusforms.android.databinding.ExVideoWidgetAnswerBinding;
 
 import java.io.File;
 

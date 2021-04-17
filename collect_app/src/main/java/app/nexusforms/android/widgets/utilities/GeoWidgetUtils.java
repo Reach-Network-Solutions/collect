@@ -4,7 +4,7 @@ import android.content.Context;
 import android.location.Location;
 
 import org.javarosa.core.model.QuestionDef;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.text.DecimalFormat;
 

@@ -20,7 +20,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.activities.CollectAbstractActivity;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.listeners.OnBackPressedListener;

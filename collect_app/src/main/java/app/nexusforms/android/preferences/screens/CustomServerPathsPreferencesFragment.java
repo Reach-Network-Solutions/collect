@@ -2,7 +2,7 @@ package app.nexusforms.android.preferences.screens;
 
 import android.os.Bundle;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class CustomServerPathsPreferencesFragment extends BaseGeneralPreferencesFragment {
 

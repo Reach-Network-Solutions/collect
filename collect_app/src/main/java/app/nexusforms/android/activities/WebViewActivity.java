@@ -24,7 +24,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.utilities.ExternalWebPageHelper;
 
 public class WebViewActivity extends CollectAbstractActivity {

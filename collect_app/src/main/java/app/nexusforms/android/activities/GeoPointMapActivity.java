@@ -26,7 +26,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.preferences.screens.MapsPreferencesFragment;
 import app.nexusforms.android.geo.MapFragment;

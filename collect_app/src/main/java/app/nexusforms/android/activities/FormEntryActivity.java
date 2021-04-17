@@ -75,8 +75,9 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
 
+
+import app.nexusforms.android.R;
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.backgroundwork.FormSubmitManager;
 import app.nexusforms.android.javarosawrapper.FormController;

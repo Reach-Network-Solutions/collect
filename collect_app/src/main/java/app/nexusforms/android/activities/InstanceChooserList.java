@@ -30,7 +30,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import android.widget.Toast;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.adapters.InstanceListCursorAdapter;
 import app.nexusforms.android.dao.CursorLoaderFactory;
 import app.nexusforms.android.injection.DaggerUtils;

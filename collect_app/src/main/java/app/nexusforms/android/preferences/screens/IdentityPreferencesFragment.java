@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.CheckBoxPreference;
 
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import javax.inject.Inject;
 

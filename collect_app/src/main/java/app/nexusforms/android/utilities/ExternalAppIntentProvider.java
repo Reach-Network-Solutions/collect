@@ -7,7 +7,7 @@ import android.net.Uri;
 
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.xpath.parser.XPathSyntaxException;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.exception.ExternalParamsException;
 import app.nexusforms.android.external.ExternalAppsUtils;
 

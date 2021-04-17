@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.nexusforms.android.listeners.WidgetValueChangedListener
 import app.nexusforms.android.widgets.QuestionWidget
 import org.javarosa.core.model.FormIndex
-import org.odk.collect.android.R
+import app.nexusforms.android.R
 
 
 private const val TAG = "QuestionAdapterTag"

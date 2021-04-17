@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.Preference;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.configure.qr.QRCodeTabsActivity;
 import app.nexusforms.android.fragments.dialogs.MovingBackwardsDialog;
 import app.nexusforms.android.fragments.dialogs.SimpleDialog;

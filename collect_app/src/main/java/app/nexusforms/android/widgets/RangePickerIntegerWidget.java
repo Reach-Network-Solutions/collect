@@ -9,13 +9,13 @@ import org.javarosa.core.model.RangeQuestion;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.FormEntryActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.widgets.utilities.RangeWidgetUtils;
 
-import org.odk.collect.android.databinding.RangePickerWidgetAnswerBinding;
+import app.nexusforms.android.databinding.RangePickerWidgetAnswerBinding;
 
 import java.math.BigDecimal;
 

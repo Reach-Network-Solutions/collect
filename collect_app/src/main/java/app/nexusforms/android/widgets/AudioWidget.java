@@ -26,7 +26,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
@@ -39,7 +39,7 @@ import app.nexusforms.android.widgets.utilities.AudioPlayer;
 import app.nexusforms.android.widgets.utilities.RecordingRequester;
 import app.nexusforms.android.widgets.utilities.RecordingStatusHandler;
 import app.nexusforms.android.audio.AudioControllerView;
-import org.odk.collect.android.databinding.AudioWidgetAnswerBinding;
+import app.nexusforms.android.databinding.AudioWidgetAnswerBinding;
 import app.nexusforms.audioclips.Clip;
 
 import java.io.File;

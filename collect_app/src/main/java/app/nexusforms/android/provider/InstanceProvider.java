@@ -28,7 +28,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.instances.Instance;

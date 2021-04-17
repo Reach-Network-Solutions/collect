@@ -18,7 +18,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

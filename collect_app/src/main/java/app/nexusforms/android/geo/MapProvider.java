@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.maps.GoogleMap;
 import com.mapbox.mapboxsdk.maps.Style;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.preferences.PrefUtils;
 import app.nexusforms.android.preferences.keys.GeneralKeys;

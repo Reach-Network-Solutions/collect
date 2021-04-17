@@ -23,7 +23,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.util.Locale;
 

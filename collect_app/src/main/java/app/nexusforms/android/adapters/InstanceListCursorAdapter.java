@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.database.DatabaseFormsRepository;
 import app.nexusforms.android.instances.Instance;

@@ -18,7 +18,7 @@ package app.nexusforms.android.utilities;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import java.util.HashMap;
 

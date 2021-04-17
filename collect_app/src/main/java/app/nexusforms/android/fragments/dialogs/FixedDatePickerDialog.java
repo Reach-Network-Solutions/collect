@@ -21,7 +21,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.joda.time.LocalDateTime;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.utilities.ThemeUtils;
 import app.nexusforms.android.logic.DatePickerDetails;

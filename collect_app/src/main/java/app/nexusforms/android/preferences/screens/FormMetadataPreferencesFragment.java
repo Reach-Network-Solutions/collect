@@ -10,7 +10,7 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.listeners.PermissionListener;
 import app.nexusforms.android.logic.PropertyManager;

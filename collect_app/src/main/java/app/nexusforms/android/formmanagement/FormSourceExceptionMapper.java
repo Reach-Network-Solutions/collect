@@ -2,7 +2,7 @@ package app.nexusforms.android.formmanagement;
 
 import android.content.Context;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.forms.FormSourceException;
 
 import static app.nexusforms.android.forms.FormSourceException.ParseError;

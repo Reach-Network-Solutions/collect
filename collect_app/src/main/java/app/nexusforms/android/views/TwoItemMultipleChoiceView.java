@@ -20,7 +20,7 @@ import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.RelativeLayout;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class TwoItemMultipleChoiceView extends RelativeLayout implements Checkable {
 

@@ -33,7 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.chip.Chip;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.viewmodels.FormMapViewModel;
 import app.nexusforms.android.preferences.keys.AdminKeys;

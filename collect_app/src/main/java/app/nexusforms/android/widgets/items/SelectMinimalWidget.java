@@ -5,8 +5,8 @@ import android.content.Context;
 import android.view.View;
 
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.SelectMinimalWidgetAnswerBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.SelectMinimalWidgetAnswerBinding;
 
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.QuestionFontSizeUtils;

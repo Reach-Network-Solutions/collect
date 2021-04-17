@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.common.collect.ImmutableList;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formentry.saving.FormSaveViewModel;
 import app.nexusforms.android.injection.DaggerUtils;

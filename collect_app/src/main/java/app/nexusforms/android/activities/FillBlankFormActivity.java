@@ -30,7 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formmanagement.BlankFormListMenuDelegate;
 import app.nexusforms.android.formmanagement.BlankFormsListViewModel;

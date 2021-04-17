@@ -22,7 +22,7 @@ import app.nexusforms.android.utilities.Appearances;
 import app.nexusforms.android.widgets.interfaces.MultiChoiceWidget;
 import app.nexusforms.android.widgets.utilities.SearchQueryViewModel;
 
-import org.odk.collect.android.databinding.SelectListWidgetAnswerBinding;
+import app.nexusforms.android.databinding.SelectListWidgetAnswerBinding;
 
 import static app.nexusforms.android.formentry.media.FormMediaUtils.getPlayableAudioURI;
 

@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import com.visualizer.amplitude.AudioRecordView;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.WaveformLayoutBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.WaveformLayoutBinding;
 
 import java.util.Random;
 

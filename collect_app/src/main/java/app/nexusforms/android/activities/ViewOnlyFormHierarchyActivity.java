@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.Button;
 
 import org.javarosa.core.model.FormIndex;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.javarosawrapper.FormController;
 

@@ -10,7 +10,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
@@ -22,7 +22,7 @@ import app.nexusforms.android.utilities.QuestionMediaManager;
 import app.nexusforms.android.utilities.ToastUtils;
 import app.nexusforms.android.widgets.utilities.WaitingForDataRegistry;
 
-import org.odk.collect.android.databinding.ExArbitraryFileWidgetAnswerBinding;
+import app.nexusforms.android.databinding.ExArbitraryFileWidgetAnswerBinding;
 
 import timber.log.Timber;
 

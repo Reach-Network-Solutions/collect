@@ -5,7 +5,7 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.database.DatabaseFormsRepository;
 import app.nexusforms.android.database.DatabaseInstancesRepository;

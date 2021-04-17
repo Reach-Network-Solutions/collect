@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.preferences.keys.MetaKeys;

@@ -18,8 +18,8 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.drive.DriveScopes;
 
 import org.javarosa.core.reference.ReferenceManager;
-import org.odk.collect.android.BuildConfig;
-import org.odk.collect.android.R;
+import app.nexusforms.android.BuildConfig;
+import app.nexusforms.android.R;
 
 import app.nexusforms.analytics.Analytics;
 import app.nexusforms.analytics.BlockableFirebaseAnalytics;

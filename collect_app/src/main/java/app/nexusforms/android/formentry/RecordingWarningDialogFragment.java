@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class RecordingWarningDialogFragment extends DialogFragment {
 

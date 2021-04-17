@@ -13,7 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.application.Collect;
@@ -30,7 +30,7 @@ import app.nexusforms.android.widgets.utilities.AudioPlayer;
 import app.nexusforms.android.widgets.utilities.WaitingForDataRegistry;
 import app.nexusforms.android.audio.AudioControllerView;
 import app.nexusforms.android.dao.helpers.ContentResolverHelper;
-import org.odk.collect.android.databinding.ExAudioWidgetAnswerBinding;
+import app.nexusforms.android.databinding.ExAudioWidgetAnswerBinding;
 import app.nexusforms.audioclips.Clip;
 
 import java.io.File;

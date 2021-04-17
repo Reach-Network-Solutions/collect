@@ -20,7 +20,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.forms.FormsRepository;
 import app.nexusforms.android.fragments.dialogs.SimpleDialog;
 import app.nexusforms.android.injection.DaggerUtils;

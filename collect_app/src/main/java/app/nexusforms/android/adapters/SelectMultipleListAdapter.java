@@ -30,7 +30,7 @@ import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.helper.Selection;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.formentry.questions.AudioVideoImageTextLabel;
 import app.nexusforms.android.formentry.questions.NoButtonsItem;

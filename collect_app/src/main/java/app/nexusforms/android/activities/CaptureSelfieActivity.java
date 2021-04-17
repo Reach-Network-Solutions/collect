@@ -20,7 +20,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.fragments.Camera2Fragment;
 import app.nexusforms.android.utilities.ToastUtils;
 

@@ -24,7 +24,7 @@ import androidx.work.WorkerParameters;
 
 import org.jetbrains.annotations.NotNull;
 import app.nexusforms.analytics.Analytics;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.instancemanagement.InstanceSubmitter;
 import app.nexusforms.android.instancemanagement.SubmitException;

@@ -2,7 +2,7 @@ package app.nexusforms.android.geo;
 
 import com.mapbox.mapboxsdk.Mapbox;
 
-import org.odk.collect.android.BuildConfig;
+import app.nexusforms.android.BuildConfig;
 
 import app.nexusforms.android.application.Collect;
 

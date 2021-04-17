@@ -39,7 +39,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.services.drive.Drive;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.FormListActivity;
 import app.nexusforms.android.adapters.FileArrayAdapter;

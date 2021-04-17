@@ -13,7 +13,7 @@ import org.joda.time.chrono.CopticChronology;
 import org.joda.time.chrono.EthiopicChronology;
 import org.joda.time.chrono.IslamicChronology;
 import org.joda.time.chrono.PersianChronologyKhayyamBorkowski;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.fragments.dialogs.BikramSambatDatePickerDialog;

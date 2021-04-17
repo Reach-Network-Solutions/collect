@@ -28,7 +28,7 @@ import androidx.appcompat.widget.AppCompatCheckedTextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.preferences.keys.AdminKeys;

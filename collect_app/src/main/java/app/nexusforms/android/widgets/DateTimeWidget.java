@@ -26,8 +26,8 @@ import org.javarosa.core.model.data.TimeData;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.DateTimeWidgetAnswerBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.DateTimeWidgetAnswerBinding;
 
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.DateTimeUtils;

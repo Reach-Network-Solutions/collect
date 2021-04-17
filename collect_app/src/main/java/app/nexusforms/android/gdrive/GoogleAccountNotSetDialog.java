@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import androidx.appcompat.app.AlertDialog;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.utilities.DialogUtils;
 

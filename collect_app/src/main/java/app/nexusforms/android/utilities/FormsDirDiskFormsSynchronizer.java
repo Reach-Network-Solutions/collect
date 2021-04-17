@@ -3,7 +3,7 @@ package app.nexusforms.android.utilities;
 import android.database.SQLException;
 
 import org.javarosa.core.reference.ReferenceManager;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.formmanagement.DiskFormsSynchronizer;

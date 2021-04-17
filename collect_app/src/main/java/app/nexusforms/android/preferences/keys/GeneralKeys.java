@@ -3,7 +3,7 @@ package app.nexusforms.android.preferences.keys;
 import com.google.android.gms.maps.GoogleMap;
 import com.mapbox.mapboxsdk.maps.Style;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.utilities.QuestionFontSizeUtils;
 

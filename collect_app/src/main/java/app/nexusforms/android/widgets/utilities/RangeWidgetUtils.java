@@ -13,10 +13,10 @@ import com.google.android.material.slider.Slider;
 
 import org.javarosa.core.model.RangeQuestion;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.RangePickerWidgetAnswerBinding;
-import org.odk.collect.android.databinding.RangeWidgetHorizontalBinding;
-import org.odk.collect.android.databinding.RangeWidgetVerticalBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.RangePickerWidgetAnswerBinding;
+import app.nexusforms.android.databinding.RangeWidgetHorizontalBinding;
+import app.nexusforms.android.databinding.RangeWidgetVerticalBinding;
 
 import app.nexusforms.android.fragments.dialogs.NumberPickerDialog;
 import app.nexusforms.android.utilities.ToastUtils;

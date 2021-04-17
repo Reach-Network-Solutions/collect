@@ -23,7 +23,7 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class MovingBackwardsDialog extends DialogFragment {
 

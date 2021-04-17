@@ -1,6 +1,6 @@
 package app.nexusforms.android.utilities;
 
-import org.odk.collect.android.BuildConfig;
+import app.nexusforms.android.BuildConfig;
 import app.nexusforms.utilities.UserAgentProvider;
 
 public final class AndroidUserAgent implements UserAgentProvider {

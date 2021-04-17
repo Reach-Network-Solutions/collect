@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.location.LocationListener;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.location.client.LocationClient;
 import app.nexusforms.android.formentry.audit.AuditConfig;
 import app.nexusforms.android.formentry.audit.AuditEvent;

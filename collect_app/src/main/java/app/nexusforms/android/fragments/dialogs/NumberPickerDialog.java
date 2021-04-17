@@ -26,7 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 public class NumberPickerDialog extends DialogFragment {
 

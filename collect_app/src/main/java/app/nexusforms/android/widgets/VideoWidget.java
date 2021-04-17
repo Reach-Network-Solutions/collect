@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.CaptureSelfieVideoActivity;
 import app.nexusforms.android.analytics.AnalyticsEvents;

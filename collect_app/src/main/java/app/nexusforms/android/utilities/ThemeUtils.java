@@ -22,7 +22,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StyleRes;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.preferences.keys.GeneralKeys;
 import app.nexusforms.android.preferences.source.SettingsProvider;

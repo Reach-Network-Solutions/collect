@@ -39,8 +39,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 
 import org.jetbrains.annotations.NotNull;
-import org.odk.collect.android.BuildConfig;
-import org.odk.collect.android.R;
+import app.nexusforms.android.BuildConfig;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.listeners.SelectItemClickListener;
 import app.nexusforms.android.utilities.ContentUriProvider;

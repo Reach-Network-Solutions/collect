@@ -19,7 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.DrawActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;

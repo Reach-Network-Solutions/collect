@@ -21,7 +21,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.permissions.PermissionsProvider;
 import app.nexusforms.android.preferences.source.SettingsProvider;

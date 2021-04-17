@@ -5,7 +5,7 @@ import android.content.Context;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.BarcodeResult;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.ActivityUtils;
 import app.nexusforms.android.activities.MainMenuActivity;

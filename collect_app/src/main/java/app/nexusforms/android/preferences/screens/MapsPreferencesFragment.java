@@ -24,7 +24,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.geo.MapConfigurator;
 import app.nexusforms.android.geo.MapProvider;
 import app.nexusforms.android.preferences.CaptionedListPreference;

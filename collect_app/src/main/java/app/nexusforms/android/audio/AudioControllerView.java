@@ -26,8 +26,8 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.odk.collect.android.R;
-import org.odk.collect.android.databinding.AudioControllerLayoutBinding;
+import app.nexusforms.android.R;
+import app.nexusforms.android.databinding.AudioControllerLayoutBinding;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
