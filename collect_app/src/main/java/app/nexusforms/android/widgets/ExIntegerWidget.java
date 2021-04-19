@@ -44,7 +44,7 @@ public class ExIntegerWidget extends ExStringWidget {
 
     public ExIntegerWidget(Context context, QuestionDetails questionDetails, WaitingForDataRegistry waitingForDataRegistry) {
         super(context, questionDetails, waitingForDataRegistry);
-        StringWidgetUtils.adjustEditTextAnswerToIntegerWidget(answerText, questionDetails.getPrompt());
+        StringWidgetUtils.adjustEditTextAnswerToIntegerWidget(answerText.getEditText(), questionDetails.getPrompt());
     }
 
     @Override
@@ -60,13 +60,13 @@ public class ExIntegerWidget extends ExStringWidget {
 
     @Override
     public IAnswerData getAnswer() {
-        return StringWidgetUtils.getIntegerData(answerText.getText().toString(), getFormEntryPrompt());
+        return StringWidgetUtils.getIntegerData(answerText.getEditText().getText().toString(), getFormEntryPrompt());
     }
 
     @Override
     public void setData(Object answer) {
         IntegerData integerData = ExternalAppsUtils.asIntegerData(answer);
-        answerText.setText(integerData == null ? null : integerData.getValue().toString());
+        answerText.getEditText().setText(integerData == null ? null : integerData.getValue().toString());
         widgetValueChanged();
     }
 }

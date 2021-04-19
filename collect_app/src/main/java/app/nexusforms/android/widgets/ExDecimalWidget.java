@@ -44,7 +44,7 @@ public class ExDecimalWidget extends ExStringWidget {
 
     public ExDecimalWidget(Context context, QuestionDetails questionDetails, WaitingForDataRegistry waitingForDataRegistry) {
         super(context, questionDetails, waitingForDataRegistry);
-        StringWidgetUtils.adjustEditTextAnswerToDecimalWidget(answerText, questionDetails.getPrompt());
+        StringWidgetUtils.adjustEditTextAnswerToDecimalWidget(answerText.getEditText(), questionDetails.getPrompt());
     }
 
     @Override
@@ -60,13 +60,13 @@ public class ExDecimalWidget extends ExStringWidget {
 
     @Override
     public IAnswerData getAnswer() {
-        return StringWidgetUtils.getDecimalData(answerText.getText().toString(), getFormEntryPrompt());
+        return StringWidgetUtils.getDecimalData(answerText.getEditText().getText().toString(), getFormEntryPrompt());
     }
 
     @Override
     public void setData(Object answer) {
         DecimalData decimalData = ExternalAppsUtils.asDecimalData(answer);
-        answerText.setText(decimalData == null ? null : decimalData.getValue().toString());
+        answerText.getEditText().setText(decimalData == null ? null : decimalData.getValue().toString());
         widgetValueChanged();
     }
 }

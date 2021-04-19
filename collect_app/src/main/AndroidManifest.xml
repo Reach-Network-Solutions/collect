@@ -73,6 +73,7 @@ the specific language governing permissions and limitations under the License.
         android:name=".application.Collect"
         android:icon="@mipmap/ic_launcher"
         android:installLocation="auto"
+        android:theme="@style/Theme.NexusForms"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
@@ -98,6 +99,7 @@ the specific language governing permissions and limitations under the License.
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="app.nexusforms.android.activities.FormEntryActivity"
+            android:theme="@style/Theme.NexusForms"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="app.nexusforms.android.activities.NotificationActivity"

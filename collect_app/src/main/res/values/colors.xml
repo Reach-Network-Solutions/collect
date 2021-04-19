@@ -15,7 +15,19 @@ the License.
 -->
 <resources>
     <!-- Material Design color palette -->
-    <color name="nexus_base_color">#304B72</color>
+    <color name="light_blue">#304B72</color>
+    <color name="dark_blue">#002446</color>
+    <color name="dark_green">#1C9D80</color>
+    <color name="dark_red">#E17369</color>
+
+    <color name="black_text">#333132</color>
+    <color name="white_text">#E5E5E5</color>
+
+    <color name="white_background">#E5E5E5</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
     <color name="red_500">#F44336</color>
     <color name="blue_500">#2196F3</color>
     <color name="green_500">#4CAF50</color>

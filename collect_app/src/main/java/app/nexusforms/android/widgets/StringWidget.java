@@ -28,16 +28,21 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
+
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.FormEntryActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.formentry.questions.WidgetViewUtils;
 
+import app.nexusforms.utilities.PixelToDpConverter;
 import timber.log.Timber;
 
 /**
@@ -45,7 +50,8 @@ import timber.log.Timber;
  */
 @SuppressLint("ViewConstructor")
 public class StringWidget extends QuestionWidget {
-    public final EditText answerText;
+    public final TextInputLayout answerText;
+
 
     protected StringWidget(Context context, QuestionDetails questionDetails) {
         super(context, questionDetails);
@@ -61,7 +67,8 @@ public class StringWidget extends QuestionWidget {
 
     @Override
     public void clearAnswer() {
-        answerText.setText(null);
+
+        answerText.getEditText().setText(null);
         widgetValueChanged();
     }
 
@@ -73,7 +80,7 @@ public class StringWidget extends QuestionWidget {
 
     @NonNull
     public String getAnswerText() {
-        return answerText.getText().toString();
+        return answerText.getEditText().getText().toString();
     }
 
     @Override
@@ -129,14 +136,19 @@ public class StringWidget extends QuestionWidget {
         String currentAnswer = getFormEntryPrompt().getAnswerText();
 
         if (currentAnswer != null) {
-            answerText.setText(currentAnswer);
-            Selection.setSelection(answerText.getText(), answerText.getText().toString().length());
+            answerText.getEditText().setText(currentAnswer);
+            Selection.setSelection(answerText.getEditText().getText(), answerText.getEditText().getText().toString().length());
         }
     }
 
-    private EditText getAnswerEditText(boolean readOnly, FormEntryPrompt prompt) {
-        EditText answerEditText = new EditText(getContext());
+    private TextInputLayout getAnswerEditText(boolean readOnly, FormEntryPrompt prompt) {
+        TextInputLayout answerInputLayout = new TextInputLayout(getContext(), null, R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
+        answerInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        answerInputLayout.setBoxCornerRadii(convertToDp(3), convertToDp(3), convertToDp(3), convertToDp(3));
+
+        TextInputEditText answerEditText = new TextInputEditText(getContext());
         answerEditText.setId(View.generateViewId());
+        answerEditText.setPadding(12,24,12,24);
         answerEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
         answerEditText.setKeyListener(new TextKeyListener(TextKeyListener.Capitalize.SENTENCES, false));
 
@@ -144,12 +156,22 @@ public class StringWidget extends QuestionWidget {
         answerEditText.setHorizontallyScrolling(false);
         answerEditText.setSingleLine(false);
 
-        if (readOnly) {
+        /*if (readOnly) {
             answerEditText.setBackground(null);
             answerEditText.setEnabled(false);
             answerEditText.setTextColor(themeUtils.getColorOnSurface());
             answerEditText.setFocusable(false);
+            answerInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_NONE);
+        }*/
+
+        answerEditText.setBackground(null);
+        answerEditText.setEnabled(!readOnly);
+        answerEditText.setTextColor(themeUtils.getColorOnSurface());
+        answerEditText.setFocusable(!readOnly);
+        if (readOnly) {
+            answerInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_NONE);
         }
+
 
         answerEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -193,6 +215,15 @@ public class StringWidget extends QuestionWidget {
             }
         }
 
-        return answerEditText;
+        answerInputLayout.addView(answerEditText);
+
+        return answerInputLayout;
+    }
+
+
+    public int convertToDp(int input) { // Get the screen's density scale
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (input * scale + 0.5f);
     }
 }

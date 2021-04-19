@@ -109,7 +109,7 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
 
     @Override
     protected void setUpLayout(Context context) {
-        answerText.setText(getFormEntryPrompt().getAnswerText());
+        answerText.getEditText().setText(getFormEntryPrompt().getAnswerText());
         launchIntentButton = createSimpleButton(getContext(), getFormEntryPrompt().isReadOnly(), getButtonText(), getAnswerFontSize(), this);
 
         LinearLayout answerLayout = new LinearLayout(getContext());
@@ -137,7 +137,7 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
     @Override
     public void setData(Object answer) {
         StringData stringData = ExternalAppsUtils.asStringData(answer);
-        answerText.setText(stringData == null ? null : stringData.getValue().toString());
+        answerText.getEditText().setText(stringData == null ? null : stringData.getValue().toString());
         widgetValueChanged();
     }
 
@@ -206,7 +206,7 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
             answerText.setFocusable(true);
             answerText.setFocusableInTouchMode(true);
             answerText.setEnabled(true);
-            answerText.addTextChangedListener(new TextWatcher() {
+            answerText.getEditText().addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
@@ -230,6 +230,6 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
                 .show();
         Timber.d(toastText);
         focusAnswer();
-        Selection.setSelection(answerText.getText(), answerText.getText().toString().length());
+        Selection.setSelection(answerText.getEditText().getText(), answerText.getEditText().getText().toString().length());
     }
 }

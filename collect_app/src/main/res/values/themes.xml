@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.NexusForms" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/light_blue</item>
+        <item name="colorPrimaryDark">@color/dark_blue</item>
+        <item name="colorPrimaryVariant">@color/dark_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/light_blue</item>
+        <item name="colorSecondaryVariant">@color/dark_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <item name="colorError">@color/dark_red</item>
+        <item name="android:fontFamily">@font/roboto</item>
+
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
 
     <style name="Theme.Collect.Dark" parent="Theme.Collect.BaseDark">
         <item name="android:buttonStyle">@style/Widget.Collect.Button.Custom</item>

@@ -30,7 +30,7 @@ public class IntegerWidget extends StringWidget {
 
     public IntegerWidget(Context context, QuestionDetails questionDetails) {
         super(context, questionDetails);
-        StringWidgetUtils.adjustEditTextAnswerToIntegerWidget(answerText, questionDetails.getPrompt());
+        StringWidgetUtils.adjustEditTextAnswerToIntegerWidget(answerText.getEditText(), questionDetails.getPrompt());
     }
 
     @Override

@@ -47,13 +47,13 @@ public final class ThemeUtils {
     @StyleRes
     public int getAppTheme() {
         if (isMagentaEnabled()) {
-            return R.style.Theme_Collect_Magenta;
+            return R.style.Theme_NexusForms;
         } else {
             String theme = getPrefsTheme();
             if (theme.equals(context.getString(R.string.app_theme_dark))) {
-                return R.style.Theme_Collect_Dark;
+                return R.style.Theme_NexusForms;
             } else {
-                return R.style.Theme_Collect_Light;
+                return R.style.Theme_NexusForms;
             }
         }
     }
@@ -61,13 +61,13 @@ public final class ThemeUtils {
     @StyleRes
     public int getFormEntryActivityTheme() {
         if (isMagentaEnabled()) {
-            return R.style.Theme_Collect_Activity_FormEntryActivity_Magenta;
+            return R.style.Theme_NexusForms;
         } else {
             String theme = getPrefsTheme();
             if (theme.equals(context.getString(R.string.app_theme_dark))) {
-                return R.style.Theme_Collect_Activity_FormEntryActivity_Dark;
+                return R.style.Theme_NexusForms;
             } else {
-                return R.style.Theme_Collect_Activity_FormEntryActivity_Light;
+                return R.style.Theme_NexusForms;
             }
         }
     }
@@ -75,13 +75,13 @@ public final class ThemeUtils {
     @StyleRes
     public int getSettingsTheme() {
         if (isMagentaEnabled()) {
-            return R.style.Theme_Collect_Settings_Magenta;
+            return R.style.Theme_NexusForms;
         } else {
             String theme = getPrefsTheme();
             if (theme.equals(context.getString(R.string.app_theme_dark))) {
-                return R.style.Theme_Collect_Settings_Dark;
+                return R.style.Theme_NexusForms;
             } else {
-                return R.style.Theme_Collect_Settings_Light;
+                return R.style.Theme_NexusForms;
             }
         }
     }
