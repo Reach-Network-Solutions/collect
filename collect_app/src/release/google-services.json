@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "581848925477",
+    "project_id": "nexus-forms",
+    "storage_bucket": "nexus-forms.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581848925477:android:71c3e5c8032f9a510d06cc",
+        "android_client_info": {
+          "package_name": "app.nexusforms.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581848925477-3695nq1e9q29tv33bt0am6u7du89go47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFxG12SPpG6zT3MsRwLzt2P5cq4HP1qj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "581848925477-3695nq1e9q29tv33bt0am6u7du89go47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581848925477:android:1f35edf0e68685cb0d06cc",
+        "android_client_info": {
+          "package_name": "app.nexusforms.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581848925477-3695nq1e9q29tv33bt0am6u7du89go47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFxG12SPpG6zT3MsRwLzt2P5cq4HP1qj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "581848925477-3695nq1e9q29tv33bt0am6u7du89go47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
