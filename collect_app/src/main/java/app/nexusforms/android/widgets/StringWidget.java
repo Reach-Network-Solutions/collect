@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.method.TextKeyListener;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -42,7 +43,6 @@ import app.nexusforms.android.activities.FormEntryActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.formentry.questions.WidgetViewUtils;
 
-import app.nexusforms.utilities.PixelToDpConverter;
 import timber.log.Timber;
 
 /**
@@ -50,25 +50,28 @@ import timber.log.Timber;
  */
 @SuppressLint("ViewConstructor")
 public class StringWidget extends QuestionWidget {
-    public final TextInputLayout answerText;
+    public final TextInputLayout answerTextInputLayout;
+    public final TextInputEditText answerEditText;
 
 
     protected StringWidget(Context context, QuestionDetails questionDetails) {
         super(context, questionDetails);
 
-        answerText = getAnswerEditText(questionDetails.isReadOnly() || this instanceof ExStringWidget, getFormEntryPrompt());
+        answerTextInputLayout = getAnswerEditText(questionDetails.isReadOnly() || this instanceof ExStringWidget, getFormEntryPrompt());
+        answerEditText = new TextInputEditText(answerTextInputLayout.getContext());
+
         setUpLayout(context);
     }
 
     protected void setUpLayout(Context context) {
         setDisplayValueFromModel();
-        addAnswerView(answerText, WidgetViewUtils.getStandardMargin(context));
+        addAnswerView(answerTextInputLayout, WidgetViewUtils.getStandardMargin(context));
     }
 
     @Override
     public void clearAnswer() {
 
-        answerText.getEditText().setText(null);
+        answerEditText.setText(null);
         widgetValueChanged();
     }
 
@@ -80,13 +83,13 @@ public class StringWidget extends QuestionWidget {
 
     @NonNull
     public String getAnswerText() {
-        return answerText.getEditText().getText().toString();
+        return answerEditText.getText().toString();
     }
 
     @Override
     public void setFocus(Context context) {
         if (!questionDetails.isReadOnly()) {
-            softKeyboardController.showSoftKeyboard(answerText);
+            softKeyboardController.showSoftKeyboard(answerTextInputLayout);
             /*
              * If you do a multi-question screen after a "add another group" dialog, this won't
              * automatically pop up. It's an Android issue.
@@ -97,19 +100,19 @@ public class StringWidget extends QuestionWidget {
              * is focused before the dialog pops up, everything works fine. great.
              */
         } else {
-            softKeyboardController.hideSoftKeyboard(answerText);
+            softKeyboardController.hideSoftKeyboard(answerTextInputLayout);
         }
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        answerText.setOnLongClickListener(l);
+        answerEditText.setOnLongClickListener(l);
     }
 
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
-        answerText.cancelLongPress();
+        answerEditText.cancelLongPress();
     }
 
     /**
@@ -136,8 +139,8 @@ public class StringWidget extends QuestionWidget {
         String currentAnswer = getFormEntryPrompt().getAnswerText();
 
         if (currentAnswer != null) {
-            answerText.getEditText().setText(currentAnswer);
-            Selection.setSelection(answerText.getEditText().getText(), answerText.getEditText().getText().toString().length());
+            answerEditText.setText(currentAnswer);
+            Selection.setSelection(answerEditText.getText(), answerEditText.getText().toString().length());
         }
     }
 

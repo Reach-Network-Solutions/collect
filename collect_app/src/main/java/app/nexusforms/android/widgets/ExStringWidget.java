@@ -109,13 +109,13 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
 
     @Override
     protected void setUpLayout(Context context) {
-        answerText.getEditText().setText(getFormEntryPrompt().getAnswerText());
+        answerEditText.setText(getFormEntryPrompt().getAnswerText());
         launchIntentButton = createSimpleButton(getContext(), getFormEntryPrompt().isReadOnly(), getButtonText(), getAnswerFontSize(), this);
 
         LinearLayout answerLayout = new LinearLayout(getContext());
         answerLayout.setOrientation(LinearLayout.VERTICAL);
         answerLayout.addView(launchIntentButton);
-        answerLayout.addView(answerText);
+        answerLayout.addView(answerTextInputLayout);
         addAnswerView(answerLayout, WidgetViewUtils.getStandardMargin(context));
     }
 
@@ -137,19 +137,19 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
     @Override
     public void setData(Object answer) {
         StringData stringData = ExternalAppsUtils.asStringData(answer);
-        answerText.getEditText().setText(stringData == null ? null : stringData.getValue().toString());
+        answerEditText.setText(stringData == null ? null : stringData.getValue().toString());
         widgetValueChanged();
     }
 
     @Override
     public void setFocus(Context context) {
         if (hasExApp) {
-            softKeyboardController.hideSoftKeyboard(answerText);
+            softKeyboardController.hideSoftKeyboard(answerTextInputLayout);
             // focus on launch button
             launchIntentButton.requestFocus();
         } else {
             if (!getFormEntryPrompt().isReadOnly()) {
-                softKeyboardController.showSoftKeyboard(answerText);
+                softKeyboardController.showSoftKeyboard(answerTextInputLayout);
             /*
              * If you do a multi-question screen after a "add another group" dialog, this won't
              * automatically pop up. It's an Android issue.
@@ -161,21 +161,21 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
              * is focused before the dialog pops up, everything works fine. great.
              */
             } else {
-                softKeyboardController.hideSoftKeyboard(answerText);
+                softKeyboardController.hideSoftKeyboard(answerTextInputLayout);
             }
         }
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        answerText.setOnLongClickListener(l);
+        answerEditText.setOnLongClickListener(l);
         launchIntentButton.setOnLongClickListener(l);
     }
 
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
-        answerText.cancelLongPress();
+        answerEditText.cancelLongPress();
         launchIntentButton.cancelLongPress();
     }
 
@@ -196,17 +196,17 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
     }
 
     private void focusAnswer() {
-        softKeyboardController.showSoftKeyboard(answerText);
+        softKeyboardController.showSoftKeyboard(answerTextInputLayout);
     }
 
     private void onException(String toastText) {
         hasExApp = false;
         if (!getFormEntryPrompt().isReadOnly()) {
-            answerText.setBackground((new EditText(getContext())).getBackground());
-            answerText.setFocusable(true);
-            answerText.setFocusableInTouchMode(true);
-            answerText.setEnabled(true);
-            answerText.getEditText().addTextChangedListener(new TextWatcher() {
+            //answerTextInputLayout.setBackground((new EditText(getContext())).getBackground());
+            answerEditText.setFocusable(true);
+            answerEditText.setFocusableInTouchMode(true);
+            answerEditText.setEnabled(true);
+            answerEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
@@ -230,6 +230,6 @@ public class ExStringWidget extends StringWidget implements WidgetDataReceiver, 
                 .show();
         Timber.d(toastText);
         focusAnswer();
-        Selection.setSelection(answerText.getEditText().getText(), answerText.getEditText().getText().toString().length());
+        Selection.setSelection(answerEditText.getText(), answerEditText.getText().toString().length());
     }
 }

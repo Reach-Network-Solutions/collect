@@ -30,7 +30,7 @@ public class StringNumberWidget extends StringWidget {
 
     public StringNumberWidget(Context context, QuestionDetails questionDetails) {
         super(context, questionDetails);
-        StringWidgetUtils.adjustEditTextAnswerToStringNumberWidget(answerText.getEditText(), questionDetails.getPrompt());
+        StringWidgetUtils.adjustEditTextAnswerToStringNumberWidget(answerTextInputLayout.getEditText(), questionDetails.getPrompt());
     }
 
     @Override

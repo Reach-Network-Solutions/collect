@@ -26,8 +26,8 @@ public abstract class GeneralExStringWidgetTest<W extends ExStringWidget, A exte
     public void testElementsVisibilityAndAvailability() {
         assertThat(getSpyWidget().launchIntentButton.getVisibility(), is(View.VISIBLE));
         assertThat(getSpyWidget().launchIntentButton.isEnabled(), is(Boolean.TRUE));
-        assertThat(getSpyWidget().answerText.getVisibility(), is(View.VISIBLE));
-        assertThat(getSpyWidget().answerText.isEnabled(), is(Boolean.FALSE));
+        assertThat(getSpyWidget().answerTextInputLayout.getVisibility(), is(View.VISIBLE));
+        assertThat(getSpyWidget().answerTextInputLayout.isEnabled(), is(Boolean.FALSE));
     }
 
     @Test
@@ -35,7 +35,7 @@ public abstract class GeneralExStringWidgetTest<W extends ExStringWidget, A exte
         when(formEntryPrompt.isReadOnly()).thenReturn(true);
 
         assertThat(getSpyWidget().launchIntentButton.getVisibility(), is(View.GONE));
-        assertThat(getSpyWidget().answerText.getVisibility(), is(View.VISIBLE));
-        assertThat(getSpyWidget().answerText.isEnabled(), is(Boolean.FALSE));
+        assertThat(getSpyWidget().answerTextInputLayout.getVisibility(), is(View.VISIBLE));
+        assertThat(getSpyWidget().answerTextInputLayout.isEnabled(), is(Boolean.FALSE));
     }
 }
