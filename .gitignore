@@ -38,9 +38,11 @@ captures/
 collect_app/.classpath
 collect_app/.project
 collect_app/.settings/
-collect_app/google-services.json
-collect_app/src/release/google-services.json
-collect_app/src/debug/google-services.json
+
+#Google Services .json
+#collect_app/google-services.json
+#collect_app/src/release/google-services.json
+#collect_app/src/debug/google-services.json
 
 # Submodules
 javarosa/
