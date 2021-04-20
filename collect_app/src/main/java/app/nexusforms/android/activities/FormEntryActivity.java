@@ -61,6 +61,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
@@ -1504,7 +1506,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
         questionWidgetArrayList.clear();
 
-        View questionsView = View.inflate(getApplicationContext(), R.layout.nexus_questions_layout, (ViewGroup) currentView);
+        View questionsView = View.inflate(this, R.layout.nexus_questions_layout, (ViewGroup) currentView);
         Button submitButton = questionsView.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(v -> {
             FormController controller = getFormController();

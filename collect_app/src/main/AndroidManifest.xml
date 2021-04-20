@@ -273,8 +273,8 @@ the specific language governing permissions and limitations under the License.
         <!-- Enable Shortcuts for Command Actions -->
         <activity
             android:name="app.nexusforms.android.activities.AndroidShortcutsActivity"
-            android:label="ODK Form"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="Nexus Form"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
 
