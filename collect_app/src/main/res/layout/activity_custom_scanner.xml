@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.odk.collect.android.app.odk.collect.android.activities.ScannerWithFlashlightActivity">
+    tools:context="app.nexusforms.android.activities.ScannerWithFlashlightActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:name="org.odk.collect.android.fragments.BarcodeWidgetScannerFragment"
+        android:name="app.nexusforms.android.fragments.BarcodeWidgetScannerFragment"
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
