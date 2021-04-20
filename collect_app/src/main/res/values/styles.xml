@@ -30,7 +30,12 @@
 
     <!--Nexus Forms Widget Styles-->
     <style name="Widget.NexusForms.MaterialButton.Primary" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">6dp</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="textAllCaps">false</item>
+    </style>
 
+    <style name="Widget.NexusForms.MaterialButton.Primary.Answer" parent="Widget.NexusForms.MaterialButton.Primary">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>
