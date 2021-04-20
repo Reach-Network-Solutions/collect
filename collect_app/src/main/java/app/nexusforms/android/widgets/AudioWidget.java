@@ -29,6 +29,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
+import app.nexusforms.android.audio.NexusAudioWaveForm;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.Appearances;
 import app.nexusforms.android.utilities.QuestionMediaManager;
@@ -66,6 +67,8 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
     private final RecordingRequester recordingRequester;
     private final QuestionMediaManager questionMediaManager;
     private final AudioFileRequester audioFileRequester;
+    private NexusAudioWaveForm nexusAudioWaveForm;
+    byte[] audioBytes;
 
     private boolean recordingInProgress;
     private String binaryName;
@@ -114,6 +117,7 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
         });
         binding.chooseButton.setOnClickListener(v -> audioFileRequester.requestFile(getFormEntryPrompt()));
 
+       nexusAudioWaveForm = binding.audioPlayer.nexusAudionWaveform;
         return binding.getRoot();
     }
 
@@ -154,12 +158,21 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
                 updateVisibilities();
                 updatePlayerMedia();
                 widgetValueChanged();
+                prepareNexusAudioWaveForm(newAudio);
+                //we have the audio file!
+                Timber.d("ACTUAL FILE -> %s", newAudio.getAbsolutePath());
             } else {
                 Timber.e("NO AUDIO EXISTS at: %s", newAudio.getAbsolutePath());
             }
         } else {
             Timber.e("AudioWidget's setBinaryData must receive a File object.");
         }
+    }
+
+    private void prepareNexusAudioWaveForm(File audioFile){
+        audioBytes = NexusAudioWaveForm.audioFileToBytes(audioFile);
+
+        nexusAudioWaveForm.updateVisualizer(audioBytes);
     }
 
     private void updateVisibilities() {
@@ -169,18 +182,21 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
             binding.audioPlayer.recordingDuration.setVisibility(VISIBLE);
             binding.audioPlayer.waveform.setVisibility(VISIBLE);
             binding.audioPlayer.audioController.setVisibility(GONE);
+            nexusAudioWaveForm.setVisibility(GONE);
         } else if (getAnswer() == null) {
             binding.captureButton.setVisibility(VISIBLE);
             binding.chooseButton.setVisibility(VISIBLE);
             binding.audioPlayer.recordingDuration.setVisibility(GONE);
             binding.audioPlayer.waveform.setVisibility(GONE);
             binding.audioPlayer.audioController.setVisibility(GONE);
+            nexusAudioWaveForm.setVisibility(GONE);
         } else {
             binding.captureButton.setVisibility(GONE);
             binding.chooseButton.setVisibility(GONE);
             binding.audioPlayer.recordingDuration.setVisibility(GONE);
             binding.audioPlayer.waveform.setVisibility(GONE);
             binding.audioPlayer.audioController.setVisibility(VISIBLE);
+            nexusAudioWaveForm.setVisibility(VISIBLE);
         }
 
         if (questionDetails.isReadOnly()) {
@@ -215,6 +231,8 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
                 public void onPositionChanged(Integer newPosition) {
                     analytics.logFormEvent(AnalyticsEvents.AUDIO_PLAYER_SEEK, questionDetails.getFormAnalyticsID());
                     audioPlayer.setPosition(clip.getClipID(), newPosition);
+                    if(audioBytes != null){
+                    nexusAudioWaveForm.updateVisualizer(audioBytes);}
                 }
 
                 @Override

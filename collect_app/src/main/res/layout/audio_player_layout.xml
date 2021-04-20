@@ -21,6 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="80dp" />
 
+    <app.nexusforms.android.audio.NexusAudioWaveForm
+        android:id="@+id/nexus_audion_waveform"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+
     <app.nexusforms.android.audio.AudioControllerView
         android:id="@+id/audio_controller"
         android:layout_width="match_parent"

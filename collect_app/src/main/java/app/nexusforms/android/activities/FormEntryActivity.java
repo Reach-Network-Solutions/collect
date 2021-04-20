@@ -1185,6 +1185,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
     //Load from Intent
     public void setDataForFields(Bundle bundle) throws JavaRosaException {
+        Timber.d("DATA SETTER - ");
         FormController formController = Collect.getInstance().getFormController();
         if (formController == null) {
             return;
@@ -1306,8 +1307,11 @@ public class FormEntryActivity extends CollectAbstractActivity implements
                 if (widget instanceof WidgetDataReceiver) {
                     if (waitingForDataRegistry.isWaitingForData(widget.getFormEntryPrompt().getIndex())) {
                         try {
+                            Timber.d("WAITER -- set");
                             ((WidgetDataReceiver) widget).setData(data);
                             waitingForDataRegistry.cancelWaitingForData();
+                            Timber.d("DONE setting - data");
+                            return;
                         } catch (Exception e) {
                             Timber.e(e);
                             ToastUtils.showLongToast(getApplicationContext().getString(R.string.error_attaching_binary_file,

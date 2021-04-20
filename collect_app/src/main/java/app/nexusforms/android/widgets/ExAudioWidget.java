@@ -17,6 +17,7 @@ import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
 import app.nexusforms.android.application.Collect;
+import app.nexusforms.android.audio.NexusAudioWaveForm;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.ActivityAvailability;
 import app.nexusforms.android.utilities.ApplicationConstants;
@@ -47,6 +48,7 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
     private final MediaUtils mediaUtils;
     private final ExternalAppIntentProvider externalAppIntentProvider;
     private final ActivityAvailability activityAvailability;
+    private NexusAudioWaveForm nexusAudioWaveForm;
 
     File answerFile;
 
@@ -74,6 +76,7 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
 
         binding.launchExternalAppButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
         binding.launchExternalAppButton.setOnClickListener(view -> launchExternalApp());
+        nexusAudioWaveForm = binding.audioPlayer.nexusAudionWaveform;
 
         return binding.getRoot();
     }
@@ -102,6 +105,7 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
         if (answerFile != null) {
             clearAnswer();
         }
+        Timber.d("SET DATA CALLED");
 
         if (object instanceof File && mediaUtils.isAudioFile((File) object)) {
             answerFile = (File) object;
@@ -110,6 +114,9 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
                 updateVisibilities();
                 updatePlayerMedia();
                 widgetValueChanged();
+                prepareNexusAudioWaveForm(answerFile);
+                //we have the audio file!
+                Timber.d("ACTUAL FILE -> %s", answerFile.getAbsolutePath());
             } else {
                 Timber.e("Inserting Audio file FAILED");
             }
@@ -122,6 +129,12 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
                 Timber.e("ExAudioWidget's setBinaryData must receive a audio file but received: %s", object.getClass());
             }
         }
+    }
+
+    private void prepareNexusAudioWaveForm(File audioFile){
+        byte[] audioBytes = NexusAudioWaveForm.audioFileToBytes(audioFile);
+
+        nexusAudioWaveForm.updateVisualizer(audioBytes);
     }
 
     @Override
@@ -154,6 +167,7 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
     }
 
     private void updatePlayerMedia() {
+        Timber.d("MEDIA PLAYER");
         if (answerFile != null) {
             Clip clip = new Clip("audio:" + getFormEntryPrompt().getIndex().toString(), answerFile.getAbsolutePath());
 
