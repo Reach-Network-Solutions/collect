@@ -40,6 +40,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -74,6 +75,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
+
 import app.nexusforms.analytics.Analytics;
 
 
@@ -479,7 +481,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 settingsProvider
         );
 
-        nextButton = findViewById(R.id.form_forward_button);
+       /* nextButton = findViewById(R.id.form_forward_button);
         nextButton.setOnClickListener(v -> {
             //swipeHandler.setBeenSwiped(true);
             //onSwipeForward();
@@ -498,7 +500,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             swipeHandler.setBeenSwiped(true);
             onSwipeBackward();
         });
-
+*/
         if (savedInstanceState == null) {
             mediaLoadingFragment = new MediaLoadingFragment();
             getSupportFragmentManager().beginTransaction().add(mediaLoadingFragment, TAG_MEDIA_LOADING_FRAGMENT).commit();
@@ -1641,6 +1643,13 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         questionWidgetArrayList.clear();
 
         View questionsView = View.inflate(getApplicationContext(), R.layout.nexus_questions_layout, (ViewGroup) currentView);
+        Button submitButton = questionsView.findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(v -> {
+            FormController controller = getFormController();
+            if (controller != null) {
+                displayFormEndDialog(controller, true);
+            }
+        });
 
         odkViewLifecycleFox.start();
 
@@ -1677,7 +1686,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
         recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
-        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        /*recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -1688,7 +1697,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                     nextButton.setVisibility(View.INVISIBLE);
                 }
             }
-        });
+        });*/
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -2580,8 +2589,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
             return;
         }
 
-        backButton.setVisibility(!formController.isCurrentQuestionFirstInForm() && allowMovingBackwards ? View.VISIBLE : View.GONE);
-        nextButton.setVisibility(formController.getEvent() != FormEntryController.EVENT_END_OF_FORM ? View.VISIBLE : View.GONE);
+       /* backButton.setVisibility(!formController.isCurrentQuestionFirstInForm() && allowMovingBackwards ? View.VISIBLE : View.GONE);
+        nextButton.setVisibility(formController.getEvent() != FormEntryController.EVENT_END_OF_FORM ? View.VISIBLE : View.GONE);*/
     }
 
     @Override
@@ -2633,8 +2642,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         String navigation = settingsProvider.getGeneralSettings().getString(GeneralKeys.KEY_NAVIGATION);
         showNavigationButtons = navigation.contains(GeneralKeys.NAVIGATION_BUTTONS);
 
-        findViewById(R.id.buttonholder).setVisibility(showNavigationButtons ? View.VISIBLE : View.GONE);
-        findViewById(R.id.shadow_up).setVisibility(showNavigationButtons ? View.VISIBLE : View.GONE);
+        /*findViewById(R.id.buttonholder).setVisibility(showNavigationButtons ? View.VISIBLE : View.GONE);
+        findViewById(R.id.shadow_up).setVisibility(showNavigationButtons ? View.VISIBLE : View.GONE);*/
 
         if (showNavigationButtons) {
             updateNavigationButtonVisibility();
@@ -3240,7 +3249,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
             Timber.d("EVALUATING LEVEL: %s for fIndex %s", level, currentIndexForQuestion.toString());
 
-            if(level < 2){
+            if (level < 2) {
                 pleaseSaveForUs(changedWidget);
                 return;
             }
@@ -3265,7 +3274,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 immutableQuestionsAfterSave.add(new ImmutableDisplayableQuestion(questionAfterSave));
             }
 
-            if(immutableQuestionsAfterSave.containsAll(immutableQuestionsBeforeSave))return;
+            if (immutableQuestionsAfterSave.containsAll(immutableQuestionsBeforeSave)) return;
 
             Map<FormIndex, FormEntryPrompt> questionsAfterSaveByIndex = new HashMap<>();
 
@@ -3400,12 +3409,12 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
                             questionsAdapter.notifyItemInserted(questionWidgetArrayList.size() - 1);
 
-                        } else if(indexFactor < 0) {
+                        } else if (indexFactor < 0) {
                             questionWidgetArrayList.add(positionOfRelatedQsn, addition);
 
                             questionsAdapter.notifyItemInserted(positionOfRelatedQsn);
 
-                        }else{
+                        } else {
                             questionWidgetArrayList.add(indexFactor, addition);
 
                             questionsAdapter.notifyItemInserted(indexFactor);

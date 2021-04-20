@@ -88,7 +88,7 @@ public final class ThemeUtils {
 
     @StyleRes
     public int getBottomDialogTheme() {
-        return isDarkTheme() ? R.style.Theme_Collect_MaterialDialogSheet_Dark : R.style.Theme_Collect_MaterialDialogSheet_Light;
+        return isDarkTheme() ? R.style.Theme_NexusForms_MaterialDialogSheet_Dark : R.style.Theme_NexusForms_MaterialDialogSheet_Light;
     }
 
     @DrawableRes
@@ -104,8 +104,8 @@ public final class ThemeUtils {
     @StyleRes
     public int getMaterialDialogTheme() {
         return isDarkTheme()
-                ? R.style.Theme_Collect_Dark_Dialog
-                : R.style.Theme_Collect_Light_Dialog;
+                ? R.style.Theme_NexusForms_Dark_Dialog
+                : R.style.Theme_NexusForms_Light_Dialog;
     }
 
     @StyleRes
@@ -131,7 +131,7 @@ public final class ThemeUtils {
     }
 
     private boolean isMagentaEnabled() {
-        return settingsProvider.getGeneralSettings().getBoolean(GeneralKeys.KEY_MAGENTA_THEME);
+        return false;// settingsProvider.getGeneralSettings().getBoolean(GeneralKeys.KEY_MAGENTA_THEME);
     }
 
     private String getPrefsTheme() {

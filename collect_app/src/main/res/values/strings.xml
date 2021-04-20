@@ -2,4 +2,5 @@
 <resources>
     <string name="showing_this">SHOWING THIS</string>
     <string name="save_progress">"Save progress of %s"</string>
+    <string name="submit">Submit</string>
 </resources>
