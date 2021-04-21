@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/margin_small"
     android:paddingEnd="@dimen/margin_standard"
+    android:paddingStart="@dimen/margin_standard"
     android:button="@drawable/inset_check_box"
+    style="@style/Widget.NexusForms.MaterialCheckBox.Primary"
     tools:text="Option A">
 
 </androidx.appcompat.widget.AppCompatCheckBox>

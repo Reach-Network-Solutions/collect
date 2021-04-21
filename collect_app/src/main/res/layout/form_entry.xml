@@ -59,10 +59,25 @@ the License.
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_below="@id/appBarLayout" />
+        app:layout_constraintBottom_toTopOf="@id/button_submit"
+        android:layout_below="@id/appBarLayout"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/button_submit"
+        style="@style/Widget.NexusForms.MaterialButton.Primary"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/submit"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <!-- <ImageView
          android:id="@+id/shadow_up"

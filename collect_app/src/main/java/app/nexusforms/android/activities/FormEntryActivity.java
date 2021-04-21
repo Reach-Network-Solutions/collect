@@ -279,6 +279,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements
     private TextView nextButton;
     private TextView backButton;
 
+    private Button submitButton;
+
     //private ODKView odkView;
     private final DestroyableLifecyleOwner odkViewLifecycleFox = new DestroyableLifecyleOwner();
 
@@ -423,6 +425,13 @@ public class FormEntryActivity extends CollectAbstractActivity implements
         errorMessage = null;
 
         questionHolder = findViewById(R.id.questionholder);
+        submitButton = findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(v -> {
+            FormController controller = getFormController();
+            if (controller != null) {
+                displayFormEndDialog(controller, true);
+            }
+        });
 
         initToolbar();
 
@@ -1507,13 +1516,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements
         questionWidgetArrayList.clear();
 
         View questionsView = View.inflate(this, R.layout.nexus_questions_layout, (ViewGroup) currentView);
-        Button submitButton = questionsView.findViewById(R.id.button_submit);
-        submitButton.setOnClickListener(v -> {
-            FormController controller = getFormController();
-            if (controller != null) {
-                displayFormEndDialog(controller, true);
-            }
-        });
 
         odkViewLifecycleFox.start();
 
@@ -1550,18 +1552,18 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
         recycler = questionsView.findViewById(R.id.recycler_view_questions);
 
-        /*recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    nextButton.setVisibility(View.VISIBLE);
+                    submitButton.setVisibility(View.VISIBLE);
                 } else {
-                    nextButton.setVisibility(View.INVISIBLE);
+                    submitButton.setVisibility(View.GONE);
                 }
             }
-        });*/
+        });
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
