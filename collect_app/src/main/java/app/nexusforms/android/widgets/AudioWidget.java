@@ -20,12 +20,17 @@ import android.media.MediaMetadataRetriever;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
+
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
@@ -45,6 +50,8 @@ import app.nexusforms.audioclips.Clip;
 
 import java.io.File;
 import java.util.Locale;
+
+import javax.annotation.Nullable;
 
 import timber.log.Timber;
 
@@ -69,6 +76,7 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
     private final AudioFileRequester audioFileRequester;
     private NexusAudioWaveForm nexusAudioWaveForm;
     byte[] audioBytes;
+    private ImageButton recordOrDeleteButton;
 
     private boolean recordingInProgress;
     private String binaryName;
@@ -84,6 +92,7 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
         binaryName = questionDetails.getPrompt().getAnswerText();
         updateVisibilities();
         updatePlayerMedia();
+        prepareNexusAudioWaveForm(null);
 
         recordingStatusHandler.onBlockedStatusChange(isRecordingBlocked -> {
             binding.captureButton.setEnabled(!isRecordingBlocked);
@@ -117,7 +126,9 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
         });
         binding.chooseButton.setOnClickListener(v -> audioFileRequester.requestFile(getFormEntryPrompt()));
 
-       nexusAudioWaveForm = binding.audioPlayer.nexusAudionWaveform;
+        nexusAudioWaveForm = binding.audioPlayer.nexusAudionWaveform;
+        recordOrDeleteButton = binding.audioPlayer.playOrRecordImageButton;
+
         return binding.getRoot();
     }
 
@@ -169,10 +180,18 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
         }
     }
 
-    private void prepareNexusAudioWaveForm(File audioFile){
-        audioBytes = NexusAudioWaveForm.audioFileToBytes(audioFile);
-
+    private void prepareNexusAudioWaveForm(@Nullable File audioFile) {
+        //prepare with audio File
+        if(audioFile != null) {
+            audioBytes = NexusAudioWaveForm.audioFileToBytes(audioFile);
+        }
+        //prepare with answer data
+        if(binaryName != null){
+            File referredFile = getAudioFile();
+            audioBytes = NexusAudioWaveForm.audioFileToBytes(referredFile);
+        }
         nexusAudioWaveForm.updateVisualizer(audioBytes);
+
     }
 
     private void updateVisibilities() {
@@ -190,6 +209,8 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
             binding.audioPlayer.waveform.setVisibility(GONE);
             binding.audioPlayer.audioController.setVisibility(GONE);
             nexusAudioWaveForm.setVisibility(GONE);
+
+            recordOrDeleteButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_mic_none_24 ));
         } else {
             binding.captureButton.setVisibility(GONE);
             binding.chooseButton.setVisibility(GONE);
@@ -197,6 +218,8 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
             binding.audioPlayer.waveform.setVisibility(GONE);
             binding.audioPlayer.audioController.setVisibility(VISIBLE);
             nexusAudioWaveForm.setVisibility(VISIBLE);
+
+            recordOrDeleteButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_delete_menu_24 ));
         }
 
         if (questionDetails.isReadOnly()) {
@@ -213,9 +236,11 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
         if (binaryName != null) {
             Clip clip = new Clip("audio:" + getFormEntryPrompt().getIndex().toString(), getAudioFile().getAbsolutePath());
 
+            Integer audioDuration = getDurationOfFile(clip.getURI());
+
             audioPlayer.onPlayingChanged(clip.getClipID(), binding.audioPlayer.audioController::setPlaying);
             audioPlayer.onPositionChanged(clip.getClipID(), binding.audioPlayer.audioController::setPosition);
-            binding.audioPlayer.audioController.setDuration(getDurationOfFile(clip.getURI()));
+            binding.audioPlayer.audioController.setDuration(audioDuration);
             binding.audioPlayer.audioController.setListener(new AudioControllerView.Listener() {
                 @Override
                 public void onPlayClicked() {
@@ -231,8 +256,13 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
                 public void onPositionChanged(Integer newPosition) {
                     analytics.logFormEvent(AnalyticsEvents.AUDIO_PLAYER_SEEK, questionDetails.getFormAnalyticsID());
                     audioPlayer.setPosition(clip.getClipID(), newPosition);
-                    if(audioBytes != null){
-                    nexusAudioWaveForm.updateVisualizer(audioBytes);}
+
+                        double percentage = (double)newPosition / (double)audioDuration;
+
+                        nexusAudioWaveForm.updatePlayerPercent((float) percentage);
+
+                        Timber.d("POSTED POS %s from %s / %s"  , percentage, newPosition, audioDuration);
+
                 }
 
                 @Override

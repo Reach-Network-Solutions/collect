@@ -17,13 +17,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import app.nexusforms.android.R;
+import timber.log.Timber;
 
 public class NexusAudioWaveForm extends View {
 
     /**
      * constant value for Height of the bar
      */
-    public static final int VISUALIZER_HEIGHT = 28;
+    public static final int VISUALIZER_HEIGHT = 18;
 
     /**
      * bytes array converted from file.
@@ -39,11 +40,11 @@ public class NexusAudioWaveForm extends View {
     /**
      * Canvas painting for sample scale, filling played part of audio sample
      */
-    private Paint playedStatePainting = new Paint();
+    private final Paint playedStatePainting = new Paint();
     /**
      * Canvas painting for sample scale, filling not played part of audio sample
      */
-    private Paint notPlayedStatePainting = new Paint();
+    private final Paint notPlayedStatePainting = new Paint();
 
     private int width;
     private int height;
@@ -145,16 +146,21 @@ public class NexusAudioWaveForm extends View {
 
             for (int b = 0; b < drawBarCount; b++) {
                 int x = barNum * dp(3);
+
                 float left = x;
                 float top = y + dp(VISUALIZER_HEIGHT - Math.max(1, VISUALIZER_HEIGHT * value / 31.0f));
                 float right = x + dp(2);
-                float bottom = y + dp(VISUALIZER_HEIGHT);
+                float bottom = y + dp(VISUALIZER_HEIGHT + Math.max(1, VISUALIZER_HEIGHT * value / 31.0f) );
+                float invertedTop =(0 - top);
+
                 if (x < denseness && x + dp(2) < denseness) {
                     canvas.drawRect(left, top, right, bottom, notPlayedStatePainting);
                 } else {
                     canvas.drawRect(left, top, right, bottom, playedStatePainting);
+
                     if (x < denseness) {
                         canvas.drawRect(left, top, right, bottom, notPlayedStatePainting);
+
                     }
                 }
                 barNum++;
