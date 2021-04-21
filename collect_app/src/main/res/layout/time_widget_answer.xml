@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/margin_standard">
 
-    <app.nexusforms.android.views.MultiClickSafeButton
+   <!-- <app.nexusforms.android.views.MultiClickSafeButton
         android:id="@+id/time_button"
         style="@style/Widget.Collect.Button.WidgetAnswer"
         android:text="@string/select_time" />
@@ -13,5 +15,21 @@
         android:id="@+id/time_answer_text"
         style="@style/Widget.Collect.TextView.WidgetAnswer"
         android:text="@string/no_time_selected" />
+-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_time_widget"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconDrawable="@drawable/ic_time"
+        app:endIconMode="custom">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_answer_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

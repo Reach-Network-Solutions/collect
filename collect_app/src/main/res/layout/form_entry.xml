@@ -73,6 +73,7 @@ the License.
         android:layout_marginStart="32dp"
         android:layout_marginBottom="16dp"
         android:text="@string/submit"
+        app:layout_constraintTop_toBottomOf="@id/questionholder"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

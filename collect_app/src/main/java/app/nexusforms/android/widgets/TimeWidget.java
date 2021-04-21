@@ -52,23 +52,28 @@ public class TimeWidget extends QuestionWidget implements WidgetDataReceiver {
         binding = TimeWidgetAnswerBinding.inflate(((Activity) context).getLayoutInflater());
 
         if (prompt.isReadOnly()) {
-            binding.timeButton.setVisibility(GONE);
+            binding.layoutTimeWidget.setEnabled(false);
         } else {
-            binding.timeButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
+            binding.layoutTimeWidget.getEditText().setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
 
-            binding.timeButton.setOnClickListener(v -> {
+            binding.layoutTimeWidget.getEditText().setOnClickListener(v -> {
+                DateTimeWidgetUtils.setWidgetWaitingForData(prompt.getIndex());
+                widgetUtils.showTimePickerDialog(context, selectedTime);
+            });
+
+            binding.layoutTimeWidget.setEndIconOnClickListener(v -> {
                 DateTimeWidgetUtils.setWidgetWaitingForData(prompt.getIndex());
                 widgetUtils.showTimePickerDialog(context, selectedTime);
             });
         }
-        binding.timeAnswerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
+        binding.layoutTimeWidget.getEditText().setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
 
         if (prompt.getAnswerValue() == null) {
             selectedTime = DateTimeUtils.getCurrentDateTime();
         } else {
             DateTime dateTime = new DateTime(getFormEntryPrompt().getAnswerValue().getValue());
             selectedTime = DateTimeUtils.getSelectedTime(dateTime.toLocalDateTime(), LocalDateTime.now());
-            binding.timeAnswerText.setText(DateTimeUtils.getTimeData(dateTime).getDisplayText());
+            binding.layoutTimeWidget.getEditText().setText(DateTimeUtils.getTimeData(dateTime).getDisplayText());
         }
 
         return binding.getRoot();
@@ -77,35 +82,35 @@ public class TimeWidget extends QuestionWidget implements WidgetDataReceiver {
     @Override
     public void clearAnswer() {
         selectedTime = DateTimeUtils.getCurrentDateTime();
-        binding.timeAnswerText.setText(R.string.no_time_selected);
+        binding.layoutTimeWidget.getEditText().setText(R.string.no_time_selected);
         widgetValueChanged();
     }
 
     @Override
     public IAnswerData getAnswer() {
-        return binding.timeAnswerText.getText().equals(getContext().getString(R.string.no_time_selected))
+        return binding.layoutTimeWidget.getEditText().getText().equals(getContext().getString(R.string.no_time_selected))
                 ? null
                 : new TimeData(selectedTime.toDateTime().toDate());
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        binding.timeButton.setOnLongClickListener(l);
-        binding.timeAnswerText.setOnLongClickListener(l);
+        binding.layoutTimeWidget.setOnLongClickListener(l);
+        binding.layoutTimeWidget.getEditText().setOnLongClickListener(l);
     }
 
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
-        binding.timeButton.cancelLongPress();
-        binding.timeAnswerText.cancelLongPress();
+        binding.layoutTimeWidget.cancelLongPress();
+        binding.layoutTimeWidget.getEditText().cancelLongPress();
     }
 
     @Override
     public void setData(Object answer) {
         if (answer instanceof DateTime) {
             selectedTime = DateTimeUtils.getSelectedTime(((DateTime) answer).toLocalDateTime(), LocalDateTime.now());
-            binding.timeAnswerText.setText(new TimeData(selectedTime.toDate()).getDisplayText());
+            binding.layoutTimeWidget.getEditText().setText(new TimeData(selectedTime.toDate()).getDisplayText());
         }
     }
 }
