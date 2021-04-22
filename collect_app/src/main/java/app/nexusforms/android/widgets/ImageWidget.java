@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import app.nexusforms.android.BuildConfig;
 import app.nexusforms.android.R;
 
@@ -56,8 +58,11 @@ import static app.nexusforms.android.formentry.questions.WidgetViewUtils.createS
 @SuppressLint("ViewConstructor")
 public class ImageWidget extends BaseImageWidget implements ButtonClickListener {
 
-    Button captureButton;
-    Button chooseButton;
+    //Button captureButton;
+    //Button chooseButton;
+
+    TextInputLayout captureButton;
+    TextInputLayout chooseButton;
 
     private boolean selfie;
 
@@ -77,9 +82,13 @@ public class ImageWidget extends BaseImageWidget implements ButtonClickListener 
         String appearance = getFormEntryPrompt().getAppearanceHint();
         selfie = Appearances.isFrontCameraAppearance(getFormEntryPrompt());
 
-        captureButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.capture_image, questionDetails.isReadOnly(), getContext().getString(R.string.capture_image), getAnswerFontSize(), this);
-
+       /* captureButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.capture_image, questionDetails.isReadOnly(), getContext().getString(R.string.capture_image), getAnswerFontSize(), this);
         chooseButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.choose_image, questionDetails.isReadOnly(), getContext().getString(R.string.choose_image), getAnswerFontSize(), this);
+*/
+
+
+        captureButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.capture_image, questionDetails.isReadOnly(), getContext().getString(R.string.capture_image), getAnswerFontSize(), this);
+        chooseButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.choose_image, questionDetails.isReadOnly(), getContext().getString(R.string.choose_image), getAnswerFontSize(), this);
 
         answerLayout.addView(captureButton);
         answerLayout.addView(chooseButton);
@@ -111,7 +120,7 @@ public class ImageWidget extends BaseImageWidget implements ButtonClickListener 
     public void clearAnswer() {
         super.clearAnswer();
         // reset buttons
-        captureButton.setText(getContext().getString(R.string.capture_image));
+        //captureButton.setText(getContext().getString(R.string.capture_image));
     }
 
     @Override

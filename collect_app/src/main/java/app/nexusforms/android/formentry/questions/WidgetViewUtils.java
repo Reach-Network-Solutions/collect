@@ -3,21 +3,28 @@ package app.nexusforms.android.formentry.questions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import app.nexusforms.android.R;
 
+import app.nexusforms.android.databinding.WidgetSimpleInputLayoutBinding;
 import app.nexusforms.android.utilities.MultiClickGuard;
 import app.nexusforms.android.utilities.ThemeUtils;
 import app.nexusforms.android.utilities.ViewUtils;
@@ -107,5 +114,32 @@ public class WidgetViewUtils {
 
     public static Button createSimpleButton(Context context, boolean readOnly, String text, int answerFontSize, ButtonClickListener listener) {
         return createSimpleButton(context, R.id.simple_button, readOnly, text, answerFontSize, listener);
+    }
+
+    public static TextInputLayout createSimpleTextInputLayout(Context context, @IdRes final int withId, boolean readOnly, String text, int answerFontSize, ButtonClickListener listener) {
+        final WidgetSimpleInputLayoutBinding binding = WidgetSimpleInputLayoutBinding.inflate(LayoutInflater.from(context),
+                null,
+                false
+        );
+
+        /*final TextInputLayout textLayout = (TextInputLayout) LayoutInflater.from(context)
+                .inflate(R.layout.widget_simple_input_layout, null, false);
+
+        EditText editText = textLayout.getEditText();
+        editText.setHint(text);
+        textLayout.setEndIconOnClickListener(v -> {
+            listener.onButtonClick(withId);
+        });*/
+
+        binding.textImageWidget.setText(text);
+        binding.textImageWidget.setOnClickListener(v ->
+                listener.onButtonClick(withId)
+        );
+
+        binding.layoutImageWidget.setEndIconOnClickListener(v ->
+                listener.onButtonClick(withId)
+        );
+
+        return binding.getRoot();
     }
 }
