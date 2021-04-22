@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,4 +17,23 @@
         android:cursorVisible="false"
         android:inputType="textMultiLine|textNoSuggestions"
         android:saveEnabled="false"/>
-</FrameLayout>
+</FrameLayout>-->
+
+<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_minimal"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/margin_standard"
+    app:endIconDrawable="@drawable/ic_drop_down"
+    app:endIconMode="custom">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/text_answer_minimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:inputType="none" />
+
+</com.google.android.material.textfield.TextInputLayout>

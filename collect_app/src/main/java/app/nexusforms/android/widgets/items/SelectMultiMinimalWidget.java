@@ -6,6 +6,7 @@ import android.content.Context;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.SelectMultiData;
 import org.javarosa.core.model.data.helper.Selection;
+
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.FormEntryActivity;
@@ -82,7 +83,8 @@ public class SelectMultiMinimalWidget extends SelectMinimalWidget {
 
     private void updateAnswerLabel() {
         if (selectedItems.isEmpty()) {
-            binding.answer.setText(R.string.select_answer);
+            //binding.textAnswerMinimal.setText(R.string.select_answer);
+            binding.textAnswerMinimal.setText("");
         } else {
             StringBuilder builder = new StringBuilder();
             for (Selection selectedItem : selectedItems) {
@@ -91,7 +93,7 @@ public class SelectMultiMinimalWidget extends SelectMinimalWidget {
                     builder.append(", ");
                 }
             }
-            binding.answer.setText(StringUtils.textToHtml(builder.toString()));
+            binding.textAnswerMinimal.setText(StringUtils.textToHtml(builder.toString()));
         }
     }
 }
