@@ -15,8 +15,9 @@
         style="@style/Widget.Collect.Button.WidgetAnswer"
         android:text="@string/choose_sound" />
 
-    <include
+    <app.nexusforms.android.audio.NexusAudioControllerView
         android:id="@+id/audio_player"
-        layout="@layout/audio_player_layout"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+      />
 </LinearLayout>

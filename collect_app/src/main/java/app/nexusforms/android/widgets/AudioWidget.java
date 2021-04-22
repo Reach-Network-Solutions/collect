@@ -21,7 +21,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
 import androidx.core.content.ContextCompat;
 
@@ -34,6 +33,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.analytics.AnalyticsEvents;
+import app.nexusforms.android.audio.NexusAudioControllerView;
 import app.nexusforms.android.audio.NexusAudioWaveForm;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.utilities.Appearances;
@@ -44,7 +44,6 @@ import app.nexusforms.android.widgets.utilities.AudioFileRequester;
 import app.nexusforms.android.widgets.utilities.AudioPlayer;
 import app.nexusforms.android.widgets.utilities.RecordingRequester;
 import app.nexusforms.android.widgets.utilities.RecordingStatusHandler;
-import app.nexusforms.android.audio.AudioControllerView;
 import app.nexusforms.android.databinding.AudioWidgetAnswerBinding;
 import app.nexusforms.audioclips.Clip;
 
@@ -77,6 +76,7 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
     private NexusAudioWaveForm nexusAudioWaveForm;
     byte[] audioBytes;
     private ImageButton recordOrDeleteButton;
+    private ImageButton playOrPauseButton;
 
     private boolean recordingInProgress;
     private String binaryName;
@@ -104,8 +104,8 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
                 recordingInProgress = true;
                 updateVisibilities();
 
-                binding.audioPlayer.recordingDuration.setText(formatLength(session.first));
-                binding.audioPlayer.waveform.addAmplitude(session.second);
+                binding.audioPlayer.nexusAudioControllerLayoutBinding.audioLength.setText(formatLength(session.first));
+                //binding.audioPlayer.waveform.addAmplitude(session.second);
             } else {
                 recordingInProgress = false;
                 updateVisibilities();
@@ -119,15 +119,14 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
 
         binding.captureButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
         binding.chooseButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
+        nexusAudioWaveForm = binding.audioPlayer.nexusAudioControllerLayoutBinding.nexusAudioWaveform;
 
         binding.captureButton.setOnClickListener(v -> {
-            binding.audioPlayer.waveform.clear();
+            //binding.audioPlayer.waveform.clear();
             recordingRequester.requestRecording(getFormEntryPrompt());
         });
-        binding.chooseButton.setOnClickListener(v -> audioFileRequester.requestFile(getFormEntryPrompt()));
 
-        nexusAudioWaveForm = binding.audioPlayer.nexusAudionWaveform;
-        recordOrDeleteButton = binding.audioPlayer.playOrRecordImageButton;
+        binding.chooseButton.setOnClickListener(v -> audioFileRequester.requestFile(getFormEntryPrompt()));
 
         return binding.getRoot();
     }
@@ -198,28 +197,34 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
         if (recordingInProgress) {
             binding.captureButton.setVisibility(GONE);
             binding.chooseButton.setVisibility(GONE);
-            binding.audioPlayer.recordingDuration.setVisibility(VISIBLE);
-            binding.audioPlayer.waveform.setVisibility(VISIBLE);
-            binding.audioPlayer.audioController.setVisibility(GONE);
-            nexusAudioWaveForm.setVisibility(GONE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.audioLength.setVisibility(VISIBLE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.nexusAudioWaveform.setVisibility(VISIBLE);
+            //binding.audioPlayer.audioController.setVisibility(GONE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setVisibility(INVISIBLE);
+            nexusAudioWaveForm.setVisibility(INVISIBLE);
         } else if (getAnswer() == null) {
             binding.captureButton.setVisibility(VISIBLE);
             binding.chooseButton.setVisibility(VISIBLE);
-            binding.audioPlayer.recordingDuration.setVisibility(GONE);
-            binding.audioPlayer.waveform.setVisibility(GONE);
-            binding.audioPlayer.audioController.setVisibility(GONE);
-            nexusAudioWaveForm.setVisibility(GONE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.audioLength.setVisibility(INVISIBLE);
 
-            recordOrDeleteButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_mic_none_24 ));
+            //binding.audioPlayer.audioController.setVisibility(GONE);
+            nexusAudioWaveForm.setVisibility(INVISIBLE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.playOrPauseImageButton.setVisibility(INVISIBLE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setVisibility(VISIBLE);
+
+
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_mic_none_24 ));
         } else {
             binding.captureButton.setVisibility(GONE);
             binding.chooseButton.setVisibility(GONE);
-            binding.audioPlayer.recordingDuration.setVisibility(GONE);
-            binding.audioPlayer.waveform.setVisibility(GONE);
-            binding.audioPlayer.audioController.setVisibility(VISIBLE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.audioLength.setVisibility(VISIBLE);
+            //binding.audioPlayer.audioController.setVisibility(VISIBLE);
             nexusAudioWaveForm.setVisibility(VISIBLE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.playOrPauseImageButton.setVisibility(VISIBLE);
 
-            recordOrDeleteButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_delete_menu_24 ));
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setVisibility(VISIBLE);
+
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_delete_menu_24 ));
         }
 
         if (questionDetails.isReadOnly()) {
@@ -238,10 +243,10 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
 
             Integer audioDuration = getDurationOfFile(clip.getURI());
 
-            audioPlayer.onPlayingChanged(clip.getClipID(), binding.audioPlayer.audioController::setPlaying);
-            audioPlayer.onPositionChanged(clip.getClipID(), binding.audioPlayer.audioController::setPosition);
-            binding.audioPlayer.audioController.setDuration(audioDuration);
-            binding.audioPlayer.audioController.setListener(new AudioControllerView.Listener() {
+            audioPlayer.onPlayingChanged(clip.getClipID(), binding.audioPlayer::setPlaying);
+            audioPlayer.onPositionChanged(clip.getClipID(), binding.audioPlayer::setPosition);
+            binding.audioPlayer.setDuration(audioDuration);
+            binding.audioPlayer.setListener(new NexusAudioControllerView.Listener() {
                 @Override
                 public void onPlayClicked() {
                     audioPlayer.play(clip);

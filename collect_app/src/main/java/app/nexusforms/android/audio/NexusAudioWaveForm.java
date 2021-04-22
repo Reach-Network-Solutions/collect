@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -116,7 +118,7 @@ public class NexusAudioWaveForm extends View {
         float barCounter = 0;
         int nextBarNum = 0;
 
-        int y = (height - dp(VISUALIZER_HEIGHT)) / 2;
+        int y = (height - (dp(VISUALIZER_HEIGHT)*2)) / 2;
         int barNum = 0;
         int lastBarNum;
         int drawBarCount;
@@ -148,10 +150,9 @@ public class NexusAudioWaveForm extends View {
                 int x = barNum * dp(3);
 
                 float left = x;
-                float top = y + dp(VISUALIZER_HEIGHT - Math.max(1, VISUALIZER_HEIGHT * value / 31.0f));
+                float top = y + dp(VISUALIZER_HEIGHT - Math.max(1, VISUALIZER_HEIGHT * value / 41.0f));
                 float right = x + dp(2);
-                float bottom = y + dp(VISUALIZER_HEIGHT + Math.max(1, VISUALIZER_HEIGHT * value / 31.0f) );
-                float invertedTop =(0 - top);
+                float bottom = y + dp(VISUALIZER_HEIGHT + Math.max(1, VISUALIZER_HEIGHT * value / 41.0f) );
 
                 if (x < denseness && x + dp(2) < denseness) {
                     canvas.drawRect(left, top, right, bottom, notPlayedStatePainting);

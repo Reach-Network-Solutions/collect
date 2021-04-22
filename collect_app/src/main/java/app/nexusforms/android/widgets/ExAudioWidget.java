@@ -76,7 +76,7 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
 
         binding.launchExternalAppButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, answerFontSize);
         binding.launchExternalAppButton.setOnClickListener(view -> launchExternalApp());
-        nexusAudioWaveForm = binding.audioPlayer.nexusAudionWaveform;
+        nexusAudioWaveForm = binding.audioPlayer.nexusAudioWaveform;
 
         return binding.getRoot();
     }
@@ -151,14 +151,14 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
     private void updateVisibilities() {
         if (answerFile == null) {
             binding.launchExternalAppButton.setVisibility(VISIBLE);
-            binding.audioPlayer.recordingDuration.setVisibility(GONE);
-            binding.audioPlayer.waveform.setVisibility(GONE);
-            binding.audioPlayer.audioController.setVisibility(GONE);
+            binding.audioPlayer.audioLength.setVisibility(GONE);
+            binding.audioPlayer.nexusAudioWaveform.setVisibility(GONE);
+            //binding.audioPlayer.audioController.setVisibility(GONE);
         } else {
             binding.launchExternalAppButton.setVisibility(GONE);
-            binding.audioPlayer.recordingDuration.setVisibility(GONE);
-            binding.audioPlayer.waveform.setVisibility(GONE);
-            binding.audioPlayer.audioController.setVisibility(VISIBLE);
+            binding.audioPlayer.audioLength.setVisibility(GONE);
+            binding.audioPlayer.nexusAudioWaveform.setVisibility(GONE);
+            //binding.audioPlayer.audioController.setVisibility(VISIBLE);
         }
 
         if (questionDetails.isReadOnly()) {
@@ -169,38 +169,38 @@ public class ExAudioWidget extends QuestionWidget implements FileWidget, WidgetD
     private void updatePlayerMedia() {
         Timber.d("MEDIA PLAYER");
         if (answerFile != null) {
-            Clip clip = new Clip("audio:" + getFormEntryPrompt().getIndex().toString(), answerFile.getAbsolutePath());
-
-            audioPlayer.onPlayingChanged(clip.getClipID(), binding.audioPlayer.audioController::setPlaying);
-            audioPlayer.onPositionChanged(clip.getClipID(), binding.audioPlayer.audioController::setPosition);
-            binding.audioPlayer.audioController.setDuration(getDurationOfFile(clip.getURI()));
-            binding.audioPlayer.audioController.setListener(new AudioControllerView.Listener() {
-                @Override
-                public void onPlayClicked() {
-                    audioPlayer.play(clip);
-                }
-
-                @Override
-                public void onPauseClicked() {
-                    audioPlayer.pause();
-                }
-
-                @Override
-                public void onPositionChanged(Integer newPosition) {
-                    analytics.logFormEvent(AnalyticsEvents.AUDIO_PLAYER_SEEK, questionDetails.getFormAnalyticsID());
-                    audioPlayer.setPosition(clip.getClipID(), newPosition);
-                }
-
-                @Override
-                public void onRemoveClicked() {
-                    new MaterialAlertDialogBuilder(getContext())
-                            .setTitle(R.string.delete_answer_file_question)
-                            .setMessage(R.string.answer_file_delete_warning)
-                            .setPositiveButton(R.string.delete_answer_file, (dialog, which) -> clearAnswer())
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-                }
-            });
+//            Clip clip = new Clip("audio:" + getFormEntryPrompt().getIndex().toString(), answerFile.getAbsolutePath());
+//
+//            audioPlayer.onPlayingChanged(clip.getClipID(), binding.audioPlayer.audioController::setPlaying);
+//            audioPlayer.onPositionChanged(clip.getClipID(), binding.audioPlayer.audioController::setPosition);
+//            binding.audioPlayer.audioController.setDuration(getDurationOfFile(clip.getURI()));
+//            binding.audioPlayer.audioController.setListener(new AudioControllerView.Listener() {
+//                @Override
+//                public void onPlayClicked() {
+//                    audioPlayer.play(clip);
+//                }
+//
+//                @Override
+//                public void onPauseClicked() {
+//                    audioPlayer.pause();
+//                }
+//
+//                @Override
+//                public void onPositionChanged(Integer newPosition) {
+//                    analytics.logFormEvent(AnalyticsEvents.AUDIO_PLAYER_SEEK, questionDetails.getFormAnalyticsID());
+//                    audioPlayer.setPosition(clip.getClipID(), newPosition);
+//                }
+//
+//                @Override
+//                public void onRemoveClicked() {
+//                    new MaterialAlertDialogBuilder(getContext())
+//                            .setTitle(R.string.delete_answer_file_question)
+//                            .setMessage(R.string.answer_file_delete_warning)
+//                            .setPositiveButton(R.string.delete_answer_file, (dialog, which) -> clearAnswer())
+//                            .setNegativeButton(R.string.cancel, null)
+//                            .show();
+//                }
+//            });
 
         }
     }
