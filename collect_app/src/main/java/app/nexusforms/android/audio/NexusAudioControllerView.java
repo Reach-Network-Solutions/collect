@@ -161,6 +161,8 @@ public class NexusAudioControllerView extends FrameLayout {
         void onPositionChanged(Integer newPosition);
 
         void onRecordOrRemoveClicked();
+
+        void onPickAudioFromFiles();
     }
 
     private class SwipeListener implements SeekBar.OnSeekBarChangeListener {

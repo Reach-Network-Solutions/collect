@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nexus_audio_wave_parent"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -21,11 +21,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-
             android:background="@color/zxing_transparent"
             android:paddingStart="5dp"
             android:paddingEnd="10dp"
-            android:src="@drawable/ic_baseline_play_arrow_40_nexus" />
+            android:src="@drawable/ic_baseline_play_arrow_40_nexus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <app.nexusforms.android.audio.NexusAudioWaveForm
             android:id="@+id/nexus_audio_waveform"
@@ -34,20 +36,38 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="3"
             android:paddingStart="15dp"
-            android:paddingEnd="15dp" />
+            android:paddingEnd="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/record_or_delete_image_button"
+            app:layout_constraintStart_toEndOf="@id/play_or_pause_image_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/record_audio_prompt_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_sound"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/record_or_delete_image_button"
+            app:layout_constraintStart_toEndOf="@id/play_or_pause_image_button"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Record sound" />
 
         <ImageButton
             android:id="@+id/record_or_delete_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-
             android:background="@color/zxing_transparent"
             android:paddingStart="10dp"
             android:paddingEnd="5dp"
-            android:src="@drawable/ic_baseline_mic_none_24" />
+            android:src="@drawable/ic_baseline_mic_none_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -71,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:textAlignment="center"
-            tools:text="00:10"
-            tools:ignore="RelativeOverlap" />
+            tools:ignore="RelativeOverlap"
+            tools:text="00:10" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
