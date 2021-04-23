@@ -116,26 +116,20 @@ public class WidgetViewUtils {
         return createSimpleButton(context, R.id.simple_button, readOnly, text, answerFontSize, listener);
     }
 
-    public static TextInputLayout createSimpleTextInputLayout(Context context, @IdRes final int withId, boolean readOnly, String text, int answerFontSize, ButtonClickListener listener) {
+    public static TextInputLayout createSimpleTextInputLayout(Context context, @IdRes final int withId, boolean readOnly,
+                                                              String text, int answerFontSize, ButtonClickListener listener,
+                                                              int drawableResource) {
         final WidgetSimpleInputLayoutBinding binding = WidgetSimpleInputLayoutBinding.inflate(LayoutInflater.from(context),
                 null,
                 false
         );
-
-        /*final TextInputLayout textLayout = (TextInputLayout) LayoutInflater.from(context)
-                .inflate(R.layout.widget_simple_input_layout, null, false);
-
-        EditText editText = textLayout.getEditText();
-        editText.setHint(text);
-        textLayout.setEndIconOnClickListener(v -> {
-            listener.onButtonClick(withId);
-        });*/
 
         binding.textImageWidget.setText(text);
         binding.textImageWidget.setOnClickListener(v ->
                 listener.onButtonClick(withId)
         );
 
+        binding.layoutImageWidget.setEndIconDrawable(ContextCompat.getDrawable(context, drawableResource));
         binding.layoutImageWidget.setEndIconOnClickListener(v ->
                 listener.onButtonClick(withId)
         );

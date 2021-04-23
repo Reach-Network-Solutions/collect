@@ -58,9 +58,6 @@ import static app.nexusforms.android.formentry.questions.WidgetViewUtils.createS
 @SuppressLint("ViewConstructor")
 public class ImageWidget extends BaseImageWidget implements ButtonClickListener {
 
-    //Button captureButton;
-    //Button chooseButton;
-
     TextInputLayout captureButton;
     TextInputLayout chooseButton;
 
@@ -82,13 +79,9 @@ public class ImageWidget extends BaseImageWidget implements ButtonClickListener 
         String appearance = getFormEntryPrompt().getAppearanceHint();
         selfie = Appearances.isFrontCameraAppearance(getFormEntryPrompt());
 
-       /* captureButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.capture_image, questionDetails.isReadOnly(), getContext().getString(R.string.capture_image), getAnswerFontSize(), this);
-        chooseButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.choose_image, questionDetails.isReadOnly(), getContext().getString(R.string.choose_image), getAnswerFontSize(), this);
-*/
 
-
-        captureButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.capture_image, questionDetails.isReadOnly(), getContext().getString(R.string.capture_image), getAnswerFontSize(), this);
-        chooseButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.choose_image, questionDetails.isReadOnly(), getContext().getString(R.string.choose_image), getAnswerFontSize(), this);
+        captureButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.capture_image, questionDetails.isReadOnly(), getContext().getString(R.string.capture_image), getAnswerFontSize(), this, R.drawable.ic_camera);
+        chooseButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.choose_image, questionDetails.isReadOnly(), getContext().getString(R.string.choose_image), getAnswerFontSize(), this, R.drawable.ic_upload_image);
 
         answerLayout.addView(captureButton);
         answerLayout.addView(chooseButton);
@@ -119,8 +112,6 @@ public class ImageWidget extends BaseImageWidget implements ButtonClickListener 
     @Override
     public void clearAnswer() {
         super.clearAnswer();
-        // reset buttons
-        //captureButton.setText(getContext().getString(R.string.capture_image));
     }
 
     @Override
