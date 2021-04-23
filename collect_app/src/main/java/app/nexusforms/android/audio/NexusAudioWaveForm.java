@@ -5,11 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.AbsSeekBar;
 import android.widget.HorizontalScrollView;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.core.content.ContextCompat;
 
 import java.io.BufferedInputStream;
@@ -21,7 +23,7 @@ import java.io.IOException;
 import app.nexusforms.android.R;
 import timber.log.Timber;
 
-public class NexusAudioWaveForm extends View {
+public class NexusAudioWaveForm extends androidx.appcompat.widget.AppCompatSeekBar {
 
     /**
      * constant value for Height of the bar
@@ -104,7 +106,7 @@ public class NexusAudioWaveForm extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        //super.onDraw(canvas);
         if (bytes == null || width == 0) {
             return;
         }

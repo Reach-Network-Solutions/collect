@@ -128,6 +128,7 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
 
         binding.chooseButton.setOnClickListener(v -> audioFileRequester.requestFile(getFormEntryPrompt()));
 
+
         return binding.getRoot();
     }
 
@@ -212,7 +213,7 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
             binding.audioPlayer.nexusAudioControllerLayoutBinding.playOrPauseImageButton.setVisibility(INVISIBLE);
             binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setVisibility(VISIBLE);
 
-
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.playProgress.setVisibility(INVISIBLE);
             binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_mic_none_24 ));
         } else {
             binding.captureButton.setVisibility(GONE);
@@ -220,6 +221,8 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
             binding.audioPlayer.nexusAudioControllerLayoutBinding.audioLength.setVisibility(VISIBLE);
             //binding.audioPlayer.audioController.setVisibility(VISIBLE);
             nexusAudioWaveForm.setVisibility(VISIBLE);
+            binding.audioPlayer.nexusAudioControllerLayoutBinding.playProgress.setVisibility(VISIBLE);
+
             binding.audioPlayer.nexusAudioControllerLayoutBinding.playOrPauseImageButton.setVisibility(VISIBLE);
 
             binding.audioPlayer.nexusAudioControllerLayoutBinding.recordOrDeleteImageButton.setVisibility(VISIBLE);
@@ -271,16 +274,50 @@ public class AudioWidget extends QuestionWidget implements FileWidget, WidgetDat
                 }
 
                 @Override
-                public void onRemoveClicked() {
+                public void onRecordOrRemoveClicked() {
+
+                    if(recordingInProgress){
+                        //just wait
+                    }else if(getAnswer() == null){
+                        recordingRequester.requestRecording(getFormEntryPrompt());
+                    }else{
+                        //is tapping delete button
+
                     new MaterialAlertDialogBuilder(getContext())
                             .setTitle(R.string.delete_answer_file_question)
                             .setMessage(R.string.answer_file_delete_warning)
                             .setPositiveButton(R.string.delete_answer_file, (dialog, which) -> clearAnswer())
                             .setNegativeButton(R.string.cancel, null)
                             .show();
+                    }
                 }
             });
 
+        }else{
+            binding.audioPlayer.setListener(new NexusAudioControllerView.Listener() {
+
+                @Override
+                public void onPlayClicked() {
+
+                }
+
+                @Override
+                public void onPauseClicked() {
+
+                }
+
+                @Override
+                public void onPositionChanged(Integer newPosition) {
+
+                }
+
+                @Override
+                public void onRecordOrRemoveClicked() {
+                    if(getAnswer() == null){
+                        recordingRequester.requestRecording(getFormEntryPrompt());
+                    }
+                }
+            });
         }
     }
 

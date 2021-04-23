@@ -18,13 +18,13 @@
 
         <ImageButton
             android:id="@+id/play_or_pause_image_button"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+
             android:background="@color/zxing_transparent"
             android:paddingStart="5dp"
-            android:paddingEnd="15dp"
+            android:paddingEnd="10dp"
             android:src="@drawable/ic_baseline_play_arrow_40_nexus" />
 
         <app.nexusforms.android.audio.NexusAudioWaveForm
@@ -38,12 +38,12 @@
 
         <ImageButton
             android:id="@+id/record_or_delete_image_button"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+
             android:background="@color/zxing_transparent"
-            android:paddingStart="15dp"
+            android:paddingStart="10dp"
             android:paddingEnd="5dp"
             android:src="@drawable/ic_baseline_mic_none_24" />
 

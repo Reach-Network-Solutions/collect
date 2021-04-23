@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 
 import app.nexusforms.android.R;
 import app.nexusforms.android.databinding.NexusAudioControllerLayoutBinding;
+import timber.log.Timber;
 
 import static app.nexusforms.strings.format.LengthFormatterKt.formatLength;
 import static java.lang.Math.max;
@@ -41,7 +42,7 @@ public class NexusAudioControllerView extends FrameLayout {
     private final ImageButton playPauseButton;
     private final ImageButton recordOrDeleteButton;
    // private final SeekBar seekBar;
-    //private final SwipeListener swipeListener;
+    private final SwipeListener swipeListener;
 
     private boolean playing;
     private int position;
@@ -63,11 +64,22 @@ public class NexusAudioControllerView extends FrameLayout {
         totalDurationLabel = nexusAudioControllerLayoutBinding.audioLength;
         //seekBar = binding.seekBar;
 
-        //swipeListener = new SwipeListener();
-        //seekBar.setOnSeekBarChangeListener(swipeListener);
+        swipeListener = new SwipeListener();
+
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.setOnSeekBarChangeListener(swipeListener);
 
         playPauseButton.setOnClickListener(view -> playClicked());
-        recordOrDeleteButton.setOnClickListener(view -> listener.onRemoveClicked());
+
+        recordOrDeleteButton.setOnClickListener(view ->
+        {
+            if(listener != null){
+                listener.onRecordOrRemoveClicked();
+            }else{
+                Timber.d("LISTENER is null");
+                //there's no file - request recording
+
+            }
+        });
     }
 
     private void playClicked() {
@@ -89,6 +101,10 @@ public class NexusAudioControllerView extends FrameLayout {
         if (listener != null) {
             listener.onPositionChanged(correctedPosition);
         }
+
+        double progress = (double)newPosition/(double)duration;
+
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.updatePlayerPercent((float)progress);
     }
 
     public void setPlaying(Boolean playing) {
@@ -106,16 +122,16 @@ public class NexusAudioControllerView extends FrameLayout {
     }
 
     public void setPosition(Integer position) {
-        //if (!swipeListener.isSwiping()) {
-          //  renderPosition(position);
-      //  }
+        if (!swipeListener.isSwiping()) {
+           renderPosition(position);
+        }
     }
 
     public void setDuration(Integer duration) {
         this.duration = duration;
 
         totalDurationLabel.setText(formatLength((long) duration));
-        //seekBar.setMax(duration);
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.setMax(duration);
         setPosition(0);
     }
 
@@ -124,10 +140,9 @@ public class NexusAudioControllerView extends FrameLayout {
 
         currentDurationLabel.setText(formatLength((long) position));
 
-        double percentage = (double)position/ (double)duration;
-
-        nexusAudioControllerLayoutBinding.nexusAudioWaveform.updatePlayerPercent((float) percentage);
-
+        double progress = (double)position/(double)duration;
+        //listener.onPositionChanged(position);
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.updatePlayerPercent((float)progress);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             //seekBar.setProgress(position, true);
 
@@ -145,7 +160,7 @@ public class NexusAudioControllerView extends FrameLayout {
 
         void onPositionChanged(Integer newPosition);
 
-        void onRemoveClicked();
+        void onRecordOrRemoveClicked();
     }
 
     private class SwipeListener implements SeekBar.OnSeekBarChangeListener {
@@ -165,6 +180,7 @@ public class NexusAudioControllerView extends FrameLayout {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int newProgress, boolean fromUser) {
+            Timber.d("PROGRESS CHANGED TO %s", newProgress);
             if (fromUser) {
                 renderPosition(newProgress);
             }
