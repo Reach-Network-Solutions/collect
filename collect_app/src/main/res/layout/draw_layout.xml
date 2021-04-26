@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="org.odk.collect.android.app.odk.collect.android.activities.DrawActivity">
+    tools:context="app.nexusforms.android.activities.DrawActivity">
 
     <app.nexusforms.android.views.DrawView
         android:id="@+id/drawView"
@@ -50,7 +50,6 @@
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:visibility="invisible"
-        app:backgroundTint="@android:color/black"
         app:elevation="6dp"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_clear_white"
@@ -93,7 +92,6 @@
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:visibility="invisible"
-        app:backgroundTint="@android:color/black"
         app:elevation="6dp"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_save_white"
@@ -136,7 +134,6 @@
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:visibility="invisible"
-        app:backgroundTint="@android:color/black"
         app:elevation="6dp"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_color_lens_white"
@@ -153,8 +150,6 @@
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         android:tag="0"
-        android:tint="#FFF"
-        app:backgroundTint="@android:color/black"
         app:elevation="6dp"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_add_white"/>

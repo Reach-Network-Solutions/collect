@@ -17,7 +17,11 @@ package app.nexusforms.android.widgets;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.widget.Button;
+
+import androidx.core.content.ContextCompat;
 
 import app.nexusforms.android.R;
 
@@ -40,7 +44,7 @@ import static app.nexusforms.android.formentry.questions.WidgetViewUtils.createS
 @SuppressLint("ViewConstructor")
 public class SignatureWidget extends BaseImageWidget implements ButtonClickListener {
 
-    Button signButton;
+    //Button signButton;
 
     public SignatureWidget(Context context, QuestionDetails prompt, QuestionMediaManager questionMediaManager, WaitingForDataRegistry waitingForDataRegistry) {
         super(context, prompt, questionMediaManager, waitingForDataRegistry, new MediaUtils());
@@ -53,9 +57,9 @@ public class SignatureWidget extends BaseImageWidget implements ButtonClickListe
     @Override
     protected void setUpLayout() {
         super.setUpLayout();
-        signButton = createSimpleButton(getContext(), questionDetails.isReadOnly(), getContext().getString(R.string.sign_button), getAnswerFontSize(), this);
+        //signButton = createSimpleButton(getContext(), questionDetails.isReadOnly(), getContext().getString(R.string.sign_button), getAnswerFontSize(), this);
 
-        answerLayout.addView(signButton);
+        //answerLayout.addView(signButton);
         answerLayout.addView(errorTextView);
 
         errorTextView.setVisibility(GONE);
@@ -75,19 +79,19 @@ public class SignatureWidget extends BaseImageWidget implements ButtonClickListe
     public void clearAnswer() {
         super.clearAnswer();
         // reset buttons
-        signButton.setText(getContext().getString(R.string.sign_button));
+        //signButton.setText(getContext().getString(R.string.sign_button));
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        signButton.setOnLongClickListener(l);
+        //signButton.setOnLongClickListener(l);
         super.setOnLongClickListener(l);
     }
 
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
-        signButton.cancelLongPress();
+        //signButton.cancelLongPress();
     }
 
     @Override

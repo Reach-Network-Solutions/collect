@@ -21,26 +21,38 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.util.DisplayMetrics;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.card.MaterialCardView;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.form.api.FormEntryPrompt;
+
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.DrawActivity;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.formentry.questions.WidgetViewUtils;
+import app.nexusforms.android.utilities.Appearances;
 import app.nexusforms.android.utilities.ApplicationConstants;
 import app.nexusforms.android.utilities.FileUtils;
 import app.nexusforms.android.utilities.MediaUtils;
@@ -53,6 +65,7 @@ import app.nexusforms.android.storage.StoragePathProvider;
 
 import java.io.File;
 
+import app.nexusforms.utilities.PixelToDpConverter;
 import timber.log.Timber;
 
 public abstract class BaseImageWidget extends QuestionWidget implements FileWidget, WidgetDataReceiver {
@@ -69,6 +82,8 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     private final WaitingForDataRegistry waitingForDataRegistry;
     private final QuestionMediaManager questionMediaManager;
     private final MediaUtils mediaUtils;
+
+    private MaterialCardView imageViewHost;
 
     public BaseImageWidget(Context context, QuestionDetails prompt, QuestionMediaManager questionMediaManager,
                            WaitingForDataRegistry waitingForDataRegistry, MediaUtils mediaUtils) {
@@ -97,7 +112,7 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     @Override
     public void deleteFile() {
         questionMediaManager.deleteAnswerFile(getFormEntryPrompt().getIndex().toString(),
-                        getInstanceFolder() + File.separator + binaryName);
+                getInstanceFolder() + File.separator + binaryName);
         binaryName = null;
     }
 
@@ -126,6 +141,8 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     public void setOnLongClickListener(OnLongClickListener l) {
         if (imageView != null) {
             imageView.setOnLongClickListener(l);
+        }else if(imageViewHost != null){
+            imageViewHost.setOnLongClickListener(l);
         }
     }
 
@@ -134,12 +151,18 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
         super.cancelLongPress();
         if (imageView != null) {
             imageView.cancelLongPress();
+        }else if(imageViewHost != null){
+            imageViewHost.cancelLongPress();
         }
     }
 
     protected void addCurrentImageToLayout() {
         answerLayout.removeView(imageView);
+        FormEntryPrompt currentQsn = this.getFormEntryPrompt();
 
+        String appearance = Appearances.getSanitizedAppearanceHint(currentQsn);
+
+        boolean needsOuterBorder = appearance.equals(Appearances.SIGNATURE) || appearance.equals(Appearances.DRAW);
         if (binaryName != null) {
             DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
@@ -158,8 +181,60 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
                         }
                     });
 
-                    answerLayout.addView(imageView);
+                    answerLayout.removeAllViews();
+
+                    if (needsOuterBorder) {
+                        MaterialCardView imageViewHost = new MaterialCardView(getContext());
+                        imageViewHost.setRadius(20f);
+                        imageViewHost.setStrokeWidth(1);
+
+                        imageViewHost.setStrokeColor(ContextCompat.getColor(getContext(), R.color.dark_blue));
+
+                        imageViewHost.addView(imageView);
+                        answerLayout.addView(imageViewHost);
+                    } else {
+                        answerLayout.addView(imageView);
+
+                    }
+
+
                 }
+            }
+        } else {
+            //Paint the emptyLayout
+            if (needsOuterBorder) {
+                imageViewHost = new MaterialCardView(new ContextThemeWrapper(getContext(), R.style.draw_card_host));
+                imageViewHost.setRadius(20f);
+                imageViewHost.setStrokeWidth(1);
+
+                int preferredHeight = PixelToDpConverter.convertToDp(120, getContext());
+
+                imageViewHost.setLayoutParams(new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, preferredHeight
+                        ));
+                LinearLayout cardChild = new LinearLayout(getContext());
+                cardChild.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
+                TextView note = new TextView(new ContextThemeWrapper(getContext(), R.style.draw_text_prompt));
+
+                if (appearance.equals(Appearances.SIGNATURE)) {
+
+                    note.setText(R.string.signtaure_prompt);
+                    imageViewHost.setOnClickListener(view -> imageClickHandler.clickImage("signButton"));
+                } else {
+                    note.setText(R.string.sketch_prompt);
+                    imageViewHost.setOnClickListener(view -> imageClickHandler.clickImage("drawButton"));
+                }
+
+                imageViewHost.setStrokeColor(ContextCompat.getColor(getContext(), R.color.dark_blue));
+
+                cardChild.addView(note);
+
+                imageViewHost.addView(cardChild);
+
+
+
+                answerLayout.addView(imageViewHost);
             }
         }
     }
@@ -267,8 +342,8 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     /**
      * Standard method for launching an Activity.
      *
-     * @param intent - The Intent to start
-     * @param resourceCode - Code to return when Activity exits
+     * @param intent              - The Intent to start
+     * @param resourceCode        - Code to return when Activity exits
      * @param errorStringResource - String resource for error toast
      */
     protected void launchActivityForResult(Intent intent, final int resourceCode, final int errorStringResource) {

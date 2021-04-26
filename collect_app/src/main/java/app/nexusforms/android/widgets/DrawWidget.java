@@ -41,7 +41,7 @@ import static app.nexusforms.android.formentry.questions.WidgetViewUtils.createS
 @SuppressLint("ViewConstructor")
 public class DrawWidget extends BaseImageWidget implements ButtonClickListener {
 
-    Button drawButton;
+    //Button drawButton;
 
     public DrawWidget(Context context, QuestionDetails prompt, QuestionMediaManager questionMediaManager, WaitingForDataRegistry waitingForDataRegistry) {
         super(context, prompt, questionMediaManager, waitingForDataRegistry, new MediaUtils());
@@ -54,9 +54,9 @@ public class DrawWidget extends BaseImageWidget implements ButtonClickListener {
     @Override
     protected void setUpLayout() {
         super.setUpLayout();
-        drawButton = WidgetViewUtils.createSimpleButton(getContext(), questionDetails.isReadOnly(), getContext().getString(R.string.draw_image), getAnswerFontSize(), this);
+        //drawButton = WidgetViewUtils.createSimpleButton(getContext(), questionDetails.isReadOnly(), getContext().getString(R.string.draw_image), getAnswerFontSize(), this);
 
-        answerLayout.addView(drawButton);
+        //answerLayout.addView(drawButton);
         answerLayout.addView(errorTextView);
 
         errorTextView.setVisibility(View.GONE);
@@ -76,19 +76,19 @@ public class DrawWidget extends BaseImageWidget implements ButtonClickListener {
     public void clearAnswer() {
         super.clearAnswer();
         // reset buttons
-        drawButton.setText(getContext().getString(R.string.draw_image));
+       // drawButton.setText(getContext().getString(R.string.draw_image));
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        drawButton.setOnLongClickListener(l);
+        //drawButton.setOnLongClickListener(l);
         super.setOnLongClickListener(l);
     }
 
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
-        drawButton.cancelLongPress();
+        //drawButton.cancelLongPress();
     }
 
     @Override

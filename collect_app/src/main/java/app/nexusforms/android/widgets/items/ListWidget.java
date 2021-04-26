@@ -186,15 +186,19 @@ public class ListWidget extends ItemsWidget implements MultiChoiceWidget, OnChec
 
                 // answer layout holds the label text/image on top and the radio button on bottom
                 LinearLayout answer = new LinearLayout(getContext());
+
                 answer.setOrientation(LinearLayout.VERTICAL);
+
                 LinearLayout.LayoutParams headerParams =
                         new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                                 LayoutParams.WRAP_CONTENT);
+
                 headerParams.gravity = Gravity.CENTER_HORIZONTAL;
 
                 LinearLayout.LayoutParams buttonParams =
                         new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                                 LayoutParams.WRAP_CONTENT);
+
                 buttonParams.gravity = Gravity.CENTER_HORIZONTAL;
 
                 if (imageView != null) {

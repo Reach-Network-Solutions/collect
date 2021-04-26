@@ -33,4 +33,14 @@
         <item name="cornerRadius">6dp</item>
 
     </style>
+
+    <style name="draw_text_prompt">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="draw_card_host">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">140dp</item>
+    </style>
 </resources>
