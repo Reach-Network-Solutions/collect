@@ -52,4 +52,9 @@
         <item name="endIconMode">custom</item>
     </style>
 
+    <style name="Widget.NexusForms.ImageButton.MapButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:tintMode">src_in</item>
+        <item name="android:tint">@color/map_button_state_color</item>
+    </style>
+
 </resources>
