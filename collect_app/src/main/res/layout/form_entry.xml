@@ -32,7 +32,7 @@ the License.
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="0dp"
-            app:navigationIcon="@drawable/notes" />
+            app:navigationIcon="@drawable/ic_forms" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/audio_recording_controller"
@@ -71,13 +71,13 @@ the License.
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/submit"
-        app:layout_constraintTop_toBottomOf="@id/questionholder"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
 
     <!-- <ImageView
