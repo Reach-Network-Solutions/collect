@@ -23,7 +23,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,13 +34,18 @@ import android.widget.Toast;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+
+import com.google.android.material.card.MaterialCardView;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.reference.InvalidReferenceException;
+
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.DrawActivity;
+import app.nexusforms.android.databinding.LayoutImageAnswerBinding;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.formentry.questions.WidgetViewUtils;
 import app.nexusforms.android.utilities.ApplicationConstants;
@@ -70,12 +77,19 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     private final QuestionMediaManager questionMediaManager;
     private final MediaUtils mediaUtils;
 
+    private MaterialCardView imageCard;
+    private LayoutImageAnswerBinding binding;
+
     public BaseImageWidget(Context context, QuestionDetails prompt, QuestionMediaManager questionMediaManager,
                            WaitingForDataRegistry waitingForDataRegistry, MediaUtils mediaUtils) {
         super(context, prompt);
         this.questionMediaManager = questionMediaManager;
         this.waitingForDataRegistry = waitingForDataRegistry;
         this.mediaUtils = mediaUtils;
+        binding = LayoutImageAnswerBinding.inflate(LayoutInflater.from(context),null, false);
+        binding.imageClearAnswer.setOnClickListener(v->{
+            clearAnswer();
+        });
     }
 
     @Override
@@ -88,6 +102,7 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
         deleteFile();
         if (imageView != null) {
             imageView.setImageDrawable(null);
+            answerLayout.removeView(binding.getRoot());
         }
 
         errorTextView.setVisibility(View.GONE);
@@ -97,7 +112,7 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     @Override
     public void deleteFile() {
         questionMediaManager.deleteAnswerFile(getFormEntryPrompt().getIndex().toString(),
-                        getInstanceFolder() + File.separator + binaryName);
+                getInstanceFolder() + File.separator + binaryName);
         binaryName = null;
     }
 
@@ -138,7 +153,7 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     }
 
     protected void addCurrentImageToLayout() {
-        answerLayout.removeView(imageView);
+        answerLayout.removeView(binding.getRoot());
 
         if (binaryName != null) {
             DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
@@ -151,14 +166,19 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
                 if (bmp == null) {
                     errorTextView.setVisibility(View.VISIBLE);
                 } else {
-                    imageView = WidgetViewUtils.createAnswerImageView(getContext(), bmp);
+                    //imageView = WidgetViewUtils.createAnswerImageView(getContext(), bmp);
+                    imageView = binding.imageAnswer;
+                    imageView.setImageBitmap(bmp);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     imageView.setOnClickListener(v -> {
                         if (imageClickHandler != null) {
                             imageClickHandler.clickImage("viewImage");
                         }
                     });
 
-                    answerLayout.addView(imageView);
+                    View answerView  = binding.getRoot();
+                    answerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+                    answerLayout.addView(answerView);
                 }
             }
         }
@@ -267,8 +287,8 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
     /**
      * Standard method for launching an Activity.
      *
-     * @param intent - The Intent to start
-     * @param resourceCode - Code to return when Activity exits
+     * @param intent              - The Intent to start
+     * @param resourceCode        - Code to return when Activity exits
      * @param errorStringResource - String resource for error toast
      */
     protected void launchActivityForResult(Intent intent, final int resourceCode, final int errorStringResource) {
