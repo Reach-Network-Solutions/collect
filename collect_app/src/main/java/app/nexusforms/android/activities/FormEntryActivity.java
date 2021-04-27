@@ -1560,7 +1560,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     submitButton.setVisibility(View.VISIBLE);
                 } else {
-                    submitButton.setVisibility(View.GONE);
+                    submitButton.setVisibility(View.INVISIBLE);
                 }
             }
         });

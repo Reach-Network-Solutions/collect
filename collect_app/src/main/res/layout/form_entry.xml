@@ -74,7 +74,7 @@ the License.
         android:layout_marginBottom="8dp"
         android:text="@string/submit"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
