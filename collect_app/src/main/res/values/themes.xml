@@ -20,10 +20,12 @@
 
     <style name="Theme.NexusForms.Dark.Dialog" parent="android:Theme.Material.Dialog">
         <item name="android:colorAccent">?attr/colorSecondary</item>
+        <item name="colorOnPrimary">@color/dark_blue</item>
     </style>
 
     <style name="Theme.NexusForms.Light.Dialog" parent="android:Theme.Material.Light.Dialog">
         <item name="android:colorAccent">?attr/colorSecondary</item>
+        <item name="colorOnPrimary">@color/dark_blue</item>
     </style>
 
     <style name="Theme.NexusForms.MaterialDialogSheet.Dark" parent="Theme.Design.BottomSheetDialog">
