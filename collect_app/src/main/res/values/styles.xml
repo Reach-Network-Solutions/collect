@@ -52,9 +52,20 @@
         <item name="endIconMode">custom</item>
     </style>
 
+
     <style name="Widget.NexusForms.ImageButton.MapButton" parent="Widget.MaterialComponents.Button">
         <item name="android:tintMode">src_in</item>
         <item name="android:tint">@color/map_button_state_color</item>
+    </style>
+
+    <style name="draw_text_prompt">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="draw_card_host">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">140dp</item>
     </style>
 
 </resources>

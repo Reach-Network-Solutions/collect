@@ -10,9 +10,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 import app.nexusforms.android.injection.config.AppDependencyModule;
-import org.odk.collect.android.preferences.source.SettingsProvider;
+import app.nexusforms.android.preferences.source.SettingsProvider;
 
 import app.nexusforms.android.support.RobolectricHelpers;
 import app.nexusforms.android.support.TestActivityScenario;

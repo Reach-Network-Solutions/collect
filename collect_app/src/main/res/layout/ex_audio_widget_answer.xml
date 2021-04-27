@@ -12,5 +12,5 @@
 
     <include
         android:id="@+id/audio_player"
-        layout="@layout/audio_player_layout"/>
+        layout="@layout/nexus_audio_controller_layout"/>
 </LinearLayout>

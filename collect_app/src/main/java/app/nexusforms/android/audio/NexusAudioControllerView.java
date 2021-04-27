@@ -19,28 +19,29 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.button.MaterialButton;
-
 import app.nexusforms.android.R;
-import app.nexusforms.android.databinding.AudioControllerLayoutBinding;
+import app.nexusforms.android.databinding.NexusAudioControllerLayoutBinding;
+import timber.log.Timber;
 
+import static app.nexusforms.strings.format.LengthFormatterKt.formatLength;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static app.nexusforms.strings.format.LengthFormatterKt.formatLength;
 
-public class AudioControllerView extends FrameLayout {
+public class NexusAudioControllerView extends FrameLayout {
 
-    public final AudioControllerLayoutBinding binding;
+    public final NexusAudioControllerLayoutBinding nexusAudioControllerLayoutBinding;
 
     private final TextView currentDurationLabel;
     private final TextView totalDurationLabel;
-    private final MaterialButton playButton;
-    private final SeekBar seekBar;
+    private final ImageButton playPauseButton;
+    private final ImageButton recordOrDeleteButton;
+   // private final SeekBar seekBar;
     private final SwipeListener swipeListener;
 
     private boolean playing;
@@ -49,24 +50,36 @@ public class AudioControllerView extends FrameLayout {
 
     private Listener listener;
 
-    public AudioControllerView(Context context) {
+    public NexusAudioControllerView(Context context) {
         this(context, null);
     }
 
-    public AudioControllerView(Context context, AttributeSet attrs) {
+    public NexusAudioControllerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        binding = AudioControllerLayoutBinding.inflate(LayoutInflater.from(context), this, true);
-        playButton = binding.play;
-        currentDurationLabel = binding.currentDuration;
-        totalDurationLabel = binding.totalDuration;
-        seekBar = binding.seekBar;
+        nexusAudioControllerLayoutBinding = NexusAudioControllerLayoutBinding.inflate(LayoutInflater.from(context), this, true);
+        playPauseButton = nexusAudioControllerLayoutBinding.playOrPauseImageButton;
+        recordOrDeleteButton = nexusAudioControllerLayoutBinding.recordOrDeleteImageButton;
+        currentDurationLabel = nexusAudioControllerLayoutBinding.playProgress;
+        totalDurationLabel = nexusAudioControllerLayoutBinding.audioLength;
+        //seekBar = binding.seekBar;
 
         swipeListener = new SwipeListener();
-        seekBar.setOnSeekBarChangeListener(swipeListener);
 
-        binding.play.setOnClickListener(view -> playClicked());
-        binding.remove.setOnClickListener(view -> listener.onRemoveClicked());
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.setOnSeekBarChangeListener(swipeListener);
+
+        playPauseButton.setOnClickListener(view -> playClicked());
+
+        recordOrDeleteButton.setOnClickListener(view ->
+        {
+            if(listener != null){
+                listener.onRecordOrRemoveClicked();
+            }else{
+                Timber.d("LISTENER is null");
+                //there's no file - request recording
+
+            }
+        });
     }
 
     private void playClicked() {
@@ -88,15 +101,19 @@ public class AudioControllerView extends FrameLayout {
         if (listener != null) {
             listener.onPositionChanged(correctedPosition);
         }
+
+        double progress = (double)newPosition/(double)duration;
+
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.updatePlayerPercent((float)progress);
     }
 
     public void setPlaying(Boolean playing) {
         this.playing = playing;
 
         if (playing) {
-            playButton.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_24dp));
+            playPauseButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_pause_24_nexus));
         } else {
-            playButton.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_arrow_24dp));
+            playPauseButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_play_arrow_40_nexus));
         }
     }
 
@@ -106,7 +123,7 @@ public class AudioControllerView extends FrameLayout {
 
     public void setPosition(Integer position) {
         if (!swipeListener.isSwiping()) {
-            renderPosition(position);
+           renderPosition(position);
         }
     }
 
@@ -114,7 +131,7 @@ public class AudioControllerView extends FrameLayout {
         this.duration = duration;
 
         totalDurationLabel.setText(formatLength((long) duration));
-        seekBar.setMax(duration);
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.setMax(duration);
         setPosition(0);
     }
 
@@ -123,10 +140,14 @@ public class AudioControllerView extends FrameLayout {
 
         currentDurationLabel.setText(formatLength((long) position));
 
+        double progress = (double)position/(double)duration;
+        //listener.onPositionChanged(position);
+        nexusAudioControllerLayoutBinding.nexusAudioWaveform.updatePlayerPercent((float)progress);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            seekBar.setProgress(position, true);
+            //seekBar.setProgress(position, true);
+
         } else {
-            seekBar.setProgress(position);
+            //seekBar.setProgress(position);
         }
     }
 
@@ -139,7 +160,9 @@ public class AudioControllerView extends FrameLayout {
 
         void onPositionChanged(Integer newPosition);
 
-        void onRemoveClicked();
+        void onRecordOrRemoveClicked();
+
+        void onPickAudioFromFiles();
     }
 
     private class SwipeListener implements SeekBar.OnSeekBarChangeListener {
@@ -159,6 +182,7 @@ public class AudioControllerView extends FrameLayout {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int newProgress, boolean fromUser) {
+            Timber.d("PROGRESS CHANGED TO %s", newProgress);
             if (fromUser) {
                 renderPosition(newProgress);
             }

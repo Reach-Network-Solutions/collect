@@ -12,13 +12,13 @@ import androidx.fragment.app.FragmentManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.odk.collect.android.R;
-import org.odk.collect.android.TestSettingsProvider;
+import app.nexusforms.android.R;
+import app.nexusforms.android.TestSettingsProvider;
 
 import app.nexusforms.android.support.RobolectricHelpers;
 import app.nexusforms.android.support.TestActivityScenario;
 import app.nexusforms.android.fragments.support.DialogFragmentHelpers;
-import org.odk.collect.android.preferences.source.Settings;
+import app.nexusforms.android.preferences.source.Settings;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowDialog;
 
