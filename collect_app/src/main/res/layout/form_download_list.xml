@@ -57,6 +57,8 @@ the License.
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/toggle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 style="@style/Widget.NexusForms.MaterialButton.Primary"
                 android:layout_marginLeft="@dimen/margin_extra_small"
                 android:layout_marginRight="@dimen/margin_extra_small"
@@ -64,6 +66,8 @@ the License.
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 style="@style/Widget.NexusForms.MaterialButton.Primary"
                 android:layout_marginLeft="@dimen/margin_extra_small"
                 android:layout_marginRight="@dimen/margin_extra_small"
@@ -71,6 +75,8 @@ the License.
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 style="@style/Widget.NexusForms.MaterialButton.Primary"
                 android:layout_marginLeft="@dimen/margin_extra_small"
                 android:layout_marginRight="@dimen/margin_extra_small"

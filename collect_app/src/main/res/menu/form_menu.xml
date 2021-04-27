@@ -26,11 +26,11 @@
         android:title="@string/save_all_answers"
         app:showAsAction="always" />
 
-    <item
+<!--    <item
         android:id="@+id/menu_goto"
         android:icon="@drawable/ic_menu_goto_24"
         android:title="@string/view_hierarchy"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
 
     <item
         android:id="@+id/track_location"

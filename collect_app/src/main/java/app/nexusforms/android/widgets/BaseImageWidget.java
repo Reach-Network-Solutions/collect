@@ -167,9 +167,9 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
 
     protected void addCurrentImageToLayout() {
 
+        answerLayout.removeView(imageView);
         answerLayout.removeView(binding.getRoot());
 
-        //answerLayout.removeView(imageView);
 
         FormEntryPrompt currentQsn = this.getFormEntryPrompt();
 
@@ -187,9 +187,7 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
                 if (bmp == null) {
                     errorTextView.setVisibility(View.VISIBLE);
                 } else {
-                    //imageView = WidgetViewUtils.createAnswerImageView(getContext(), bmp);
-                    imageView = binding.imageAnswer;
-                    imageView.setImageBitmap(bmp);
+                    imageView = WidgetViewUtils.createAnswerImageView(getContext(), bmp);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     imageView.setOnClickListener(v -> {
                         if (imageClickHandler != null) {
@@ -210,8 +208,16 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
                         answerLayout.addView(imageViewHost);
                     } else {
                         //answerLayout.addView(imageView);
-                        View answerView  = binding.getRoot();
+                        imageView = binding.imageAnswer;
+                        imageView.setImageBitmap(bmp);
+                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        imageView.setOnClickListener(v -> {
+                            if (imageClickHandler != null) {
+                                imageClickHandler.clickImage("viewImage");
+                            }
+                        });
 
+                        View answerView  = binding.getRoot();
                         answerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
                         answerLayout.addView(answerView);
 
@@ -264,6 +270,7 @@ public abstract class BaseImageWidget extends QuestionWidget implements FileWidg
 
         answerLayout = new LinearLayout(getContext());
         answerLayout.setOrientation(LinearLayout.VERTICAL);
+        answerLayout.setPadding(0,15,0,0);
 
         binaryName = getFormEntryPrompt().getAnswerText();
     }

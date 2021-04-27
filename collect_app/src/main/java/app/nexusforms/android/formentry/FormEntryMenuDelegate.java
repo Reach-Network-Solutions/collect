@@ -81,8 +81,9 @@ public class FormEntryMenuDelegate implements MenuDelegate, RequiresFormControll
 
         useability = settingsProvider.getAdminSettings().getBoolean(AdminKeys.KEY_JUMP_TO);
 
-        menu.findItem(R.id.menu_goto).setVisible(useability)
-                .setEnabled(useability);
+        //TODO FIX THE GOTO END MENU ITEM
+        /*menu.findItem(R.id.menu_goto).setVisible(useability)
+                .setEnabled(useability);*/
 
         useability = settingsProvider.getAdminSettings().getBoolean(AdminKeys.KEY_CHANGE_LANGUAGE)
                 && (formController != null)
@@ -133,7 +134,8 @@ public class FormEntryMenuDelegate implements MenuDelegate, RequiresFormControll
         } else if (item.getItemId() == R.id.track_location) {
             backgroundLocationViewModel.backgroundLocationPreferenceToggled(settingsProvider.getGeneralSettings());
             return true;
-        } else if (item.getItemId() == R.id.menu_goto) {
+            //TODO FIX THE GOTO END MENU ITEM
+        /*} else if (item.getItemId() == R.id.menu_goto) {
             if (audioRecorder.isRecording() && !backgroundAudioViewModel.isBackgroundRecording()) {
                 DialogUtils.showIfNotShowing(RecordingWarningDialogFragment.class, activity.getSupportFragmentManager());
             } else {
@@ -144,7 +146,7 @@ public class FormEntryMenuDelegate implements MenuDelegate, RequiresFormControll
                // activity.startActivityForResult(i, ApplicationConstants.RequestCodes.HIERARCHY_ACTIVITY);
             }
 
-            return true;
+            return true;*/
         } else if (item.getItemId() == R.id.menu_record_audio) {
             boolean enabled = !item.isChecked();
 

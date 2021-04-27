@@ -204,6 +204,7 @@ import static app.nexusforms.android.utilities.ApplicationConstants.RequestCodes
 import static app.nexusforms.android.utilities.DialogUtils.getDialog;
 import static app.nexusforms.android.utilities.DialogUtils.showIfNotShowing;
 import static app.nexusforms.android.utilities.ToastUtils.showLongToast;
+import static app.nexusforms.android.utilities.ToastUtils.showLongToastInMiddle;
 import static app.nexusforms.android.utilities.ToastUtils.showShortToast;
 
 /**
@@ -1361,11 +1362,21 @@ public class FormEntryActivity extends CollectAbstractActivity implements
             return true;
         }
 
+       showLongToast( item.getTitle().toString());
+
         // These actions should move into the `FormEntryMenuDelegate`
         switch (item.getItemId()) {
             case R.id.menu_languages:
                 createLanguageDialog();
                 return true;
+
+//            case R.id.menu_goto:
+//                if(recycler!= null && questionsAdapter != null){
+//                 int questionsSize = questionsAdapter.getItemCount();
+//                    recycler.scrollToPosition(questionsSize);
+//                }
+//                Toast.makeText(this, "GOto CLicked", Toast.LENGTH_SHORT).show();
+//                return true;
 
             case R.id.menu_save:
                 // don't exit
@@ -1602,6 +1613,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements
      * a button for saving and exiting.
      */
     private void displayFormEndDialog(FormController formController, Boolean isInstanceCalledFromCompletion) {
+        if (audioRecorder.isRecording() && !backgroundAudioViewModel.isBackgroundRecording()) {
+            DialogUtils.showIfNotShowing(RecordingWarningDialogFragment.class, getSupportFragmentManager());
+            return;
+        }
 
         if (formController.getSubmissionMetadata().instanceName != null) {
             saveName = formController.getSubmissionMetadata().instanceName;
