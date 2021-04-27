@@ -66,7 +66,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NexusForms"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.MainActivity"></activity>
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -212,13 +212,17 @@
         <activity android:name=".activities.GeoPolyActivity" />
         <activity android:name=".activities.FormMapActivity" />
         <activity android:name=".activities.BearingActivity" />
+
         <activity
             android:name=".activities.SplashScreenActivity"
             android:theme="@android:style/Theme.Dialog" />
 
+       <activity android:name=".activities.MainActivity"
+           android:theme="@style/Theme.NexusForms"/>
+
         <activity-alias
-            android:name=".activities.SplashScreenActivity"
-            android:targetActivity=".activities.SplashScreenActivity">
+            android:name=".activities.MainActivity"
+            android:targetActivity=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
