@@ -3,6 +3,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply from: '../config/quality.gradle'
 apply from: '../config/jacoco.gradle'
 apply plugin: 'kotlin-android'
+apply plugin: "androidx.navigation.safeargs"
 
 import com.android.ddmlib.DdmPreferences
 
@@ -396,6 +397,11 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${rootProject.okhttp3Version}"
 
     androidTestImplementation "androidx.work:work-testing:2.5.0"
+
+    // Navigation Component Java language implementation
+    def nav_version = "2.3.5"
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
 }
 
 // Must be at bottom to prevent dependency collisions

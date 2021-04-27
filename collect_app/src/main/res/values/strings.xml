@@ -1,4 +1,8 @@
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="my_forms">My Forms</string>
+    <string name="my_profile">My Profile</string>
+    <string name="forms_library">Forms Library</string>
 </resources>

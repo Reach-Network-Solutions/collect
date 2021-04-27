@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main.xml"
+    app:startDestination="@id/myFormsFragment">
+
+    <fragment
+        android:id="@+id/myFormsFragment"
+        android:name="app.nexusforms.android.fragments.nexus.MyFormsFragment"
+        android:label="My Forms"
+        tools:layout="@layout/my_forms_fragment" />
+    <fragment
+        android:id="@+id/formsLibraryFragment"
+        android:name="app.nexusforms.android.fragments.nexus.FormsLibraryFragment"
+        android:label="Forms Library"
+        tools:layout="@layout/fragment_forms_library" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="app.nexusforms.android.fragments.nexus.ProfileFragment"
+        android:label="Profile Fragment"
+        tools:layout="@layout/profile_fragment" />
+    <fragment
+        android:id="@+id/filledFormsFragment"
+        android:name="app.nexusforms.android.fragments.nexus.FilledFormsFragment"
+        android:label="filled_forms_fragment"
+        tools:layout="@layout/filled_forms_fragment" />
+    <fragment
+        android:id="@+id/formsSummaryFragment"
+        android:name="app.nexusforms.android.fragments.nexus.FormsSummaryFragment"
+        android:label="forms_summary_fragment"
+        tools:layout="@layout/forms_summary_fragment" />
+</navigation>

@@ -68,4 +68,11 @@
         <item name="android:layout_height">140dp</item>
     </style>
 
+    <style name="Widget.NexusForms.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="itemTextColor">@color/bottom_nav_color</item>
+        <item name="itemIconTint">@color/bottom_nav_color</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="rippleColor">@color/dark_blue</item>
+    </style>
+
 </resources>

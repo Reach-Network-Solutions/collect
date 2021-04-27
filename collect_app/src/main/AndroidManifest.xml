@@ -218,7 +218,7 @@
             android:theme="@android:style/Theme.Dialog" />
 
        <activity android:name=".activities.MainActivity"
-           android:theme="@style/Theme.NexusForms"/>
+           android:theme="@style/Theme.NexusForms.SplashScreen"/>
 
         <activity-alias
             android:name=".activities.MainActivity"
