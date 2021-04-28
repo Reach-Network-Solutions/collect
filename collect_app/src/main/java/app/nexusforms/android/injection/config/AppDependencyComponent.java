@@ -17,6 +17,7 @@ import app.nexusforms.android.activities.GeoPointMapActivity;
 import app.nexusforms.android.activities.GeoPolyActivity;
 import app.nexusforms.android.activities.InstanceUploaderActivity;
 import app.nexusforms.android.activities.InstanceUploaderListActivity;
+import app.nexusforms.android.activities.MainActivity;
 import app.nexusforms.android.activities.MainMenuActivity;
 import app.nexusforms.android.activities.SplashScreenActivity;
 import app.nexusforms.android.application.Collect;
@@ -24,6 +25,7 @@ import app.nexusforms.android.application.initialization.ApplicationInitializer;
 import app.nexusforms.android.backgroundwork.AutoSendTaskSpec;
 import app.nexusforms.android.backgroundwork.AutoUpdateTaskSpec;
 import app.nexusforms.android.backgroundwork.SyncFormsTaskSpec;
+import app.nexusforms.android.fragments.nexus.FormsLibraryFragment;
 import app.nexusforms.android.preferences.CaptionedListPreference;
 import app.nexusforms.android.preferences.dialogs.AdminPasswordDialogFragment;
 import app.nexusforms.android.preferences.dialogs.ChangeAdminPasswordDialog;
@@ -256,6 +258,10 @@ public interface AppDependencyComponent {
     void inject(AndroidShortcutsActivity androidShortcutsActivity);
 
     void inject(ProjectSettingsDialog projectSettingsDialog);
+
+    void Inject(MainActivity mainActivity);
+
+    void Inject(FormsLibraryFragment formsLibraryFragment);
 
     OpenRosaHttpInterface openRosaHttpInterface();
 
