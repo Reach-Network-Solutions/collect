@@ -15,7 +15,10 @@
         <item name="colorError">@color/dark_red</item>
         <item name="android:fontFamily">@font/roboto</item>
 
+        <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
     </style>
 
     <style name="Theme.NexusForms.Dark.Dialog" parent="android:Theme.Material.Dialog">
@@ -39,7 +42,6 @@
     <style name="Theme.NexusForms.SplashScreen" parent="Theme.NexusForms">
         <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
 
