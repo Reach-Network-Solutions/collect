@@ -5,4 +5,5 @@
     <string name="my_forms">My Forms</string>
     <string name="my_profile">My Profile</string>
     <string name="forms_library">Forms Library</string>
+    <string name="filter_by">Filter by</string>
 </resources>
