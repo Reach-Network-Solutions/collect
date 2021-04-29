@@ -1,32 +1,63 @@
 package app.nexusforms.android.fragments.nexus
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import app.nexusforms.android.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import app.nexusforms.android.adapters.NexusFormsAdapter
+import app.nexusforms.android.dao.CursorLoaderFactory
+import app.nexusforms.android.databinding.MyFormsFragmentBinding
+import app.nexusforms.android.injection.DaggerUtils
+import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns
 
 class MyFormsFragment : Fragment() {
+
+    lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
 
     companion object {
         fun newInstance() = MyFormsFragment()
     }
 
-    private lateinit var viewModel: MyFormsViewModel
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        DaggerUtils.getComponent(context).Inject(this)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.my_forms_fragment, container, false)
+    ): View {
+        myFormsFragmentBinding = MyFormsFragmentBinding.inflate(LayoutInflater.from(context), container, false)
+        //attempt to paint some view with all the forms
+        initView()
+
+        return myFormsFragmentBinding.root
+
+
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MyFormsViewModel::class.java)
-        // TODO: Use the ViewModel
+    private fun initView(){
+
+        val formsCursor = CursorLoaderFactory().createSavedInstancesCursorLoader("")
+
+        val readyCursor = formsCursor.loadInBackground()
+
+        with(myFormsFragmentBinding.allFormsRecycler) {
+
+            val formsAdapter = NexusFormsAdapter(readyCursor)
+
+            layoutManager = LinearLayoutManager(context)
+
+           adapter = formsAdapter
+        }
+
     }
+
+
 
 }

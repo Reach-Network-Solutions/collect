@@ -1,30 +1,136 @@
 package app.nexusforms.android.activities
 
+import android.database.Cursor
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import app.nexusforms.android.R
+import app.nexusforms.android.dao.CursorLoaderFactory
 import app.nexusforms.android.databinding.ActivityMainBinding
-import app.nexusforms.android.project.ProjectSettingsDialog
+import app.nexusforms.android.formmanagement.BlankFormListMenuDelegate
+import app.nexusforms.android.formmanagement.BlankFormsListViewModel
+import app.nexusforms.android.formmanagement.Constants.Companion.LOADER_ID_OTHER__FORMS
+import app.nexusforms.android.injection.DaggerUtils
+import app.nexusforms.android.listeners.DiskSyncListener
+import app.nexusforms.android.network.NetworkStateProvider
+import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
+import app.nexusforms.android.preferences.source.SettingsProvider
+import app.nexusforms.android.tasks.FormSyncTask
+import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
+import timber.log.Timber
+import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
 
     private lateinit var activityMainBinding: ActivityMainBinding
 
     private lateinit var navController: NavController
 
+
+    @Inject
+    lateinit var networkStateProvider: NetworkStateProvider
+
+    @Inject
+    lateinit var blankFormsListViewModelFactory: BlankFormsListViewModel.Factory
+
+    @Inject
+    lateinit var settingsProvider: SettingsProvider
+
+    private var newFormSyncTask: FormSyncTask? = null
+
+    private var otherFormsInstanceSyncTask: InstanceSyncTask? = null
+
+    lateinit var menuDelegate: BlankFormListMenuDelegate
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_NexusForms)
+        injectDaggerOnCreation()
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
         setUpNavigation()
         setClickListeners()
+        initializeNewForms()
+        initializeOtherForms()
+    }
+
+    private fun injectDaggerOnCreation() {
+        DaggerUtils.getComponent(this).Inject(this)
+    }
+
+
+    private fun initializeOtherForms() {
+        otherFormsInstanceSyncTask = InstanceSyncTask(settingsProvider)
+        otherFormsInstanceSyncTask?.setDiskSyncListener { result ->
+            Timber.d(
+                "Sync completed for other forms with result -> %s",
+                result
+            )
+        }
+
+        LoaderManager.getInstance(this).initLoader(LOADER_ID_OTHER__FORMS, null, this)
+    }
+
+    private fun initializeNewForms() {
+        //Init viewModel
+        val blankFormsListViewModel =
+            ViewModelProvider(
+                this,
+                blankFormsListViewModelFactory
+            )[BlankFormsListViewModel::class.java]
+
+
+        //Check auth for form
+        blankFormsListViewModel.isAuthenticationRequired.observe(this,
+            { authenticationRequired: Boolean ->
+                if (authenticationRequired) {
+                    DialogUtils.showIfNotShowing(
+                        ServerAuthDialogFragment::class.java,
+                        supportFragmentManager
+                    )
+                } else {
+                    DialogUtils.dismissDialog(
+                        ServerAuthDialogFragment::class.java,
+                        supportFragmentManager
+                    )
+                }
+            })
+
+        //setup sync task
+        // DiskSyncTask checks the disk for any forms not already in the content provider
+        // that is, put here by dragging and dropping onto the SDCard
+
+        newFormSyncTask = (lastCustomNonConfigurationInstance as FormSyncTask?)
+        if (newFormSyncTask == null) {
+            Timber.i("Starting new forms disk sync task : MAIN-ACTIVITY")
+            newFormSyncTask = FormSyncTask()
+            newFormSyncTask?.setDiskSyncListener {
+                DiskSyncListener { syncResult ->
+                    Timber.i("Disk scan complete : MAIN-ACTIVITY with result -> %s", syncResult)
+                }
+            }
+            newFormSyncTask?.execute() //*null as Array<Void?>?
+        }
+
+
+        blankFormsListViewModel.isSyncing.observe(this,
+            { syncing: Boolean ->
+
+                if (syncing) {
+
+                } else {
+
+                }
+            })
+
     }
 
     private fun setClickListeners() {
@@ -33,10 +139,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         activityMainBinding.menuActionSettings.setOnClickListener {
-            DialogUtils.showIfNotShowing(
-                ProjectSettingsDialog::class.java,
-                supportFragmentManager
-            )
+
         }
     }
 
@@ -49,22 +152,22 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.myFormsFragment->{
+                R.id.myFormsFragment -> {
                     setUpToolbarTitle(R.string.my_forms)
                 }
-                R.id.formsLibraryFragment->{
+                R.id.formsLibraryFragment -> {
                     setUpToolbarTitle(R.string.forms_library)
                 }
 
-                R.id.filledFormsFragment->{
+                R.id.filledFormsFragment -> {
 
                 }
 
-                R.id.formsSummaryFragment->{
+                R.id.formsSummaryFragment -> {
 
                 }
 
-                R.id.profileFragment->{
+                R.id.profileFragment -> {
                     setUpToolbarTitle(R.string.my_profile)
                 }
 
@@ -72,7 +175,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpToolbarTitle(id : Int){
+    private fun setUpToolbarTitle(id: Int) {
         activityMainBinding.toolbarTitleMain.text = getString(id)
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
+        return CursorLoaderFactory().createUnsentInstancesCursorLoader("", ""
+
+        )
+    }
+
+    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
+        Timber.d("DONE SYNCING CURSOR - OTHER FORMS")
+    }
+
+    override fun onLoaderReset(loader: Loader<Cursor>) {
+        Timber.d("LOADER HAS BEEN RESET - OTHER FORMS")
     }
 }
