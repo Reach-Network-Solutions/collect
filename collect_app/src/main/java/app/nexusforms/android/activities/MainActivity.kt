@@ -7,6 +7,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import app.nexusforms.android.R
 import app.nexusforms.android.databinding.ActivityMainBinding
+import app.nexusforms.android.project.ProjectSettingsDialog
+import app.nexusforms.android.utilities.DialogUtils
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +30,13 @@ class MainActivity : AppCompatActivity() {
     private fun setClickListeners() {
         activityMainBinding.fabMainBottomBar.setOnClickListener {
             navController.navigate(R.id.formsLibraryFragment)
+        }
+
+        activityMainBinding.menuActionSettings.setOnClickListener {
+            DialogUtils.showIfNotShowing(
+                ProjectSettingsDialog::class.java,
+                supportFragmentManager
+            )
         }
     }
 
