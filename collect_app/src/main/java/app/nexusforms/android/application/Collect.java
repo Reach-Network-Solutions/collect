@@ -24,9 +24,8 @@ import androidx.multidex.MultiDex;
 
 import org.jetbrains.annotations.NotNull;
 
+
 import app.nexusforms.android.BuildConfig;
-
-
 import app.nexusforms.android.injection.config.DaggerAppDependencyComponent;
 import app.nexusforms.android.javarosawrapper.FormController;
 import app.nexusforms.android.preferences.keys.MetaKeys;

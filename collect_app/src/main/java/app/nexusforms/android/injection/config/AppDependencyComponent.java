@@ -26,6 +26,7 @@ import app.nexusforms.android.backgroundwork.AutoSendTaskSpec;
 import app.nexusforms.android.backgroundwork.AutoUpdateTaskSpec;
 import app.nexusforms.android.backgroundwork.SyncFormsTaskSpec;
 import app.nexusforms.android.fragments.nexus.FormsLibraryFragment;
+import app.nexusforms.android.fragments.nexus.MyFormsFragment;
 import app.nexusforms.android.preferences.CaptionedListPreference;
 import app.nexusforms.android.preferences.dialogs.AdminPasswordDialogFragment;
 import app.nexusforms.android.preferences.dialogs.ChangeAdminPasswordDialog;
@@ -262,6 +263,8 @@ public interface AppDependencyComponent {
     void Inject(MainActivity mainActivity);
 
     void Inject(FormsLibraryFragment formsLibraryFragment);
+
+    void Inject(MyFormsFragment myFormsFragment);
 
     OpenRosaHttpInterface openRosaHttpInterface();
 

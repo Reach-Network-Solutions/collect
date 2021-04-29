@@ -1,5 +1,6 @@
 package app.nexusforms.android.fragments.nexus
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.adapters.NexusFormsAdapter
 import app.nexusforms.android.dao.CursorLoaderFactory
 import app.nexusforms.android.databinding.MyFormsFragmentBinding
+import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns
 
 class MyFormsFragment : Fragment() {
@@ -17,6 +19,12 @@ class MyFormsFragment : Fragment() {
 
     companion object {
         fun newInstance() = MyFormsFragment()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        DaggerUtils.getComponent(context).Inject(this)
     }
 
 

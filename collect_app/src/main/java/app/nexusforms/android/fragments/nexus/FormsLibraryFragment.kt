@@ -28,6 +28,7 @@ import app.nexusforms.android.formmanagement.ServerFormDetails
 import app.nexusforms.android.formmanagement.ServerFormsDetailsFetcher
 import app.nexusforms.android.forms.FormSourceException
 import app.nexusforms.android.forms.FormSourceException.AuthRequired
+import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.listeners.DownloadFormsTaskListener
 import app.nexusforms.android.listeners.FormListDownloaderListener
 import app.nexusforms.android.network.NetworkStateProvider
@@ -74,13 +75,19 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        //DaggerUtils.getComponent(this).inject(this)
+        DaggerUtils.getComponent(context).Inject(this)
 
         viewModel = ViewModelProvider(
             this,
             FormDownloadListViewModel.Factory()
         )[FormDownloadListViewModel::class.java]
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        init(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -101,15 +108,15 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 displayOnlyUpdatedForms = true
 
             }
-//            if (options.contains(ApplicationConstants.BundleKeys.FORM_IDS)) {
-//                viewModel.isDownloadOnlyMode = true
-//                viewModel.formIdsToDownload =
-//                    bundle.getStringArray(ApplicationConstants.BundleKeys.FORM_IDS)
-//
-//                if (viewModel.formIdsToDownload == null) {
-//                    setReturnResult(false, "Form Ids is null", null)
-//                    finish()
-//                }
+            if (options.contains(ApplicationConstants.BundleKeys.FORM_IDS)) {
+                viewModel.isDownloadOnlyMode = true
+                //viewModel.formIdsToDownload =
+                //    bundle.getStringArray(ApplicationConstants.BundleKeys.FORM_IDS)
+
+                if (viewModel.formIdsToDownload == null) {
+                    createAlertDialog("Null Ids", "Form Ids is null", false)
+                   // finish()
+                }
 //                if (bundle.containsKey(ApplicationConstants.BundleKeys.URL)) {
 //                    viewModel.url = bundle.getString(ApplicationConstants.BundleKeys.URL)
 //                    if (bundle.containsKey(ApplicationConstants.BundleKeys.USERNAME)
@@ -121,13 +128,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 //                            bundle.getString(ApplicationConstants.BundleKeys.PASSWORD)
 //                    }
 //                }
-//            }
+            }
         }
-        downloadButton = findViewById<Button>(R.id.add_button)
+        //downloadButton = findViewById<Button>(R.id.add_button)
 
-        downloadButton.setEnabled(listView.getCheckedItemCount() > 0)
+        //downloadButton.setEnabled(listView.getCheckedItemCount() > 0)
 
-        downloadButton.setOnClickListener(View.OnClickListener { v: View? ->
+        /*downloadButton.setOnClickListener(View.OnClickListener { v: View? ->
 
             val filesToDownload: ArrayList<ServerFormDetails> = getFilesToDownload()
             startFormsDownload(filesToDownload)
@@ -165,55 +172,57 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             if (savedInstanceState.containsKey(FormDownloadListActivity.BUNDLE_SELECTED_COUNT)) {
                 downloadButton.setEnabled(savedInstanceState.getInt(FormDownloadListActivity.BUNDLE_SELECTED_COUNT) > 0)
             }
-        }
+        }*/
         filteredFormList.addAll(viewModel.formList)
 
-        if (getLastCustomNonConfigurationInstance() is DownloadFormListTask) {
-            downloadFormListTask = getLastCustomNonConfigurationInstance() as DownloadFormListTask
-            if (downloadFormListTask!!.status == AsyncTask.Status.FINISHED) {
-                DialogUtils.dismissDialog(
-                    RefreshFormListDialogFragment::class.java,
-                    getSupportFragmentManager()
-                )
-                downloadFormsTask = null
-            }
-        } else if (getLastCustomNonConfigurationInstance() is DownloadFormsTask) {
-            downloadFormsTask = getLastCustomNonConfigurationInstance() as DownloadFormsTask
-            if (downloadFormsTask!!.status == AsyncTask.Status.FINISHED) {
-                DialogUtils.dismissDialog(
-                    RefreshFormListDialogFragment::class.java,
-                    getSupportFragmentManager()
-                )
-                downloadFormsTask = null
-            }
-        } else if (viewModel.formDetailsByFormId.isEmpty()
-            && getLastCustomNonConfigurationInstance() == null && !viewModel.wasLoadingCanceled()
-        ) {
-            // first time, so get the formlist
-            downloadFormList()
-        }
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
-        listView.setItemsCanFocus(false)
-        sortingOptions = intArrayOf(
-            R.string.sort_by_name_asc, R.string.sort_by_name_desc
-        )
+        downloadFormList()
+
+//        if (getLastCustomNonConfigurationInstance() is DownloadFormListTask) {
+//            downloadFormListTask = getLastCustomNonConfigurationInstance() as DownloadFormListTask
+//            if (downloadFormListTask!!.status == AsyncTask.Status.FINISHED) {
+//                DialogUtils.dismissDialog(
+//                    RefreshFormListDialogFragment::class.java,
+//                    getSupportFragmentManager()
+//                )
+//                downloadFormsTask = null
+//            }
+//        } else if (getLastCustomNonConfigurationInstance() is DownloadFormsTask) {
+//            downloadFormsTask = getLastCustomNonConfigurationInstance() as DownloadFormsTask
+//            if (downloadFormsTask!!.status == AsyncTask.Status.FINISHED) {
+//                DialogUtils.dismissDialog(
+//                    RefreshFormListDialogFragment::class.java,
+//                    getSupportFragmentManager()
+//                )
+//                downloadFormsTask = null
+//            }
+//        } else if (viewModel.formDetailsByFormId.isEmpty()
+//            && getLastCustomNonConfigurationInstance() == null && !viewModel.wasLoadingCanceled()
+//        ) {
+//            // first time, so get the formlist
+//            //downloadFormList()
+//        }
+//        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
+//        listView.setItemsCanFocus(false)
+//        sortingOptions = intArrayOf(
+//            R.string.sort_by_name_asc, R.string.sort_by_name_desc
+//        )
     }
-
-    private fun getFilesToDownload(): ArrayList<ServerFormDetails?>? {
-        val filesToDownload = ArrayList<ServerFormDetails?>()
-
-        val sba: SparseBooleanArray = listView.getCheckedItemPositions()
-
-        for (i in 0 until listView.getCount()) {
-            if (sba[i, false]) {
-
-                val item = listView.getAdapter().getItem(i) as HashMap<String, String>
-
-                filesToDownload.add(viewModel.formDetailsByFormId[item[FORMDETAIL_KEY]])
-            }
-        }
-        return filesToDownload
-    }
+//
+//    private fun getFilesToDownload(): ArrayList<ServerFormDetails?>? {
+//        val filesToDownload = ArrayList<ServerFormDetails?>()
+//
+//        val sba: SparseBooleanArray = listView.getCheckedItemPositions()
+//
+//        for (i in 0 until listView.getCount()) {
+//            if (sba[i, false]) {
+//
+//                val item = listView.getAdapter().getItem(i) as HashMap<String, String>
+//
+//                filesToDownload.add(viewModel.formDetailsByFormId[item[FORMDETAIL_KEY]])
+//            }
+//        }
+//        return filesToDownload
+//    }
 
     /**
      * Starts the download task and shows the progress dialog.
@@ -222,7 +231,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         if (!connectivityProvider.isDeviceOnline) {
             ToastUtils.showShortToast(R.string.no_connection)
             if (viewModel.isDownloadOnlyMode) {
-                setReturnResult(false, getString(R.string.no_connection), viewModel.formResults)
+                createAlertDialog("No Connection", getString(R.string.no_connection), false)
             }
         } else {
             viewModel.clearFormDetailsByFormId()
@@ -325,18 +334,26 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 }
             }
             filteredFormList.addAll(viewModel.formList)
-            updateAdapter()
+           // updateAdapter()
+
+            for (item in filteredFormList){
+                Timber.d("ITEM in list %s with %s", item.keys, item.values)
+            }
 
             selectSupersededForms()
-
+/*
             downloadButton.setEnabled(listView.getCheckedItemCount() > 0)
 
             toggleButton.setEnabled(listView.getCount() > 0)
 
             AppListActivity.toggleButtonLabel(toggleButton, listView)
 
+ */
+
+
             if (viewModel.isDownloadOnlyMode) {
-                performDownloadModeDownload()
+                //performDownloadModeDownload()
+                Timber.d("IS DOWNLOAD MODE ")
             }
         } else {
             if (exception is AuthRequired) {
@@ -370,8 +387,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             startFormsDownload(filesToDownload)
         } else {
             // None of the forms was found
-            setReturnResult(false, "Forms not found on server", viewModel.formResults)
-            finish()
+            createAlertDialog("No Forms", "Forms not found on server", false)
+            //finish()
         }
     }
 
@@ -423,14 +440,14 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
      * convenience to users to download the latest version of those forms from the server.
      */
     private fun selectSupersededForms() {
-        val ls: ListView = listView
-        for (idx in filteredFormList.indices) {
-            val item = filteredFormList[idx]
-            if (isLocalFormSuperseded(item[FORM_ID_KEY])) {
-                ls.setItemChecked(idx, true)
-                viewModel.addSelectedFormId(item[FORMDETAIL_KEY])
-            }
-        }
+//        val ls: ListView = listView
+//        for (idx in filteredFormList.indices) {
+//            val item = filteredFormList[idx]
+//            if (isLocalFormSuperseded(item[FORM_ID_KEY])) {
+//                ls.setItemChecked(idx, true)
+//                viewModel.addSelectedFormId(item[FORMDETAIL_KEY])
+//            }
+//        }
     }
 
     /**
