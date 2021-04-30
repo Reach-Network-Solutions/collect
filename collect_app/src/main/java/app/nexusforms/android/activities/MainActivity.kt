@@ -20,6 +20,7 @@ import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
 import app.nexusforms.android.preferences.source.SettingsProvider
+import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
@@ -139,7 +140,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
         }
 
         activityMainBinding.menuActionSettings.setOnClickListener {
-
+            DialogUtils.showIfNotShowing(
+                ProjectSettingsDialog::class.java,
+                supportFragmentManager
+            )
         }
     }
 

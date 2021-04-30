@@ -14,8 +14,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_item_form"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -26,17 +26,20 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_item_form_name"
-            android:layout_width="wrap_content"
+            style="@style/Widget.NexusForms.TextView.Title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            style="@style/Widget.NexusForms.TextView.Title"
-            app:layout_constraintBottom_toTopOf="@+id/text_item_forms_owner"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintBottom_toTopOf="@+id/text_item_forms_version"
+            app:layout_constraintEnd_toStartOf="@+id/image_item_forms_favourite"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/image_item_form"
-            app:layout_constraintTop_toTopOf="@+id/image_item_form"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="CSI Family Visit Form 2020" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <!--  <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_item_forms_owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,16 +47,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/image_item_form"
             app:layout_constraintStart_toStartOf="@+id/text_item_form_name"
             app:layout_constraintTop_toBottomOf="@+id/text_item_form_name"
-            tools:text="By Reach Networks" />
+            tools:text="By Reach Networks" />-->
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_item_forms_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:id="@+id/text_item_forms_version"
             style="@style/Widget.NexusForms.TextView.Subtitle"
-            app:layout_constraintBottom_toBottomOf="@+id/text_item_forms_owner"
-            app:layout_constraintStart_toEndOf="@+id/text_item_forms_owner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/text_item_form_name"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/text_item_form_name"
             app:layout_constraintTop_toBottomOf="@+id/text_item_form_name"
             tools:text="Mar 29, 2021" />
 
@@ -72,7 +76,7 @@
             android:id="@+id/image_item_forms_download"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

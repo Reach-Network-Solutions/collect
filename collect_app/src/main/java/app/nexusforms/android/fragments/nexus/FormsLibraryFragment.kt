@@ -15,9 +15,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.activities.viewmodels.FormDownloadListViewModel
+import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter
+import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_ID_KEY
@@ -44,7 +47,7 @@ import kotlin.collections.HashMap
 
 
 class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDownloaderListener,
-    AuthDialogUtilityResultListener{
+    AuthDialogUtilityResultListener {
 
     @Inject
     lateinit var connectivityProvider: NetworkStateProvider
@@ -60,7 +63,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     private lateinit var viewModel: FormDownloadListViewModel
 
-    private  var downloadFormListTask: DownloadFormListTask? = null
+    private var downloadFormListTask: DownloadFormListTask? = null
 
     private var displayOnlyUpdatedForms = false
 
@@ -71,6 +74,10 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     private val cancelDialog: ProgressDialog? = null
 
     private var downloadFormsTask: DownloadFormsTask? = null
+
+    private lateinit var downloadFormsAdapter: LibraryFormsRecyclerAdapter
+
+    private lateinit var binding: FragmentFormsLibraryBinding
 
 
     override fun onAttach(context: Context) {
@@ -94,15 +101,19 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forms_library, container, false)
+        binding = FragmentFormsLibraryBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     private fun init(savedInstanceState: Bundle?) {
 
-        val options = listOf(ApplicationConstants.BundleKeys.FORM_MODE,
-        ApplicationConstants.FormModes.EDIT_SAVED)
+        val options = listOf(
+            ApplicationConstants.BundleKeys.FORM_MODE,
+            ApplicationConstants.FormModes.EDIT_SAVED
+        )
 
         if (options.isNotEmpty()) {
             if (options.contains(FormDownloadListActivity.DISPLAY_ONLY_UPDATED_FORMS)) {
@@ -116,7 +127,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
                 if (viewModel.formIdsToDownload == null) {
                     createAlertDialog("Null Ids", "Form Ids is null", false)
-                   // finish()
+                    // finish()
                 }
 //                if (bundle.containsKey(ApplicationConstants.BundleKeys.URL)) {
 //                    viewModel.url = bundle.getString(ApplicationConstants.BundleKeys.URL)
@@ -314,7 +325,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                                 + details.formVersion + " ") + "ID: " + details.formId
                     item[FORMDETAIL_KEY] = formDetailsKey
                     item[FORM_ID_KEY] = details.formId
-                    item[FORM_VERSION_KEY] = if(details.formVersion == null) "" else details.formVersion
+                    item[FORM_VERSION_KEY] =
+                        if (details.formVersion == null) "" else details.formVersion
 
                     // Insert the new form in alphabetical order.
                     if (viewModel.formList.isEmpty()) {
@@ -335,11 +347,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 }
             }
             filteredFormList.addAll(viewModel.formList)
-           // updateAdapter()
+            // updateAdapter()
 
-            for (item in filteredFormList){
+            /*for (item in filteredFormList){
                 Timber.d("ITEM in list %s with %s", item.keys, item.values)
-            }
+            }*/
+
+            setupRecycler(filteredFormList)
 
             selectSupersededForms()
 /*
@@ -360,13 +374,25 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             if (exception is AuthRequired) {
                 createAuthDialog()
             } else {
-                val dialogMessage = FormSourceExceptionMapper(requireContext()).getMessage(exception)
+                val dialogMessage =
+                    FormSourceExceptionMapper(requireContext()).getMessage(exception)
                 val dialogTitle = getString(R.string.load_remote_form_error)
                 if (viewModel.isDownloadOnlyMode) {
                     //setReturnResult(false, dialogMessage, viewModel.formResults)
                 }
                 createAlertDialog(dialogTitle, dialogMessage, false)
             }
+        }
+    }
+
+    private fun setupRecycler(list: ArrayList<HashMap<String, String>>) {
+
+        with(binding.recyclerFormsLibrary) {
+            downloadFormsAdapter = LibraryFormsRecyclerAdapter(list)
+            adapter = downloadFormsAdapter
+        }
+        for (item in list) {
+            Timber.d("ITEM in list %s with %s", item.keys, item.values)
         }
     }
 
@@ -492,7 +518,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             authDialogUtility.setCustomUsername(viewModel.username)
             authDialogUtility.setCustomPassword(viewModel.password)
         }
-        DialogUtils.showDialog(authDialogUtility.createDialog(requireContext(), this, viewModel.url), requireActivity())
+        DialogUtils.showDialog(
+            authDialogUtility.createDialog(
+                requireContext(),
+                this,
+                viewModel.url
+            ), requireActivity()
+        )
     }
 
     override fun updatedCredentials() {

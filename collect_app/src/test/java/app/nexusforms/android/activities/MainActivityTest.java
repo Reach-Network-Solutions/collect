@@ -7,13 +7,13 @@ import android.widget.Button;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.odk.collect.android.R;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowIntent;
 
+import app.nexusforms.android.R;
 import app.nexusforms.android.activities.DeleteSavedFormActivity;
 import app.nexusforms.android.activities.InstanceChooserList;
 import app.nexusforms.android.activities.MainMenuActivity;
