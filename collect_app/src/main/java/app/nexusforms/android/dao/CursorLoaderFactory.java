@@ -89,6 +89,30 @@ public class CursorLoaderFactory {
         return getInstancesCursorLoader(selection, selectionArgs, sortOrder);
     }
 
+    public CursorLoader createCompletedInstancesCursorLoader(String sortOrder) {
+        String selection = InstanceProviderAPI.InstanceColumns.STATUS + "=?";
+
+        String[] selectionArgs = { Instance.STATUS_COMPLETE };
+
+        return getInstancesCursorLoader(selection, selectionArgs, sortOrder);
+    }
+
+    public CursorLoader createDraftInstancesCursorLoader(String sortOrder) {
+        String selection = InstanceProviderAPI.InstanceColumns.STATUS + "=?";
+
+        String[] selectionArgs = { Instance.STATUS_INCOMPLETE };
+
+        return getInstancesCursorLoader(selection, selectionArgs, sortOrder);
+    }
+
+    public CursorLoader createFailedUploadInstancesCursorLoader(String sortOrder) {
+        String selection = InstanceProviderAPI.InstanceColumns.STATUS + "=?";
+
+        String[] selectionArgs = { Instance.STATUS_SUBMISSION_FAILED };
+
+        return getInstancesCursorLoader(selection, selectionArgs, sortOrder);
+    }
+
     public CursorLoader createFinalizedInstancesCursorLoader(CharSequence charSequence, String sortOrder) {
         CursorLoader cursorLoader;
         if (charSequence.length() == 0) {

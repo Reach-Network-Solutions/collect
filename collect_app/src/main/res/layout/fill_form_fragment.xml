@@ -5,4 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".fragments.nexus.FillFormFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:padding="16dp"
+        android:id="@+id/all_forms_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_forms" />
+
 </FrameLayout>

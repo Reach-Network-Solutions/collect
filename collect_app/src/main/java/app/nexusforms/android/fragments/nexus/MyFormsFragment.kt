@@ -1,25 +1,51 @@
 package app.nexusforms.android.fragments.nexus
 
+import android.content.ContentUris
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
-import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
-import app.nexusforms.android.database.DatabaseFormsRepository
+import app.nexusforms.android.activities.FormEntryActivity
+import app.nexusforms.android.activities.InstanceUploaderActivity
+import app.nexusforms.android.activities.InstanceUploaderListActivity
+import app.nexusforms.android.adapters.NexusFormsAdapter
+import app.nexusforms.android.dao.CursorLoaderFactory
 import app.nexusforms.android.databinding.MyFormsFragmentBinding
-import app.nexusforms.android.forms.Form
+import app.nexusforms.android.formmanagement.Constants
+import app.nexusforms.android.gdrive.GoogleSheetsUploaderActivity
 import app.nexusforms.android.injection.DaggerUtils
-import timber.log.Timber
-import java.util.*
+import app.nexusforms.android.instances.Instance
+import app.nexusforms.android.network.NetworkStateProvider
+import app.nexusforms.android.preferences.keys.GeneralKeys
+import app.nexusforms.android.preferences.source.SettingsProvider
+import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns
+import app.nexusforms.android.utilities.ApplicationConstants
+import app.nexusforms.android.utilities.DialogUtils
+import app.nexusforms.android.utilities.PlayServicesChecker
+import java.lang.Boolean
+import javax.inject.Inject
 
 class MyFormsFragment : Fragment() {
 
     lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
+
+    @Inject
+   lateinit var connectivityProvider: NetworkStateProvider
+
+   @Inject
+   lateinit var settingsProvider : SettingsProvider
+
+    lateinit var alertDialog: AlertDialog
 
     companion object {
         fun newInstance() = MyFormsFragment()
@@ -41,9 +67,7 @@ class MyFormsFragment : Fragment() {
 
         setOnClickListener()
         setupButtons()
-
-        //attempt to paint some view with all the forms
-        initView()
+        initRecyclerView(Constants.HomeFormSelection.DRAFTS)
 
         return myFormsFragmentBinding.root
     }
@@ -90,7 +114,7 @@ class MyFormsFragment : Fragment() {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
-            //TODO FILTERING DRAFT
+            initRecyclerView(Constants.HomeFormSelection.DRAFTS)
         }
         myFormsFragmentBinding.buttonFilterCompleted.setOnClickListener {
             myFormsFragmentBinding.buttonFilterCompleted.apply {
@@ -116,7 +140,7 @@ class MyFormsFragment : Fragment() {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
-            //TODO FILTERING COMPLETED
+            initRecyclerView(Constants.HomeFormSelection.COMPLETED)
         }
 
 
@@ -144,36 +168,134 @@ class MyFormsFragment : Fragment() {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
-            //TODO FILTERING FAILED
+            initRecyclerView(Constants.HomeFormSelection.FAILED_UPLOAD)
         }
 
 
     }
 
 
-    private fun formSelectedOnList(selectedForm: Form) {
-        Timber.d("Selected %s", selectedForm.displayName)
+    private fun initRecyclerView(selectionType: Constants.HomeFormSelection) {
+
+        val resultCursor: Cursor?
+
+
+        val selectionCursor: CursorLoader? = when (selectionType) {
+            Constants.HomeFormSelection.COMPLETED -> CursorLoaderFactory().createCompletedInstancesCursorLoader(
+                ""
+            )
+
+            Constants.HomeFormSelection.FAILED_UPLOAD -> CursorLoaderFactory().createFailedUploadInstancesCursorLoader(
+                ""
+            )
+
+            Constants.HomeFormSelection.DRAFTS -> CursorLoaderFactory().createDraftInstancesCursorLoader(
+                ""
+            )
+        }
+
+        resultCursor = selectionCursor?.loadInBackground()
+
+
+        if (resultCursor?.count == 0) {
+            myFormsFragmentBinding.noEntryInSelection.visibility = View.VISIBLE
+            myFormsFragmentBinding.noEntryInSelection.text =
+                getString(R.string.no_entry_in_selection)
+        } else {
+            myFormsFragmentBinding.noEntryInSelection.visibility = View.GONE
+        }
+
+        paintRecycler(resultCursor, selectionType)
+
     }
 
-    private fun initView() {
 
-        val formsListAsMutableList = DatabaseFormsRepository().all
-        with(myFormsFragmentBinding.allFormsRecycler) {
+    private fun paintRecycler(returnedCursor: Cursor?, selectionType: Constants.HomeFormSelection) {
 
-            val formsAdapter = MyFormsRecyclerAdapter(
-                formsListAsMutableList as ArrayList<Form>,
-                ::formSelectedOnList
-            )
+        with(myFormsFragmentBinding.filterableRecyclerForms) {
+
+            val formsAdapter = NexusFormsAdapter(returnedCursor, selectionType, ::openForm, ::uploadSelectedFiles)
 
             layoutManager = LinearLayoutManager(context)
 
             adapter = formsAdapter
 
         }
+    }
+
+    private fun uploadSelectedFiles(selectionId : Long) {
+        val instanceIds = LongArray(1){selectionId}
+            // otherwise, do the normal aggregate/other thing.
+            val i = Intent(requireContext(), InstanceUploaderActivity::class.java)
+            i.putExtra(FormEntryActivity.KEY_INSTANCES, instanceIds)
+            startActivityForResult(i, 0)
 
     }
 
+    private fun openForm(c: Cursor?) {
+
+        if (c != null) {
+            val instanceUri = ContentUris.withAppendedId(
+                InstanceColumns.CONTENT_URI,
+                c.getLong(c.getColumnIndex(InstanceColumns._ID))
+            )
+
+            val status: String = c.getString(c.getColumnIndex(InstanceColumns.STATUS))
+            val strCanEditWhenComplete: String =
+                c.getString(c.getColumnIndex(InstanceColumns.CAN_EDIT_WHEN_COMPLETE))
+            val canEdit =
+                status == Instance.STATUS_INCOMPLETE || Boolean.parseBoolean(
+                    strCanEditWhenComplete
+                )
+            if (!canEdit) {
+                createAlertDialog(
+                    "Not allowed",
+                    getString(R.string.cannot_edit_completed_form)
+
+                )
+                return
+            }
+
+            val intent = Intent(Intent.ACTION_EDIT, instanceUri)
+
+            intent.putExtra(
+                ApplicationConstants.BundleKeys.FORM_MODE,
+                ApplicationConstants.FormModes.EDIT_SAVED
+            )
+
+            c.close()
+
+            startActivity(intent)
+        }
+
+    }
+
+    private fun createAlertDialog(title: String, message: String) {
+        alertDialog = AlertDialog.Builder(requireContext()).create()
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+        val quitListener =
+            DialogInterface.OnClickListener { dialog, i ->
+                when (i) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        dialog.dismiss()
+                    }
+
+
+                }
+            }
+        alertDialog.setCancelable(false)
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), quitListener)
+        alertDialog.setIcon(android.R.drawable.ic_dialog_info)
+
+        DialogUtils.showDialog(alertDialog, requireActivity())
+    }
+
+
 }
+
+
+
 
 
 

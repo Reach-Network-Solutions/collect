@@ -55,7 +55,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/all_forms_recycler"
+        android:id="@+id/filterable_recycler_forms"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="visible"
@@ -65,5 +65,18 @@
         app:layout_constraintTop_toBottomOf="@+id/layout_filter_buttons_forms"
         tools:itemCount="3"
         tools:listitem="@layout/item_nexus_form" />
+
+    <TextView
+        android:id="@+id/no_entry_in_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        tools:text="Seems like there's no entry here"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -74,7 +74,7 @@ public class InstanceUploaderListActivity extends InstanceListActivity implement
     private static final String SHOW_ALL_MODE = "showAllMode";
     private static final String INSTANCE_UPLOADER_LIST_SORTING_ORDER = "instanceUploaderListSortingOrder";
 
-    private static final int INSTANCE_UPLOADER = 0;
+    static final int INSTANCE_UPLOADER = 0;
 
     @BindView(R.id.upload_button)
     Button uploadButton;

@@ -992,4 +992,6 @@
 
     <string name="projects">Projects</string>
     <string name="form_entry_item_in_list_icon">Form entry item in list</string>
+    <string name="no_entry_in_selection">All set! There\'s no form in here</string>
+    <string name="upload_form">Upload form</string>
 </resources>

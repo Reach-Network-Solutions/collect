@@ -20,4 +20,10 @@ class Constants {
         private val DO_NOT_EXIT = false
     }
 
+    enum class HomeFormSelection {
+        DRAFTS,
+        COMPLETED,
+        FAILED_UPLOAD
+    }
+
 }
