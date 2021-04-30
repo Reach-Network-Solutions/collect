@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.nexusforms.android.R
 import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter.ViewHolder.Companion.from
-import app.nexusforms.android.databinding.ItemNexusFormBinding
+import app.nexusforms.android.databinding.ItemFormsBinding
+
 import app.nexusforms.android.forms.Form
 import java.util.*
 
@@ -35,21 +36,21 @@ class MyFormsRecyclerAdapter(
     override fun getItemCount(): Int = list.size
 
 
-    class ViewHolder(val binding: ItemNexusFormBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ItemFormsBinding) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
         fun bind(form: Form) {
             val name = form.displayName
             val version = form.jrVersion
 
-            binding.formNameInList.text = name
-            binding.formStatus .text = if (version == "") form.jrFormId else
+            binding.textFormName .text = name
+            binding.textFormTemplateName.text = if (version == "") form.jrFormId else
                 "${binding.root.context.resources.getString(R.string.version)} $version"
         }
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
-                val itemBinding = ItemNexusFormBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val itemBinding = ItemFormsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
                 return ViewHolder(itemBinding)
             }
