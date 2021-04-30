@@ -5,19 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
-import app.nexusforms.android.adapters.NexusFormsAdapter
-import app.nexusforms.android.dao.CursorLoaderFactory
+import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
+import app.nexusforms.android.database.DatabaseFormsRepository
 import app.nexusforms.android.databinding.MyFormsFragmentBinding
+import app.nexusforms.android.forms.Form
 import app.nexusforms.android.injection.DaggerUtils
-import app.nexusforms.android.provider.FormsProviderAPI
-import app.nexusforms.android.provider.FormsProviderAPI.FormsColumns.DISPLAY_NAME
-import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns
 import timber.log.Timber
+import java.util.*
 
 class MyFormsFragment : Fragment() {
 
@@ -30,7 +28,7 @@ class MyFormsFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        DaggerUtils.getComponent(context).Inject(this)
+        DaggerUtils.getComponent(context).inject(this)
     }
 
 
@@ -51,20 +49,21 @@ class MyFormsFragment : Fragment() {
     }
 
     private fun setupButtons() {
-            myFormsFragmentBinding.buttonFilterDraft.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            }
-            myFormsFragmentBinding.buttonFilterCompleted.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-            }
-            myFormsFragmentBinding.buttonFilterFailedUploads.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-            }
+        myFormsFragmentBinding.buttonFilterDraft.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+        myFormsFragmentBinding.buttonFilterCompleted.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        }
+        myFormsFragmentBinding.buttonFilterFailedUploads.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        }
 
     }
+
 
     private fun setOnClickListener() {
         myFormsFragmentBinding.buttonFilterDraft.setOnClickListener {
@@ -73,27 +72,47 @@ class MyFormsFragment : Fragment() {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             }
             myFormsFragmentBinding.buttonFilterCompleted.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
             myFormsFragmentBinding.buttonFilterFailedUploads.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
             //TODO FILTERING DRAFT
         }
         myFormsFragmentBinding.buttonFilterCompleted.setOnClickListener {
-            myFormsFragmentBinding.buttonFilterCompleted.apply{
+            myFormsFragmentBinding.buttonFilterCompleted.apply {
                 setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             }
             myFormsFragmentBinding.buttonFilterDraft.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
             myFormsFragmentBinding.buttonFilterFailedUploads.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
@@ -107,11 +126,21 @@ class MyFormsFragment : Fragment() {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             }
             myFormsFragmentBinding.buttonFilterCompleted.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
             myFormsFragmentBinding.buttonFilterDraft.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
@@ -119,40 +148,34 @@ class MyFormsFragment : Fragment() {
         }
 
 
+    }
 
+
+    private fun formSelectedOnList(selectedForm: Form) {
+        Timber.d("Selected %s", selectedForm.displayName)
     }
 
     private fun initView() {
 
-        val formsCursor = CursorLoaderFactory().createSavedInstancesCursorLoader("")
-
-        val readyCursor = formsCursor.loadInBackground()
-
-        if (readyCursor == null) {
-            Timber.d("EMPTY list")
-            return
-        }
-        var count = 0
-        while (count < readyCursor.count) {
-            count++
-
-            readyCursor.moveToPosition(count)
-            Timber.d(
-                "PASSING %s",
-                readyCursor.getString(readyCursor.getColumnIndexOrThrow(FormsProviderAPI.FormsColumns.DISPLAY_NAME))
-            )
-        }
-
+        val formsListAsMutableList = DatabaseFormsRepository().all
         with(myFormsFragmentBinding.allFormsRecycler) {
 
-            val formsAdapter = NexusFormsAdapter(readyCursor)
+            val formsAdapter = MyFormsRecyclerAdapter(
+                formsListAsMutableList as ArrayList<Form>,
+                ::formSelectedOnList
+            )
 
             layoutManager = LinearLayoutManager(context)
 
             adapter = formsAdapter
+
         }
 
     }
 
-
 }
+
+
+
+
+
