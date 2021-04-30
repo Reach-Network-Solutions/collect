@@ -80,6 +80,8 @@ class MyFormsFragment : Fragment() {
                 setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
+
+            //TODO FILTERING DRAFT
         }
         myFormsFragmentBinding.buttonFilterCompleted.setOnClickListener {
             myFormsFragmentBinding.buttonFilterCompleted.apply{
@@ -94,6 +96,8 @@ class MyFormsFragment : Fragment() {
                 setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
+
+            //TODO FILTERING COMPLETED
         }
 
 
@@ -110,6 +114,8 @@ class MyFormsFragment : Fragment() {
                 setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
+
+            //TODO FILTERING FAILED
         }
 
 

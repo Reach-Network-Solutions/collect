@@ -17,4 +17,5 @@
     <string name="drafts">Drafts</string>
     <string name="completed">Completed</string>
     <string name="failed_uploads">Failed</string>
+    <string name="updates">Updates</string>
 </resources>
