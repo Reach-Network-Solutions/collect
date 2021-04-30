@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.nexus.FormDetailsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/background_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_general_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/title_general_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/general_information"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_collapse_general_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_general_information"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/title_general_information"
+                    app:srcCompat="@drawable/ic_arrow_down_" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_label_created_by"
+                    style="@style/Widget.NexusForms.TextView.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/label_created_by"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_general_information" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_label_version"
+                    style="@style/Widget.NexusForms.TextView.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/label_version"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_label_created_by" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_label_created_date"
+                    style="@style/Widget.NexusForms.TextView.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/label_created_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_label_version" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_label_download_date"
+                    style="@style/Widget.NexusForms.TextView.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/label_download_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_label_created_date" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_label_download_Number_of_questions"
+                    style="@style/Widget.NexusForms.TextView.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/label_number_of_questions"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_label_download_date" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_general_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toEndOf="@id/text_label_download_Number_of_questions" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_created_by"
+                    style="@style/Widget.NexusForms.TextView.Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_general_info"
+                    app:layout_constraintTop_toTopOf="@+id/text_label_created_by"
+                    tools:text="Reach Network Solutions" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_version"
+                    style="@style/Widget.NexusForms.TextView.Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_label_version"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_general_info"
+                    app:layout_constraintTop_toTopOf="@+id/text_label_version"
+                    tools:text="3.0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_created_date"
+                    style="@style/Widget.NexusForms.TextView.Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_label_created_date"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_general_info"
+                    app:layout_constraintTop_toTopOf="@+id/text_label_created_date"
+                    tools:text="29 March, 2021" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_download_date"
+                    style="@style/Widget.NexusForms.TextView.Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_label_download_date"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_general_info"
+                    app:layout_constraintTop_toTopOf="@+id/text_label_download_date"
+                    tools:text="31 March, 2021" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_number_of_questions"
+                    style="@style/Widget.NexusForms.TextView.Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_label_download_Number_of_questions"
+                    app:layout_constraintStart_toStartOf="@+id/guideline_general_info"
+                    app:layout_constraintTop_toTopOf="@+id/text_label_download_Number_of_questions"
+                    tools:text="30 Questions" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_fill_in_form"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/fill_in_form"
+                    android:textAllCaps="false"
+                    app:cornerRadius="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_label_download_Number_of_questions" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

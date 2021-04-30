@@ -95,4 +95,13 @@
         <item name="android:textSize">12sp</item>
         <item name="color">@color/filter_button_state_color</item>
     </style>
+
+    <style name="Widget.NexusForms.TextView.Label" parent="Widget.AppCompat.TextView">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Widget.NexusForms.TextView.Value" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>
