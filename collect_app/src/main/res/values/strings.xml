@@ -14,4 +14,7 @@
     <string name="filter_organizational_forms">Organizational forms</string>
     <string name="library">Library</string>
     <string name="fill_form">Fill Form</string>
+    <string name="drafts">Drafts</string>
+    <string name="completed">Completed</string>
+    <string name="failed_uploads">Failed</string>
 </resources>

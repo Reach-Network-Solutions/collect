@@ -161,28 +161,40 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             when (destination.id) {
                 R.id.myFormsFragment -> {
                     setUpToolbarTitle(R.string.my_forms,R.id.myFormsFragment)
+                    setupFab(true)
                 }
                 R.id.formsLibraryFragment -> {
                     setUpToolbarTitle(R.string.forms_library,R.id.formsLibraryFragment)
+                    setupFab(false)
                 }
 
                 R.id.filledFormsFragment -> {
-
+                    setupFab(false)
                 }
 
                 R.id.formsSummaryFragment -> {
-
+                    setupFab(false)
                 }
 
                 R.id.profileFragment -> {
                     setUpToolbarTitle(R.string.my_profile,R.id.profileFragment )
+                    setupFab(false)
                 }
 
                 R.id.fillFormFragment->{
                     setUpToolbarTitle(R.string.fill_form,R.id.fillFormFragment)
+                    setupFab(false)
                 }
 
             }
+        }
+    }
+
+    private fun setupFab(visible: Boolean) {
+        if(visible){
+            activityMainBinding.fabMainBottomBar.visibility = View.VISIBLE
+        }else{
+            activityMainBinding.fabMainBottomBar.visibility = View.INVISIBLE
         }
     }
 

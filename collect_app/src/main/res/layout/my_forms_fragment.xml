@@ -1,15 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.nexus.MyFormsFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_filter_buttons_forms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_filter_draft"
+            style="@style/Widget.NexusForms.Button.FilterButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/drafts"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_filter_completed"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_filter_completed"
+            style="@style/Widget.NexusForms.Button.FilterButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/completed"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_filter_failed_uploads"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/button_filter_draft"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_filter_failed_uploads"
+            style="@style/Widget.NexusForms.Button.FilterButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/failed_uploads"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="2"
+            app:layout_constraintStart_toEndOf="@+id/button_filter_completed"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/all_forms_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_filter_buttons_forms"
         tools:itemCount="3"
-        tools:listitem="@layout/item_nexus_form"/>
+        tools:listitem="@layout/item_nexus_form" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
