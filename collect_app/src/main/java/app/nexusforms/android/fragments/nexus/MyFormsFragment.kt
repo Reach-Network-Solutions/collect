@@ -37,14 +37,11 @@ class MyFormsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         myFormsFragmentBinding = MyFormsFragmentBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+
         //attempt to paint some view with all the forms
         initView()
 
-        Toast.makeText(requireContext(), "FORMS", Toast.LENGTH_SHORT).show()
-
         return myFormsFragmentBinding.root
-
-
     }
 
     private fun initView(){

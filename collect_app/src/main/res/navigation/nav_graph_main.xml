@@ -15,11 +15,11 @@
         android:name="app.nexusforms.android.fragments.nexus.FormsLibraryFragment"
         android:label="Forms Library"
         tools:layout="@layout/fragment_forms_library" />
-    <fragment
+  <!--  <fragment
         android:id="@+id/profileFragment"
         android:name="app.nexusforms.android.fragments.nexus.ProfileFragment"
         android:label="Profile Fragment"
-        tools:layout="@layout/profile_fragment" />
+        tools:layout="@layout/profile_fragment" />-->
     <fragment
         android:id="@+id/filledFormsFragment"
         android:name="app.nexusforms.android.fragments.nexus.FilledFormsFragment"
@@ -30,4 +30,9 @@
         android:name="app.nexusforms.android.fragments.nexus.FormsSummaryFragment"
         android:label="forms_summary_fragment"
         tools:layout="@layout/forms_summary_fragment" />
+    <fragment
+        android:id="@+id/fillFormFragment"
+        android:name="app.nexusforms.android.fragments.nexus.FillFormFragment"
+        android:label="fill_form_fragment"
+        tools:layout="@layout/fill_form_fragment" />
 </navigation>

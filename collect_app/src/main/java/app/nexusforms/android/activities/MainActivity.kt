@@ -2,7 +2,10 @@ package app.nexusforms.android.activities
 
 import android.database.Cursor
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -135,9 +138,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     }
 
     private fun setClickListeners() {
-       /* activityMainBinding.fabMainBottomBar.setOnClickListener {
-            navController.navigate(R.id.formsLibraryFragment)
-        }*/
+        activityMainBinding.fabMainBottomBar.setOnClickListener {
+            navController.navigate(R.id.fillFormFragment)
+        }
 
         activityMainBinding.menuActionSettings.setOnClickListener {
             DialogUtils.showIfNotShowing(
@@ -157,10 +160,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.myFormsFragment -> {
-                    setUpToolbarTitle(R.string.my_forms)
+                    setUpToolbarTitle(R.string.my_forms,R.id.myFormsFragment)
                 }
                 R.id.formsLibraryFragment -> {
-                    setUpToolbarTitle(R.string.forms_library)
+                    setUpToolbarTitle(R.string.forms_library,R.id.formsLibraryFragment)
                 }
 
                 R.id.filledFormsFragment -> {
@@ -172,15 +175,37 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
                 }
 
                 R.id.profileFragment -> {
-                    setUpToolbarTitle(R.string.my_profile)
+                    setUpToolbarTitle(R.string.my_profile,R.id.profileFragment )
+                }
+
+                R.id.fillFormFragment->{
+                    setUpToolbarTitle(R.string.fill_form,R.id.fillFormFragment)
                 }
 
             }
         }
     }
 
-    private fun setUpToolbarTitle(id: Int) {
-        activityMainBinding.toolbarTitleMain.text = getString(id)
+
+    private fun setUpToolbarTitle(titleId: Int, fragmentId: Int) {
+        if(fragmentId == R.id.fillFormFragment){
+            activityMainBinding.bottomNavMainHome.visibility = View.INVISIBLE
+            activityMainBinding.menuActionSettings.visibility = View.INVISIBLE
+            activityMainBinding.menuActionSearch.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_arrow_back))
+            activityMainBinding.menuActionSearch.setOnClickListener {
+                navController.navigateUp()
+            }
+            activityMainBinding.fabMainBottomBar.visibility = View.INVISIBLE
+        }else{
+            activityMainBinding.bottomNavMainHome.visibility = View.VISIBLE
+            activityMainBinding.menuActionSettings.visibility = View.VISIBLE
+            activityMainBinding.menuActionSearch.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_search))
+            activityMainBinding.menuActionSearch.setOnClickListener {
+               // navController.navigateUp()
+            }
+            activityMainBinding.fabMainBottomBar.visibility = View.VISIBLE
+        }
+        activityMainBinding.toolbarTitleMain.text = getString(titleId)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
