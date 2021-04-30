@@ -6,4 +6,10 @@
     <string name="my_profile">My Profile</string>
     <string name="forms_library">Forms Library</string>
     <string name="filter_by">Filter by</string>
+    <string name="filter_all">All</string>
+    <string name="filter_favourites">Favourites</string>
+    <string name="filter_downloaded_forms">Downloaded Forms</string>
+    <string name="filter_public_forms">Public Forms</string>
+    <string name="filter_team_forms">Team Forms</string>
+    <string name="filter_organizational_forms">Organizational forms</string>
 </resources>

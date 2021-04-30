@@ -7,12 +7,14 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +22,7 @@ import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.activities.viewmodels.FormDownloadListViewModel
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter
+import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.*
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
@@ -104,7 +107,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentFormsLibraryBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -386,11 +388,26 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     private fun setupRecycler(list: ArrayList<HashMap<String, String>>) {
+        downloadFormsAdapter = LibraryFormsRecyclerAdapter(
+            list,
+            OnClickListener { downloadForms ->
+                Toast.makeText(
+                    requireContext(),
+                    "Set Favourite: ${downloadForms.formName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            OnClickListener { downloadForms ->
+                Toast.makeText(
+                    requireContext(),
+                    "Set Download: ${downloadForms.formName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+        )
 
-        with(binding.recyclerFormsLibrary) {
-            downloadFormsAdapter = LibraryFormsRecyclerAdapter(list)
-            adapter = downloadFormsAdapter
-        }
+        binding.recyclerFormsLibrary.adapter = downloadFormsAdapter
+
         for (item in list) {
             Timber.d("ITEM in list %s with %s", item.keys, item.values)
         }
