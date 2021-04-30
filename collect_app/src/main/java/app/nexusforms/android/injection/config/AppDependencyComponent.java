@@ -262,9 +262,9 @@ public interface AppDependencyComponent {
 
     void Inject(MainActivity mainActivity);
 
-    void Inject(FormsLibraryFragment formsLibraryFragment);
+    void inject(FormsLibraryFragment formsLibraryFragment);
 
-    void Inject(MyFormsFragment myFormsFragment);
+    void inject(MyFormsFragment myFormsFragment);
 
     OpenRosaHttpInterface openRosaHttpInterface();
 

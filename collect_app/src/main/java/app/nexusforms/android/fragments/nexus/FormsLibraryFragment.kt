@@ -20,6 +20,7 @@ import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.OnClickListener
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment
+import app.nexusforms.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_ID_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_VERSION_KEY
@@ -43,7 +44,7 @@ import javax.inject.Inject
 
 
 class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDownloaderListener,
-    AuthDialogUtilityResultListener {
+    AuthDialogUtilityResultListener, RefreshFormListDialogFragmentListener {
 
     @Inject
     lateinit var connectivityProvider: NetworkStateProvider
@@ -67,7 +68,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     lateinit var alertDialog: AlertDialog
 
-    private val cancelDialog: ProgressDialog? = null
+    private var cancelDialog: ProgressDialog? = null
 
     private var downloadFormsTask: DownloadFormsTask? = null
 
@@ -79,7 +80,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        DaggerUtils.getComponent(context).Inject(this)
+        DaggerUtils.getComponent(context).inject(this)
 
         viewModel = ViewModelProvider(
             this,
@@ -378,8 +379,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         cleanUpWebCredentials()
 
-        if (cancelDialog != null && cancelDialog.isShowing) {
-            cancelDialog.dismiss()
+        if (cancelDialog != null && cancelDialog?.isShowing == true) {
+            cancelDialog?.dismiss()
             viewModel.isCancelDialogShowing = false
         }
 
@@ -650,5 +651,38 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     override fun onDetach() {
         super.onDetach()
         viewModel.clearSelectedFormIds()
+    }
+
+    override fun onCancelFormLoading() {
+        if (downloadFormListTask != null) {
+            downloadFormListTask!!.setDownloaderListener(null)
+            downloadFormListTask!!.cancel(true)
+            downloadFormListTask = null
+
+            // Only explicitly exit if DownloadFormListTask is running since
+            // DownloadFormTask has a callback when cancelled and has code to handle
+            // cancellation when in download mode only
+            if (viewModel.isDownloadOnlyMode) {
+                Toast.makeText(requireContext(),"User cancelled the operation" , Toast.LENGTH_SHORT).show()
+               // finish()
+            }
+        }
+
+        if (downloadFormsTask != null) {
+            createCancelDialog()
+            downloadFormsTask!!.cancel(true)
+        }
+        viewModel.setLoadingCanceled(true)
+    }
+
+    private fun createCancelDialog() {
+        cancelDialog = ProgressDialog(requireContext())
+        cancelDialog?.setTitle(getString(R.string.canceling))
+        cancelDialog?.setMessage(getString(R.string.please_wait))
+        cancelDialog?.setIcon(android.R.drawable.ic_dialog_info)
+        cancelDialog?.isIndeterminate = true
+        cancelDialog?.setCancelable(false)
+        viewModel.isCancelDialogShowing = true
+        DialogUtils.showDialog(cancelDialog, requireActivity())
     }
 }
