@@ -3,26 +3,21 @@ package app.nexusforms.android.fragments.nexus
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.SparseBooleanArray
 import android.view.LayoutInflater
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.activities.viewmodels.FormDownloadListViewModel
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter
-import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.*
+import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.OnClickListener
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
@@ -44,9 +39,7 @@ import app.nexusforms.android.utilities.*
 import app.nexusforms.android.utilities.AuthDialogUtility.AuthDialogUtilityResultListener
 import timber.log.Timber
 import java.net.URI
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 
 class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDownloaderListener,
@@ -107,7 +100,31 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentFormsLibraryBinding.inflate(inflater, container, false)
+
+        setupOnClickListeners()
+
         return binding.root
+    }
+
+    private fun setupOnClickListeners(){
+        binding.fabDownloadSelection.setOnClickListener {
+            val filesToDownload: ArrayList<ServerFormDetails> = getFilesToDownload()
+            startFormsDownload(filesToDownload)
+        }
+    }
+
+    private fun getFilesToDownload(): ArrayList<ServerFormDetails> {
+        val filesToDownload: ArrayList<ServerFormDetails> = ArrayList()
+
+        for (item in viewModel.selectedFormIds){
+
+            val formDetails = viewModel.formDetailsByFormId[item]
+
+            if(formDetails != null){
+                 filesToDownload.add(formDetails)}
+             }
+
+        return filesToDownload
     }
 
     private fun init(savedInstanceState: Bundle?) {
@@ -289,15 +306,87 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     override fun formsDownloadingComplete(result: MutableMap<ServerFormDetails, String>?) {
-        TODO("Not yet implemented")
+        if (downloadFormsTask != null) {
+            downloadFormsTask?.setDownloaderListener(null)
+        }
+
+        cleanUpWebCredentials()
+
+        DialogUtils.dismissDialog(
+            RefreshFormListDialogFragment::class.java,
+            childFragmentManager
+        )
+        createAlertDialog(
+            getString(R.string.download_forms_result),
+            FormDownloadListActivity.getDownloadResultMessage(result),
+            false
+        )
+
+        // Set result to true for forms which were downloaded
+
+        // Set result to true for forms which were downloaded
+        if (viewModel.isDownloadOnlyMode) {
+            for (serverFormDetails in result!!.keys) {
+                val successKey = result[serverFormDetails]
+                if (getString(R.string.success) == successKey) {
+                    if (viewModel.formResults.containsKey(serverFormDetails.formId)) {
+                        viewModel.putFormResult(serverFormDetails.formId, true)
+                    }
+                }
+            }
+            //setReturnResult(true, null, viewModel.formResults)
+
+            createAlertDialog(
+                getString(R.string.download_forms_result),
+                viewModel.formResults.toString(),
+                false
+            )
+
+        }
+    }
+
+    private fun cleanUpWebCredentials() {
+        if (viewModel.url != null) {
+            val host = Uri.parse(viewModel.url)
+                .host
+            if (host != null) {
+                webCredentialsUtils.clearCredentials(viewModel.url)
+            }
+        }
     }
 
     override fun progressUpdate(currentFile: String?, progress: Int, total: Int) {
-        TODO("Not yet implemented")
+        val fragment  : RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
+            RefreshFormListDialogFragment::class.java.name
+        ) as RefreshFormListDialogFragment
+
+        fragment?.setMessage(
+            getString(
+                R.string.fetching_file,
+                currentFile,
+                progress.toString(),
+                total.toString()
+            )
+        )
     }
 
     override fun formsDownloadingCancelled() {
-        TODO("Not yet implemented")
+        if (downloadFormsTask != null) {
+            downloadFormsTask!!.setDownloaderListener(null)
+            downloadFormsTask = null
+        }
+
+        cleanUpWebCredentials()
+
+        if (cancelDialog != null && cancelDialog.isShowing) {
+            cancelDialog.dismiss()
+            viewModel.isCancelDialogShowing = false
+        }
+
+        if (viewModel.isDownloadOnlyMode) {
+            Toast.makeText(requireContext(),  "Download cancelled", Toast.LENGTH_SHORT).show()
+            //finish()
+        }
     }
 
     override fun formListDownloadingComplete(
@@ -390,27 +479,22 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     private fun setupRecycler(list: ArrayList<HashMap<String, String>>) {
         downloadFormsAdapter = LibraryFormsRecyclerAdapter(
             list,
-            OnClickListener { downloadForms ->
-                Toast.makeText(
-                    requireContext(),
-                    "Set Favourite: ${downloadForms.formName}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            },
-            OnClickListener { downloadForms ->
-                Toast.makeText(
-                    requireContext(),
-                    "Set Download: ${downloadForms.formName}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            OnClickListener { downloadForms , isChecked->
+                if(isChecked){
+                    viewModel.addSelectedFormId(downloadForms.formDetailsKey)
+                }else{
+                    viewModel.removeSelectedFormId(downloadForms.formDetailsKey)
+                }
+
+                if(viewModel.selectedFormIds.isEmpty()){
+                    binding.fabDownloadSelection.visibility = View.INVISIBLE
+                }else{
+                    binding.fabDownloadSelection.visibility = View.VISIBLE
+                }
             },
         )
 
         binding.recyclerFormsLibrary.adapter = downloadFormsAdapter
-
-        for (item in list) {
-            Timber.d("ITEM in list %s with %s", item.keys, item.values)
-        }
     }
 
     private fun performDownloadModeDownload() {
@@ -561,5 +645,10 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     override fun cancelledUpdatingCredentials() {
         Toast.makeText(requireContext(), "Credentials are required!", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.clearSelectedFormIds()
     }
 }

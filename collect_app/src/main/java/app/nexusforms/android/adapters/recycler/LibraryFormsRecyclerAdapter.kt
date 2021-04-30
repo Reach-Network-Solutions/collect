@@ -3,7 +3,9 @@ package app.nexusforms.android.adapters.recycler
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.ViewHolder.Companion.from
 import app.nexusforms.android.databinding.ItemFormsLibraryBinding
@@ -13,8 +15,7 @@ import java.util.ArrayList
 
 class LibraryFormsRecyclerAdapter(
     private val list: ArrayList<HashMap<String, String>>,
-    val favoriteClickListener: OnClickListener,
-    val downloadClickListener: OnClickListener
+    val selectForDownloadClickListener: OnClickListener
 ) :
     RecyclerView.Adapter<LibraryFormsRecyclerAdapter.ViewHolder>() {
 
@@ -28,15 +29,15 @@ class LibraryFormsRecyclerAdapter(
             DownloadForms(
                 formName = form[FormDownloadListActivity.FORMNAME],
                 formVersion = form[FORM_VERSION_KEY],
-                formId = form[Constants.FORM_ID_KEY]
+                formId = form[Constants.FORM_ID_KEY],
+                formIdDisplay = form[FormDownloadListActivity.FORMID_DISPLAY],
+                formDetailsKey = form[Constants.FORMDETAIL_KEY]
             )
         }.also {
             holder.bind(it[0])
-            holder.binding.imageItemFormsFavourite.setOnClickListener { _ ->
-                favoriteClickListener.onClick(it[0])
-            }
-            holder.binding.imageItemFormsDownload.setOnClickListener { _ ->
-                downloadClickListener.onClick(it[0])
+            //TODO SET CLICK LISTENERS
+            holder.binding.checkboxDownload.setOnCheckedChangeListener { _, isChecked ->
+                selectForDownloadClickListener.onClick(it[0], isChecked)
             }
         }
 
@@ -45,19 +46,20 @@ class LibraryFormsRecyclerAdapter(
     override fun getItemCount(): Int = list.size
 
 
-    class OnClickListener(val onClickListener: (form: DownloadForms) -> Unit) {
-        fun onClick(form: DownloadForms) = onClickListener(form)
+    class OnClickListener(val onClickListener: (form: DownloadForms, isChecked: Boolean) -> Unit) {
+        fun onClick(form: DownloadForms, isChecked: Boolean) = onClickListener(form,isChecked)
     }
 
     class ViewHolder(val binding: ItemFormsLibraryBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("LogNotTimber")
+        @SuppressLint("SetTextI18n")
         fun bind(form: DownloadForms) {
             val name = form.formName
             val version = form.formVersion
 
             binding.textFormName.text = name
-            binding.textFormsVersion.text = version
+            binding.textFormsVersion.text = if (version == "") form.formId else
+                "${binding.root.context.resources.getString(R.string.version)} $version"
         }
 
         companion object {
@@ -78,7 +80,9 @@ class LibraryFormsRecyclerAdapter(
         data class DownloadForms(
             val formName: String?,
             val formVersion: String?,
-            val formId: String?
+            val formId: String?,
+            val formIdDisplay: String?,
+            val formDetailsKey : String?,
         )
     }
 }

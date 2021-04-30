@@ -135,9 +135,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     }
 
     private fun setClickListeners() {
-        activityMainBinding.fabMainBottomBar.setOnClickListener {
+       /* activityMainBinding.fabMainBottomBar.setOnClickListener {
             navController.navigate(R.id.formsLibraryFragment)
-        }
+        }*/
 
         activityMainBinding.menuActionSettings.setOnClickListener {
             DialogUtils.showIfNotShowing(
