@@ -35,4 +35,9 @@
         android:name="app.nexusforms.android.fragments.nexus.FillFormFragment"
         android:label="fill_form_fragment"
         tools:layout="@layout/fill_form_fragment" />
+    <fragment
+        android:id="@+id/formDetailsFragment"
+        android:name="app.nexusforms.android.fragments.nexus.FormDetailsFragment"
+        android:label="form_details_fragment"
+        tools:layout="@layout/form_details_fragment" />
 </navigation>
