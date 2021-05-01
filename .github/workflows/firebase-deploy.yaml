@@ -1,0 +1,89 @@
+name: Test workflow
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - run: java -version
+
+      - name: setup jdk environment
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+
+      - run: java -version
+
+      - name: build all artifacts
+        id: buildAllApks
+        uses: eskatos/gradle-command-action@v1
+        with:
+          # gradle-version: 6.5
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+          arguments: assembleDebug
+
+      # - name: sign artifacts
+      #   id: signArtifact
+      #   uses: r0adkll/sign-android-release@v1.0.1
+      #   with:
+      #     releaseDirectory: app/build/outputs/apk/ourbuildtype/release
+      #     alias: ${{ secrets.KEYALIAS }}
+      #     signingKeyBase64: ${{ secrets.KEYSTORE }}
+      #     keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload our APK
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: Release artifact
+          path: app/build/outputs/apk/debug/*.apk
+      #          path: app/build/outputs/apk/release/app-release-*.apk
+
+      #      - name: Create Release
+      #        id: create_release
+      #        uses: actions/create-release@v1
+      #        env:
+      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #        with:
+      #          tag_name: ${{ github.ref }}
+      #          release_name: Release ${{ github.ref }}
+      #          draft: false
+      #          prerelease: false
+
+      - name: Save name of our artifact
+        id: set-result-artifact
+        run: |
+          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/debug/*.apk | head -n 1)
+          ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
+          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
+          echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+      - name: Deploy to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.2
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          #          serviceCredentialsFile: ${{secrets.FIREBASE_SERVICE_KEY}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          file: app/build/outputs/apk/debug/app-debug.apk
+          #          app_file: app/build/outputs/apk/release/app-release-unsigned.apk
+          groups: qa-team
+
+
+#      - name: Upload our Artifact Assets
+#        id: upload-release-asset
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ${{ env.ARTIFACT_PATHNAME_APK }}
+#          asset_name: ${{ env.ARTIFACT_NAME_APK }}
+#          asset_content_type: application/zip
