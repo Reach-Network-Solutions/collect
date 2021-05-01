@@ -75,7 +75,7 @@ android {
     }
 
     defaultConfig {
-        applicationId('org.odk.collect.android')
+        applicationId('app.nexusforms.android')
         minSdkVersion rootProject.androidMinSdk
         targetSdkVersion rootProject.androidTargetSdk
         versionCode LEGACY_BUILD_NUMBER_OFFSET + getMasterCommitCount()
@@ -147,6 +147,7 @@ android {
             testCoverageEnabled((findProperty("enableJacoco") ?: "false").toBoolean())
             resValue("string", "GOOGLE_MAPS_API_KEY", googleMapsApiKey)
             buildConfigField 'String', "MAPBOX_ACCESS_TOKEN", '"' + mapboxToken + '"'
+            applicationIdSuffix '.debug'
         }
     }
 

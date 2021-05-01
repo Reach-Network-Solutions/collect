@@ -1,0 +1,62 @@
+package app.nexusforms.android.feature.formentry;
+
+import androidx.test.espresso.intent.rule.IntentsTestRule;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import app.nexusforms.android.activities.FormEntryActivity;
+import app.nexusforms.android.support.CopyFormRule;
+import app.nexusforms.android.support.FormLoadingUtils;
+import app.nexusforms.android.support.ResetStateRule;
+import app.nexusforms.android.support.pages.FormEntryPage;
+
+import java.util.Collections;
+
+public class ExternalCsvSearchTest {
+
+    private static final String EXTERNAL_CSV_SEARCH_FORM = "external-csv-search.xml";
+
+    public IntentsTestRule<FormEntryActivity> rule = FormLoadingUtils.getFormActivityTestRuleFor(EXTERNAL_CSV_SEARCH_FORM);
+
+    @Rule
+    public RuleChain copyFormChain = RuleChain
+            .outerRule(new ResetStateRule())
+            .around(new CopyFormRule(EXTERNAL_CSV_SEARCH_FORM, Collections.singletonList("external-csv-search-produce.csv"), true))
+            .around(rule);
+
+    @Test
+    public void search_withoutFilter_displaysAllChoices() {
+        new FormEntryPage("external-csv-search", rule).assertOnPage()
+                .assertText("Artichoke")
+                .assertText("Apple")
+                .assertText("Banana")
+                .assertText("Blueberry")
+                .assertText("Cherimoya")
+                .assertText("Carrot");
+    }
+
+    @Test
+    // Regression: https://github.com/getodk/collect/issues/3132
+    public void search_withFilter_showsMatchingChoices() {
+        new FormEntryPage("external-csv-search", rule).assertOnPage()
+                .swipeToNextQuestion("Produce search")
+                .inputText("A")
+                .swipeToNextQuestion("Produce")
+                .assertText("Artichoke")
+                .assertText("Apple")
+                .assertText("Banana")
+                .assertText("Cherimoya")
+                .assertText("Carrot")
+                .assertTextDoesNotExist("Blueberry")
+                .swipeToPreviousQuestion()
+                .inputText("B")
+                .swipeToNextQuestion("Produce")
+                .assertText("Banana")
+                .assertText("Blueberry")
+                .assertTextDoesNotExist("Artichoke")
+                .assertTextDoesNotExist("Apple")
+                .assertTextDoesNotExist("Cherimoya")
+                .assertTextDoesNotExist("Carrot");
+    }
+}

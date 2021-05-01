@@ -32,13 +32,13 @@ the License.
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/audio_recording_controller"
-            android:name="org.odk.collect.android.audio.AudioRecordingControllerFragment"
+            android:name="app.nexusforms.android.audio.AudioRecordingControllerFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <org.odk.collect.android.views.ObviousProgressBar
+    <app.nexusforms.android.views.ObviousProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
@@ -99,11 +99,11 @@ the License.
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:contentDescription="@string/form_forward"
+            android:contentDescription="@string/save"
             android:drawableEnd="@drawable/ic_navigate_forward_wrapped"
             android:focusable="true"
             android:padding="10dp"
-            android:text="@string/form_forward"
+            android:text="@string/save"
             android:textAllCaps="true"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="?colorOnPrimary"

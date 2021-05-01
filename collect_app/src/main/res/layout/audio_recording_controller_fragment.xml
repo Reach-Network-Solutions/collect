@@ -37,7 +37,7 @@
             android:text="@string/recording"
             android:textColor="?colorOnPrimary" />
 
-        <org.odk.collect.android.audio.VolumeBar
+        <app.nexusforms.android.audio.VolumeBar
             android:id="@+id/volume_bar"
             android:layout_width="match_parent"
             android:layout_height="8dp"

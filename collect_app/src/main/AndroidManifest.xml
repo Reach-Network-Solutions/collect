@@ -9,7 +9,7 @@ the specific language governing permissions and limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.odk.collect.android"
+    package="app.nexusforms.android"
     tools:ignore="GoogleAppIndexingWarning">
 
     <uses-feature
@@ -71,7 +71,7 @@ the specific language governing permissions and limitations under the License.
 
     <application
         android:name=".application.Collect"
-        android:icon="@drawable/notes"
+        android:icon="@mipmap/ic_launcher"
         android:installLocation="auto"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -90,58 +90,58 @@ the specific language governing permissions and limitations under the License.
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activities.MainMenuActivity" />
+        <activity android:name="app.nexusforms.android.activities.MainMenuActivity" />
         <activity
-            android:name=".activities.ScannerWithFlashlightActivity"
+            android:name="app.nexusforms.android.activities.ScannerWithFlashlightActivity"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.FormEntryActivity"
+            android:name="app.nexusforms.android.activities.FormEntryActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.NotificationActivity"
+            android:name="app.nexusforms.android.activities.NotificationActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".activities.DrawActivity"
+            android:name="app.nexusforms.android.activities.DrawActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".gdrive.GoogleDriveActivity"
+            android:name="app.nexusforms.android.gdrive.GoogleDriveActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activities.InstanceChooserList" />
-        <activity android:name=".activities.FillBlankFormActivity" android:launchMode="singleTop"/>
-        <activity android:name=".activities.FormDownloadListActivity" />
+        <activity android:name="app.nexusforms.android.activities.InstanceChooserList" />
+        <activity android:name="app.nexusforms.android.activities.FillBlankFormActivity" android:launchMode="singleTop"/>
+        <activity android:name="app.nexusforms.android.activities.FormDownloadListActivity" />
         <activity
-            android:name=".activities.DeleteSavedFormActivity"
+            android:name="app.nexusforms.android.activities.DeleteSavedFormActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".gdrive.GoogleSheetsUploaderActivity"
+            android:name="app.nexusforms.android.gdrive.GoogleSheetsUploaderActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activities.InstanceUploaderListActivity"
+            android:name="app.nexusforms.android.activities.InstanceUploaderListActivity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.InstanceUploaderActivity" />
-        <activity android:name=".activities.AboutActivity" />
-        <activity android:name=".configure.qr.QRCodeTabsActivity" />
-        <activity android:name=".preferences.screens.GeneralPreferencesActivity" />
-        <activity android:name=".preferences.screens.AdminPreferencesActivity" />
-        <activity android:name=".activities.FormHierarchyActivity" />
-        <activity android:name=".activities.ViewOnlyFormHierarchyActivity" />
-        <activity android:name=".activities.GeoPointActivity" />
-        <activity android:name=".activities.GeoPointMapActivity" />
-        <activity android:name=".activities.GeoPolyActivity" />
-        <activity android:name=".activities.FormMapActivity" />
-        <activity android:name=".activities.BearingActivity" />
+        <activity android:name="app.nexusforms.android.activities.InstanceUploaderActivity" />
+        <activity android:name="app.nexusforms.android.activities.AboutActivity" />
+        <activity android:name="app.nexusforms.android.configure.qr.QRCodeTabsActivity" />
+        <activity android:name="app.nexusforms.android.preferences.screens.GeneralPreferencesActivity" />
+        <activity android:name="app.nexusforms.android.preferences.screens.AdminPreferencesActivity" />
+        <activity android:name="app.nexusforms.android.activities.FormHierarchyActivity" />
+        <activity android:name="app.nexusforms.android.activities.ViewOnlyFormHierarchyActivity" />
+        <activity android:name="app.nexusforms.android.activities.GeoPointActivity" />
+        <activity android:name="app.nexusforms.android.activities.GeoPointMapActivity" />
+        <activity android:name="app.nexusforms.android.activities.GeoPolyActivity" />
+        <activity android:name="app.nexusforms.android.activities.FormMapActivity" />
+        <activity android:name="app.nexusforms.android.activities.BearingActivity" />
         <activity
-            android:name=".activities.SplashScreenActivity"
+            android:name="app.nexusforms.android.activities.SplashScreenActivity"
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".activities.CaptureSelfieActivity" />
-        <activity android:name=".activities.WebViewActivity" />
-        <activity android:name=".activities.CaptureSelfieVideoActivity" />
+        <activity android:name="app.nexusforms.android.activities.CaptureSelfieActivity" />
+        <activity android:name="app.nexusforms.android.activities.WebViewActivity" />
+        <activity android:name="app.nexusforms.android.activities.CaptureSelfieVideoActivity" />
 
         <!-- Configure this key by setting GOOGLE_MAPS_API_KEY in collect_app/secrets.properties. -->
         <meta-data
@@ -174,17 +174,17 @@ the specific language governing permissions and limitations under the License.
          -->
 
         <provider
-            android:name=".provider.FormsProvider"
-            android:authorities="org.odk.collect.android.provider.odk.forms"
+            android:name="app.nexusforms.android.provider.FormsProvider"
+            android:authorities="app.nexusforms.android.provider.odk.forms"
             android:exported="true" />
         <provider
-            android:name=".provider.InstanceProvider"
-            android:authorities="org.odk.collect.android.provider.odk.instances"
+            android:name="app.nexusforms.android.provider.InstanceProvider"
+            android:authorities="app.nexusforms.android.provider.odk.instances"
             android:exported="true" />
 
         <activity-alias
             android:name=".activities.FormEntryActivity"
-            android:targetActivity=".activities.FormEntryActivity"
+            android:targetActivity="app.nexusforms.android.activities.FormEntryActivity"
             tools:ignore="AppLinkUrlError">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -199,7 +199,7 @@ the specific language governing permissions and limitations under the License.
 
         <activity-alias
             android:name=".activities.InstanceChooserList"
-            android:targetActivity=".activities.InstanceChooserList"
+            android:targetActivity="app.nexusforms.android.activities.InstanceChooserList"
             tools:ignore="AppLinkUrlError">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -213,7 +213,7 @@ the specific language governing permissions and limitations under the License.
 
         <activity-alias
             android:name=".activities.FormChooserList"
-            android:targetActivity=".activities.FillBlankFormActivity"
+            android:targetActivity="app.nexusforms.android.activities.FillBlankFormActivity"
             tools:ignore="AppLinkUrlError">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -228,9 +228,9 @@ the specific language governing permissions and limitations under the License.
 
         <activity-alias
             android:name=".activities.FormDownloadList"
-            android:targetActivity=".activities.FormDownloadListActivity">
+            android:targetActivity="app.nexusforms.android.activities.FormDownloadListActivity">
             <intent-filter>
-                <action android:name="org.odk.collect.android.FORM_DOWNLOAD" />
+                <action android:name="app.nexusforms.android.FORM_DOWNLOAD" />
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="vnd.android.cursor.dir/vnd.odk.form" />
             </intent-filter>
@@ -238,7 +238,7 @@ the specific language governing permissions and limitations under the License.
 
         <activity-alias
             android:name=".activities.InstanceUploaderList"
-            android:targetActivity=".activities.InstanceUploaderListActivity" >
+            android:targetActivity="app.nexusforms.android.activities.InstanceUploaderListActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
@@ -249,9 +249,9 @@ the specific language governing permissions and limitations under the License.
 
         <activity-alias
             android:name=".activities.InstanceUploaderActivity"
-            android:targetActivity=".activities.InstanceUploaderActivity">
+            android:targetActivity="app.nexusforms.android.activities.InstanceUploaderActivity">
             <intent-filter>
-                <action android:name="org.odk.collect.android.INSTANCE_UPLOAD" />
+                <action android:name="app.nexusforms.android.INSTANCE_UPLOAD" />
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="vnd.android.cursor.dir/vnd.odk.instance" />
             </intent-filter>
@@ -259,7 +259,7 @@ the specific language governing permissions and limitations under the License.
 
         <activity-alias
             android:name=".activities.SplashScreenActivity"
-            android:targetActivity=".activities.SplashScreenActivity">
+            android:targetActivity="app.nexusforms.android.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -270,7 +270,7 @@ the specific language governing permissions and limitations under the License.
 
         <!-- Enable Shortcuts for Command Actions -->
         <activity
-            android:name=".activities.AndroidShortcutsActivity"
+            android:name="app.nexusforms.android.activities.AndroidShortcutsActivity"
             android:label="ODK Form"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
