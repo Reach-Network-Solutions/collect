@@ -57,6 +57,12 @@ class FillFormFragment : Fragment() {
 
         val formsListAsMutableList = DatabaseFormsRepository().all
 
+        if(formsListAsMutableList.isEmpty()){
+            binding.textViewNoFormAvailable.visibility = View.VISIBLE
+        }else{
+            binding.textViewNoFormAvailable.visibility = View.INVISIBLE
+        }
+
         with(binding.allFormsRecycler) {
 
             val formsAdapter = MyFormsRecyclerAdapter(

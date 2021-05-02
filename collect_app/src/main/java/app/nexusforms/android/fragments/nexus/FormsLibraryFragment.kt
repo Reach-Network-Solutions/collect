@@ -11,13 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.activities.viewmodels.FormDownloadListViewModel
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.OnClickListener
+import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
+import app.nexusforms.android.database.DatabaseFormsRepository
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener
@@ -28,6 +32,7 @@ import app.nexusforms.android.formmanagement.FormDownloader
 import app.nexusforms.android.formmanagement.FormSourceExceptionMapper
 import app.nexusforms.android.formmanagement.ServerFormDetails
 import app.nexusforms.android.formmanagement.ServerFormsDetailsFetcher
+import app.nexusforms.android.forms.Form
 import app.nexusforms.android.forms.FormSourceException
 import app.nexusforms.android.forms.FormSourceException.AuthRequired
 import app.nexusforms.android.injection.DaggerUtils
@@ -92,7 +97,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        init(savedInstanceState)
+       // init(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -102,16 +107,103 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         // Inflate the layout for this fragment
         binding = FragmentFormsLibraryBinding.inflate(inflater, container, false)
 
-        setupOnClickListeners()
+        setupOnClickListeners(savedInstanceState)
+
+        setUpForms()
 
         return binding.root
     }
 
-    private fun setupOnClickListeners(){
+    private fun setUpForms() {
+        binding.buttonFilterUpdates.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        }
+
+        initForms()
+
+    }
+
+    private fun setupOnClickListeners(savedInstanceState: Bundle?) {
         binding.fabDownloadSelection.setOnClickListener {
             val filesToDownload: ArrayList<ServerFormDetails> = getFilesToDownload()
             startFormsDownload(filesToDownload)
         }
+
+        binding.buttonFilterMyForms.setOnClickListener {
+
+            binding.buttonFilterMyForms.apply {
+                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            }
+
+            binding.buttonFilterUpdates.apply {
+                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            }
+
+            initForms()
+        }
+
+        binding.buttonFilterUpdates.setOnClickListener {
+
+            binding.buttonFilterUpdates.apply {
+                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            }
+
+            binding.buttonFilterMyForms.apply {
+                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            }
+            binding.textViewNoFormAvailable.visibility = View.INVISIBLE
+
+            init(savedInstanceState)
+        }
+
+    }
+
+    private fun initForms() {
+        val formsListAsMutableList = DatabaseFormsRepository().all
+
+        if(formsListAsMutableList.isEmpty()){
+            binding.textViewNoFormAvailable.visibility = View.VISIBLE
+        }else{
+            binding.textViewNoFormAvailable.visibility = View.INVISIBLE
+        }
+
+        with(binding.recyclerFormsLibrary) {
+
+            val formsAdapter = MyFormsRecyclerAdapter(
+                formsListAsMutableList as java.util.ArrayList<Form>,
+                ::formSelectedOnList
+            )
+
+            layoutManager = LinearLayoutManager(context)
+
+            adapter = formsAdapter
+
+        }
+    }
+
+    private fun formSelectedOnList(selectedForm: Form) {
+
+        //TODO IMPLEMENT NAVIGATION TO DETAILS
+        /*val intent = Intent(requireContext(), FormEntryActivity::class.java)
+
+        val formUri = ContentUris.withAppendedId(FormsProviderAPI.FormsColumns.CONTENT_URI, selectedForm.id)
+
+        intent.putExtra(FormEntryActivity.KEY_FORMPATH, selectedForm.formFilePath)
+
+        intent.data = formUri
+
+        val navHostFragment =
+            activity?.supportFragmentManager?.findFragmentById(R.id.fragment_container_main) as NavHostFragment?
+        val navController = navHostFragment?.navController
+        navController?.popBackStack()
+
+        startActivity(intent)*/
+
     }
 
     private fun getFilesToDownload(): ArrayList<ServerFormDetails> {
@@ -438,6 +530,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                     }
                 }
             }
+            filteredFormList.clear()
             filteredFormList.addAll(viewModel.formList)
             // updateAdapter()
 

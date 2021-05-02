@@ -139,8 +139,8 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     private fun setClickListeners() {
         activityMainBinding.fabMainBottomBar.setOnClickListener {
-            //navController.navigate(R.id.fillFormFragment)
-            navController.navigate(R.id.formDetailsFragment)
+            navController.navigate(R.id.fillFormFragment)
+            //navController.navigate(R.id.formDetailsFragment)
         }
 
         activityMainBinding.menuActionSettings.setOnClickListener {
