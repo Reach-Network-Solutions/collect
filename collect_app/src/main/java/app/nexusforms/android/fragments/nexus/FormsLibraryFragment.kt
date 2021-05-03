@@ -157,6 +157,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
             binding.textViewNoFormAvailable.visibility = View.INVISIBLE
+            binding.recyclerFormsLibrary.adapter = null
 
             init(savedInstanceState)
         }
