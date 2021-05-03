@@ -747,6 +747,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     override fun onCancelFormLoading() {
+        Timber.d("CANCEL INVOKED")
         if (downloadFormListTask != null) {
             downloadFormListTask!!.setDownloaderListener(null)
             downloadFormListTask!!.cancel(true)
