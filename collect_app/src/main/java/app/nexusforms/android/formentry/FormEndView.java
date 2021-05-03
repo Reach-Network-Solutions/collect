@@ -74,8 +74,6 @@ public class FormEndView extends Dialog {
 
         findViewById(R.id.save_exit_button).setOnClickListener(v -> {
             listener.onSaveClicked(markAsFinalized.isChecked());
-            Timber.d("MARKED AS FINAL %s", markAsFinalized.isChecked());
-
         });
     }
 

@@ -263,7 +263,7 @@ class MyFormsFragment : Fragment() {
                 ApplicationConstants.FormModes.EDIT_SAVED
             )
 
-            c.close()
+            //c.close()
 
             startActivity(intent)
         }
