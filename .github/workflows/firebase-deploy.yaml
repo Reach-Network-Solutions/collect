@@ -72,7 +72,7 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           #          serviceCredentialsFile: ${{secrets.FIREBASE_SERVICE_KEY}}
           token: ${{secrets.FIREBASE_TOKEN}}
-          file: app/build/outputs/apk/debug/app-debug.apk
+          file: collect_app/build/outputs/apk/debug/app-debug.apk
           #          app_file: app/build/outputs/apk/release/app-release-unsigned.apk
           groups: ${{secrets.APP_TESTER_GROUPS}}
 
