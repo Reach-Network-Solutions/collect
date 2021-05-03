@@ -68,13 +68,14 @@ jobs:
           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
           echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+          
       - name: Deploy to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1.3.2
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           #          serviceCredentialsFile: ${{secrets.FIREBASE_SERVICE_KEY}}
           token: ${{secrets.FIREBASE_TOKEN}}
-          file: ${ARTIFACT_PATHNAME_APk}
+          file: ${{env.ARTIFACT_NAME_APK}}
           #          app_file: app/build/outputs/apk/release/app-release-unsigned.apk
           groups: ${{secrets.APP_TESTER_GROUPS}}
 
