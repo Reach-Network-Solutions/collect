@@ -3,7 +3,6 @@ package app.nexusforms.android.adapters.recycler
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
@@ -18,6 +17,8 @@ class LibraryFormsRecyclerAdapter(
     val selectForDownloadClickListener: OnClickListener
 ) :
     RecyclerView.Adapter<LibraryFormsRecyclerAdapter.ViewHolder>() {
+
+    private var isSelectAll = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return from(parent)
@@ -34,7 +35,7 @@ class LibraryFormsRecyclerAdapter(
                 formDetailsKey = form[Constants.FORMDETAIL_KEY]
             )
         }.also {
-            holder.bind(it[0])
+            holder.bind(it[0], isSelectAll)
             //TODO SET CLICK LISTENERS
             holder.binding.checkboxDownload.setOnCheckedChangeListener { _, isChecked ->
                 selectForDownloadClickListener.onClick(it[0], isChecked)
@@ -45,6 +46,16 @@ class LibraryFormsRecyclerAdapter(
 
     override fun getItemCount(): Int = list.size
 
+    fun selectAll() {
+        isSelectAll = true
+        notifyDataSetChanged()
+    }
+
+    fun deSelectAll() {
+        isSelectAll = false
+        notifyDataSetChanged()
+    }
+
 
     class OnClickListener(val onClickListener: (form: DownloadForms, isChecked: Boolean) -> Unit) {
         fun onClick(form: DownloadForms, isChecked: Boolean) = onClickListener(form,isChecked)
@@ -53,13 +64,14 @@ class LibraryFormsRecyclerAdapter(
     class ViewHolder(val binding: ItemFormsLibraryBinding) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun bind(form: DownloadForms) {
+        fun bind(form: DownloadForms, isSelectAll: Boolean) {
             val name = form.formName
             val version = form.formVersion
 
             binding.textFormName.text = name
             binding.textFormsVersion.text = if (version == "") form.formId else
                 "${binding.root.context.resources.getString(R.string.version)} $version"
+            binding.checkboxDownload.isChecked = isSelectAll
         }
 
         companion object {

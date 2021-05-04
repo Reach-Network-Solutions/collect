@@ -23,7 +23,6 @@ import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.OnCl
 import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
 import app.nexusforms.android.database.DatabaseFormsRepository
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
-import app.nexusforms.android.formentry.RefreshFormListDialogFragment
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_ID_KEY
@@ -79,7 +78,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     private var downloadFormsTask: DownloadFormsTask? = null
 
-    private lateinit var downloadFormsAdapter: LibraryFormsRecyclerAdapter
+    private var downloadFormsAdapter: LibraryFormsRecyclerAdapter? = null
 
     private lateinit var binding: FragmentFormsLibraryBinding
 
@@ -144,6 +143,11 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
+            binding.layoutRefreshSelectAll.visibility = View.GONE
+
+            binding.checkboxSelectAll.isChecked = false
+            viewModel.clearSelectedFormIds()
+
             initForms()
         }
 
@@ -161,7 +165,24 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             binding.textViewNoFormAvailable.visibility = View.INVISIBLE
             binding.recyclerFormsLibrary.adapter = null
 
-            init(savedInstanceState)
+            binding.layoutRefreshSelectAll.visibility = View.INVISIBLE
+
+            initDownloadFormList()
+        }
+
+        binding.layoutRefresh.setOnClickListener {
+            binding.layoutRefreshSelectAll.visibility = View.INVISIBLE
+            binding.recyclerFormsLibrary.adapter = null
+            initDownloadFormList()
+        }
+
+        binding.checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked){
+                downloadFormsAdapter?.selectAll()
+            }else{
+                downloadFormsAdapter?.deSelectAll()
+                viewModel.clearSelectedFormIds()
+            }
         }
 
     }
@@ -187,6 +208,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             adapter = formsAdapter
 
         }
+
+        binding.layoutRefreshSelectAll.visibility = View.GONE
     }
 
     private fun formSelectedOnList(selectedForm: Form) {
@@ -223,7 +246,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         return filesToDownload
     }
 
-    private fun init(savedInstanceState: Bundle?) {
+    private fun initDownloadFormList() {
 
         val options = listOf(
             ApplicationConstants.BundleKeys.FORM_MODE,
@@ -628,6 +651,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     private fun setupRecycler(list: ArrayList<HashMap<String, String>>) {
+        binding.layoutRefreshSelectAll.visibility = View.VISIBLE
+        binding.checkboxSelectAll.isChecked = false
+
         downloadFormsAdapter = LibraryFormsRecyclerAdapter(
             list,
             OnClickListener { downloadForms , isChecked->
