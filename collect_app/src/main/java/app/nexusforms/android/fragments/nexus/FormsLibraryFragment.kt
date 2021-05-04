@@ -35,6 +35,7 @@ import app.nexusforms.android.formmanagement.ServerFormsDetailsFetcher
 import app.nexusforms.android.forms.Form
 import app.nexusforms.android.forms.FormSourceException
 import app.nexusforms.android.forms.FormSourceException.AuthRequired
+import app.nexusforms.android.fragments.dialogs.nexus.DownloadResultDialogFragment
 import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.listeners.DownloadFormsTaskListener
 import app.nexusforms.android.listeners.FormListDownloaderListener
@@ -410,12 +411,17 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             RefreshFormListDialogFragment::class.java,
             childFragmentManager
         )
-        createAlertDialog(
+        /*createAlertDialog(
             getString(R.string.download_forms_result),
             FormDownloadListActivity.getDownloadResultMessage(result),
             false
-        )
+        )*/
 
+        /*DialogUtils.showIfNotShowing(
+            DownloadResultDialogFragment::class.java,
+            childFragmentManager
+        )*/
+        displayDownloadResultDialog(FormDownloadListActivity.getDownloadResultMessage(result))
         // Set result to true for forms which were downloaded
 
         // Set result to true for forms which were downloaded
@@ -437,6 +443,18 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             )
 
         }
+    }
+
+    private fun displayDownloadResultDialog(downloadResultMessage: String?) {
+        val result = Bundle().apply {
+            putString(DownloadResultDialogFragment.DOWNLOAD_RESULT, downloadResultMessage)
+        }
+
+        val fragment = DownloadResultDialogFragment()
+        fragment.arguments = result
+        fragment.show(childFragmentManager,
+            DownloadResultDialogFragment::class.java.name)
+
     }
 
     private fun cleanUpWebCredentials() {

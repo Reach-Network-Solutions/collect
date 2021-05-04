@@ -27,4 +27,5 @@
     <string name="fill_in_form">Fill in form</string>
     <string name="no_available_forms_to_fill_kindly_download_some">No Available forms to fill, kindly download some</string>
     <string name="no_available_forms_kindly_download_some">No forms available, kindly download some</string>
+    <string name="download_results">Download Results</string>
 </resources>
