@@ -21,9 +21,9 @@
         style="@style/Widget.NexusForms.TextView.Label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/download_results"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,27 +52,38 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
         android:text="@string/please_wait_a_few_moments"
-        android:textAlignment="viewStart"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Collect.Body1"
-        app:layout_constraintBottom_toTopOf="@+id/button_connecting_to_server_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/progress_bar_connecting_to_server"
         app:layout_constraintTop_toBottomOf="@+id/title_connecting_to_Server" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_progress_connecting_to_server"
+        style="@style/Widget.NexusForms.TextView.Label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/text_message_connecting_to_server"
+        app:layout_constraintStart_toStartOf="@+id/text_message_connecting_to_server"
+        app:layout_constraintTop_toBottomOf="@+id/text_message_connecting_to_server"
+        tools:text="Form 2 of 3 Form(s)" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_connecting_to_server_cancel"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:text="@string/cancel"
         android:textColor="@color/dark_blue"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_progress_connecting_to_server" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

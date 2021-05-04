@@ -66,8 +66,9 @@ class ConnectingToServerDialog : DialogFragment() {
         binding = null
     }
 
-    fun setMessage(message: String) {
+    fun setMessage(message: String, progress: String) {
         binding?.textMessageConnectingToServer?.text = message
+        binding?.textProgressConnectingToServer?.text = progress
     }
 
     interface ConnectingToServerDialogFragmentListener {

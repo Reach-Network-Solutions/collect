@@ -504,8 +504,11 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         fragment?.setMessage(
             getString(
-                R.string.fetching_file,
+                R.string.fetching_form,
                 currentFile,
+            ),
+            getString(
+                R.string.fetching_form_progress,
                 progress.toString(),
                 total.toString()
             )

@@ -29,4 +29,6 @@
     <string name="no_available_forms_kindly_download_some">No forms available, kindly download some</string>
     <string name="download_results">Download Results</string>
     <string name="please_wait_a_few_moments">Please wait a few moments...</string>
+    <string name="fetching_form">Getting %1$s.</string>
+    <string name="fetching_form_progress">Form %1$s of %2$s form(s).</string>
 </resources>
