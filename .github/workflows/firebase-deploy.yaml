@@ -1,11 +1,9 @@
-name: Test workflow
+name: Internal Test deployment workflow
 on:
   pull_request:
     branches:
       - develop
-  push:
-    branches:
-      - ft-design-implementation-alpha
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -54,16 +52,16 @@ jobs:
       #          release_name: Release ${{ github.ref }}
       #          draft: false
       #          prerelease: false
-#      - name: Upload our APK
-#          uses: actions/upload-artifact@v2.2.0
-#          with:
-#            name: Debug artifact
-#            path: ${{env.ARTIFACT_PATHNAME_APK}}
+      #      - name: Upload our APK
+      #          uses: actions/upload-artifact@v2.2.0
+      #          with:
+      #            name: Debug artifact
+      #            path: ${{env.ARTIFACT_PATHNAME_APK}}
 
       - name: Save name of our artifact
         id: set-result-artifact
         run: |
-          ARTIFACT_PATHNAME_APK=$(ls collect_app/build/outputs/apk/debug/*.apk | head -n 1)
+          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/regular/debug/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
@@ -90,4 +88,3 @@ jobs:
 #          asset_path: ${{ env.ARTIFACT_PATHNAME_APK }}
 #          asset_name: ${{ env.ARTIFACT_NAME_APK }}
 #          asset_content_type: application/zip
-# Test run 1
