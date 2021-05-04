@@ -6,11 +6,11 @@
 
     <app.nexusforms.android.views.MultiClickSafeButton
         android:id="@+id/simple_button"
-        style="@style/Widget.Collect.Button.WidgetAnswer"
+        style="@style/Widget.NexusForms.MaterialButton.Primary.Answer"
         android:text="@string/get_location" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/geo_answer_text"
-        style="@style/Widget.Collect.TextView.WidgetAnswer" />
+        style="@style/Widget.NexusForms.MaterialButton.Primary.Answer" />
 
 </LinearLayout>

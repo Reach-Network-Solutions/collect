@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import app.nexusforms.android.R;
 import app.nexusforms.android.activities.CollectAbstractActivity;
+import app.nexusforms.android.activities.MainActivity;
 import app.nexusforms.android.activities.MainMenuActivity;
 import app.nexusforms.android.fragments.dialogs.MovingBackwardsDialog;
 import app.nexusforms.android.fragments.dialogs.ResetSettingsResultDialog;
@@ -67,6 +68,6 @@ public class AdminPreferencesActivity extends CollectAbstractActivity implements
 
     @Override
     public void onDialogClosed() {
-        startActivityAndCloseAllOthers(this, MainMenuActivity.class);
+        startActivityAndCloseAllOthers(this, MainActivity.class);
     }
 }

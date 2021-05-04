@@ -61,7 +61,7 @@ public class ChoicesRecyclerView extends RecyclerView {
     }
 
     private void enableDivider() {
-        DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        /*DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.inset_divider_64dp);
 
         if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -69,7 +69,7 @@ public class ChoicesRecyclerView extends RecyclerView {
         }
 
         divider.setDrawable(drawable);
-        addItemDecoration(divider);
+        addItemDecoration(divider);*/
     }
 
     private void adjustRecyclerViewSize() {

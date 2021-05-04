@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 
 import org.javarosa.form.api.FormEntryPrompt;
+
 import app.nexusforms.android.R;
 import app.nexusforms.android.databinding.SelectMinimalWidgetAnswerBinding;
 
@@ -26,11 +27,15 @@ public abstract class SelectMinimalWidget extends ItemsWidget implements WidgetD
     @Override
     protected View onCreateAnswerView(Context context, FormEntryPrompt prompt, int answerFontSize) {
         binding = SelectMinimalWidgetAnswerBinding.inflate(((Activity) context).getLayoutInflater());
-        binding.answer.setTextSize(QuestionFontSizeUtils.getQuestionFontSize());
+        //binding.textAnswerMinimal.setTextSize(QuestionFontSizeUtils.getQuestionFontSize());
         if (prompt.isReadOnly()) {
-            binding.answer.setEnabled(false);
+            binding.textAnswerMinimal.setEnabled(false);
         } else {
-            binding.answer.setOnClickListener(v -> {
+            binding.textAnswerMinimal.setOnClickListener(v -> {
+                waitingForDataRegistry.waitForData(prompt.getIndex());
+                showDialog();
+            });
+            binding.layoutMinimal.setEndIconOnClickListener(v -> {
                 waitingForDataRegistry.waitForData(prompt.getIndex());
                 showDialog();
             });
@@ -40,7 +45,8 @@ public abstract class SelectMinimalWidget extends ItemsWidget implements WidgetD
 
     @Override
     public void clearAnswer() {
-        binding.answer.setText(R.string.select_answer);
+        // binding.textAnswerMinimal.setText(R.string.select_answer);
+        binding.textAnswerMinimal.setText("");
         widgetValueChanged();
     }
 

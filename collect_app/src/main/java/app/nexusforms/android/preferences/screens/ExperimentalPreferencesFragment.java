@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import app.nexusforms.android.R;
+import app.nexusforms.android.activities.MainActivity;
 import app.nexusforms.android.activities.MainMenuActivity;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.preferences.keys.GeneralKeys;
@@ -20,7 +21,7 @@ public class ExperimentalPreferencesFragment extends BaseGeneralPreferencesFragm
         setPreferencesFromResource(R.xml.experimental_preferences, rootKey);
 
         findPreference(GeneralKeys.KEY_MAGENTA_THEME).setOnPreferenceChangeListener((preference, newValue) -> {
-            startActivityAndCloseAllOthers(requireActivity(), MainMenuActivity.class);
+            startActivityAndCloseAllOthers(requireActivity(), MainActivity.class);
             return true;
         });
     }

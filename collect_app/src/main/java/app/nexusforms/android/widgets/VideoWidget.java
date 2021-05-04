@@ -24,6 +24,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import app.nexusforms.android.R;
@@ -65,9 +67,13 @@ public class VideoWidget extends QuestionWidget implements FileWidget, ButtonCli
     private final QuestionMediaManager questionMediaManager;
     private final MediaUtils mediaUtils;
 
-    Button captureButton;
+    //Button captureButton;
     Button playButton;
-    Button chooseButton;
+    // chooseButton;
+
+    TextInputLayout captureButton;
+    TextInputLayout chooseButton;
+
     private String binaryName;
 
     private final boolean selfie;
@@ -85,9 +91,8 @@ public class VideoWidget extends QuestionWidget implements FileWidget, ButtonCli
 
         selfie = Appearances.isFrontCameraAppearance(getFormEntryPrompt());
 
-        captureButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.capture_video, questionDetails.isReadOnly(), getContext().getString(R.string.capture_video), getAnswerFontSize(), this);
-
-        chooseButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.choose_video, questionDetails.isReadOnly(), getContext().getString(R.string.choose_video), getAnswerFontSize(), this);
+        captureButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.capture_video, questionDetails.isReadOnly(), getContext().getString(R.string.capture_video), getAnswerFontSize(), this, R.drawable.ic_record_video);
+        chooseButton = WidgetViewUtils.createSimpleTextInputLayout(getContext(), R.id.choose_video, questionDetails.isReadOnly(), getContext().getString(R.string.choose_video), getAnswerFontSize(), this, R.drawable.ic_upload_video);
 
         playButton = WidgetViewUtils.createSimpleButton(getContext(), R.id.play_video, false, getContext().getString(R.string.play_video), getAnswerFontSize(), this);
         playButton.setVisibility(VISIBLE);

@@ -1,8 +1,7 @@
 package app.nexusforms.android.support.pages;
 
 import androidx.test.rule.ActivityTestRule;
-
-import org.odk.collect.android.R;
+import app.nexusforms.android.R;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;

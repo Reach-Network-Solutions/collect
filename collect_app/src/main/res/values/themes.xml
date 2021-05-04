@@ -1,15 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Collect.Dark" parent="Theme.Collect.BaseDark">
-        <item name="android:buttonStyle">@style/Widget.Collect.Button.Custom</item>
-        <item name="imageButtonStyle">@style/Widget.Collect.ImageButton.Custom.Dark</item>
+    <style name="Theme.NexusForms" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/light_blue</item>
+        <item name="colorPrimaryDark">@color/dark_blue</item>
+        <item name="colorPrimaryVariant">@color/dark_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/light_blue</item>
+        <item name="colorSecondaryVariant">@color/dark_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <item name="colorError">@color/dark_red</item>
+        <item name="android:fontFamily">@font/roboto</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
     </style>
 
-    <style name="Theme.Collect.Light" parent="Theme.Collect.BaseLight">
-        <item name="android:buttonStyle">@style/Widget.Collect.Button.Custom</item>
-        <item name="imageButtonStyle">@style/Widget.Collect.ImageButton.Custom.Light</item>
+    <style name="Theme.NexusForms.Dark.Dialog" parent="android:Theme.Material.Dialog">
+        <item name="android:colorAccent">?attr/colorSecondary</item>
+        <item name="colorOnPrimary">?attr/colorPrimaryDark</item>
     </style>
 
+    <style name="Theme.NexusForms.Light.Dialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">?attr/colorSecondary</item>
+        <item name="colorOnPrimary">?attr/colorPrimaryDark</item>
+    </style>
+
+    <style name="Theme.NexusForms.MaterialDialogSheet.Dark" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Collect.BottomSheet.Modal</item>
+        <item name="android:windowAnimationStyle">@style/MaterialDialogSheetAnimation</item>
+    </style>
+
+    <style name="Theme.NexusForms.MaterialDialogSheet.Light" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Collect.BottomSheet.Modal</item>
+        <item name="android:windowAnimationStyle">@style/MaterialDialogSheetAnimation</item>
+    </style>
+
+    <style name="Theme.NexusForms.SplashScreen" parent="Theme.NexusForms">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+    </style>
+
+
+    <!-- <style name="Theme.Collect.Dark" parent="Theme.Collect.BaseDark">
+         <item name="android:buttonStyle">@style/Widget.Collect.Button.Custom</item>
+         <item name="imageButtonStyle">@style/Widget.Collect.ImageButton.Custom.Dark</item>
+     </style>
+
+     <style name="Theme.Collect.Light" parent="Theme.Collect.BaseLight">
+         <item name="android:buttonStyle">@style/Widget.Collect.Button.Custom</item>
+         <item name="imageButtonStyle">@style/Widget.Collect.ImageButton.Custom.Light</item>
+     </style>
+ -->
 </resources>

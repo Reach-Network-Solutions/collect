@@ -20,21 +20,30 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.method.TextKeyListener;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
+
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.FormEntryActivity;
+import app.nexusforms.android.databinding.WidgetSimpleInputLayoutBinding;
+import app.nexusforms.android.databinding.WidgetSimpleStringInputBinding;
 import app.nexusforms.android.formentry.questions.QuestionDetails;
 import app.nexusforms.android.formentry.questions.WidgetViewUtils;
 
@@ -45,23 +54,30 @@ import timber.log.Timber;
  */
 @SuppressLint("ViewConstructor")
 public class StringWidget extends QuestionWidget {
-    public final EditText answerText;
+    public final TextInputLayout answerTextInputLayout;
+    public final TextInputEditText answerEditText;
+
+    WidgetSimpleStringInputBinding binding;
+
 
     protected StringWidget(Context context, QuestionDetails questionDetails) {
         super(context, questionDetails);
 
-        answerText = getAnswerEditText(questionDetails.isReadOnly() || this instanceof ExStringWidget, getFormEntryPrompt());
+        answerTextInputLayout = getAnswerEditText(questionDetails.isReadOnly() || this instanceof ExStringWidget, getFormEntryPrompt());
+        answerEditText = binding.textInput;
+
         setUpLayout(context);
     }
 
     protected void setUpLayout(Context context) {
         setDisplayValueFromModel();
-        addAnswerView(answerText, WidgetViewUtils.getStandardMargin(context));
+        addAnswerView(answerTextInputLayout, WidgetViewUtils.getStandardMargin(context));
     }
 
     @Override
     public void clearAnswer() {
-        answerText.setText(null);
+
+        answerEditText.setText(null);
         widgetValueChanged();
     }
 
@@ -73,13 +89,13 @@ public class StringWidget extends QuestionWidget {
 
     @NonNull
     public String getAnswerText() {
-        return answerText.getText().toString();
+        return answerEditText.getText().toString();
     }
 
     @Override
     public void setFocus(Context context) {
         if (!questionDetails.isReadOnly()) {
-            softKeyboardController.showSoftKeyboard(answerText);
+            softKeyboardController.showSoftKeyboard(answerTextInputLayout);
             /*
              * If you do a multi-question screen after a "add another group" dialog, this won't
              * automatically pop up. It's an Android issue.
@@ -90,19 +106,19 @@ public class StringWidget extends QuestionWidget {
              * is focused before the dialog pops up, everything works fine. great.
              */
         } else {
-            softKeyboardController.hideSoftKeyboard(answerText);
+            softKeyboardController.hideSoftKeyboard(answerTextInputLayout);
         }
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        answerText.setOnLongClickListener(l);
+        answerEditText.setOnLongClickListener(l);
     }
 
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
-        answerText.cancelLongPress();
+        answerEditText.cancelLongPress();
     }
 
     /**
@@ -129,14 +145,20 @@ public class StringWidget extends QuestionWidget {
         String currentAnswer = getFormEntryPrompt().getAnswerText();
 
         if (currentAnswer != null) {
-            answerText.setText(currentAnswer);
-            Selection.setSelection(answerText.getText(), answerText.getText().toString().length());
+            answerEditText.setText(currentAnswer);
+            Selection.setSelection(answerEditText.getText(), answerEditText.getText().toString().length());
         }
     }
 
-    private EditText getAnswerEditText(boolean readOnly, FormEntryPrompt prompt) {
-        EditText answerEditText = new EditText(getContext());
+    private TextInputLayout getAnswerEditText(boolean readOnly, FormEntryPrompt prompt) {
+        /*TextInputLayout answerInputLayout = new TextInputLayout(getContext(), null, R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox);
+        answerInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        answerInputLayout.setBoxStrokeColor(ContextCompat.getColor(getContext(), R.color.outlined_stroke_color));
+        answerInputLayout.setBoxCornerRadii(convertToDp(3), convertToDp(3), convertToDp(3), convertToDp(3));
+
+        TextInputEditText answerEditText = new TextInputEditText(getContext());
         answerEditText.setId(View.generateViewId());
+        answerEditText.setPadding(12,24,12,24);
         answerEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
         answerEditText.setKeyListener(new TextKeyListener(TextKeyListener.Capitalize.SENTENCES, false));
 
@@ -144,12 +166,14 @@ public class StringWidget extends QuestionWidget {
         answerEditText.setHorizontallyScrolling(false);
         answerEditText.setSingleLine(false);
 
+        answerEditText.setBackground(null);
+        answerEditText.setEnabled(!readOnly);
+        answerEditText.setTextColor(themeUtils.getColorOnSurface());
+        answerEditText.setFocusable(!readOnly);
         if (readOnly) {
-            answerEditText.setBackground(null);
-            answerEditText.setEnabled(false);
-            answerEditText.setTextColor(themeUtils.getColorOnSurface());
-            answerEditText.setFocusable(false);
+            answerInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_NONE);
         }
+
 
         answerEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -170,7 +194,7 @@ public class StringWidget extends QuestionWidget {
 
         QuestionDef questionDef = prompt.getQuestion();
         if (questionDef != null) {
-            /*
+            *//*
              * If a 'rows' attribute is on the input tag, set the minimum number of lines
              * to display in the field to that value.
              *
@@ -180,7 +204,7 @@ public class StringWidget extends QuestionWidget {
              * </input>
              *
              * will set the height of the EditText box to 5 rows high.
-             */
+             *//*
             String height = questionDef.getAdditionalAttribute(null, "rows");
             if (height != null && height.length() != 0) {
                 try {
@@ -193,6 +217,75 @@ public class StringWidget extends QuestionWidget {
             }
         }
 
-        return answerEditText;
+        answerInputLayout.addView(answerEditText);*/
+
+        binding = WidgetSimpleStringInputBinding.inflate(LayoutInflater.from(getContext()),
+                null,
+                false
+        );
+        binding.textInput.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
+        binding.textInput.setKeyListener(new TextKeyListener(TextKeyListener.Capitalize.SENTENCES, false));
+
+        // needed to make long read only text scroll
+        binding.textInput.setHorizontallyScrolling(false);
+        binding.textInput.setSingleLine(false);
+        binding.textInput.setEnabled(!readOnly);
+        binding.textInput.setTextColor(themeUtils.getColorOnSurface());
+        binding.textInput.setFocusable(!readOnly);
+        if (readOnly) {
+            binding.layoutInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_NONE);
+        }
+
+
+        binding.textInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                widgetValueChanged();
+            }
+        });
+
+        QuestionDef questionDef = prompt.getQuestion();
+        if (questionDef != null) {
+            /*
+             * If a 'rows' attribute is on the input tag, set the minimum number of lines
+                    * to display in the field to that value.
+                    *
+             * I.e.,
+             * <input ref="foo" rows="5">
+             *   ...
+             * </input>
+             *
+             * will set the height of the EditText box to 5 rows high.
+             */
+            String height = questionDef.getAdditionalAttribute(null, "rows");
+            if (height != null && height.length() != 0) {
+                try {
+                    int rows = Integer.parseInt(height);
+                    binding.textInput.setMinLines(rows);
+                    binding.textInput.setGravity(Gravity.TOP); // to write test starting at the top of the edit area
+                } catch (Exception e) {
+                    Timber.e("Unable to process the rows setting for the answerText field: %s", e.toString());
+                }
+            }
+        }
+
+        return binding.getRoot();
+    }
+
+
+    public int convertToDp(int input) { // Get the screen's density scale
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (input * scale + 0.5f);
     }
 }

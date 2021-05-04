@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/background_color"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_form"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_form_library"
+            app:tint="@color/black"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_form_name"
+            style="@style/Widget.NexusForms.TextView.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/text_form_template_name"
+            app:layout_constraintEnd_toStartOf="@+id/text_time_filled"
+            app:layout_constraintStart_toEndOf="@+id/image_form"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="John - CSI Family Visit Form 2020" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_form_template_name"
+            style="@style/Widget.NexusForms.TextView.Subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_date_filled"
+            app:layout_constraintStart_toStartOf="@+id/text_form_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_form_name"
+            tools:text="CSI Family Visit Form 2020" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_date_filled"
+            style="@style/Widget.NexusForms.TextView.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/text_form_template_name"
+            app:layout_constraintEnd_toEndOf="@+id/text_time_filled"
+            tools:text="Apr 30, 2021" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_time_filled"
+            style="@style/Widget.NexusForms.TextView.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="06:20 Pm" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

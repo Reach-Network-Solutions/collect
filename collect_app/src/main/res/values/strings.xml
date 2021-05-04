@@ -1,5 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="showing_this">SHOWING THIS</string>
-    <string name="save_progress">"Save progress of %s"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="my_forms">Forms</string>
+    <string name="my_profile">My Profile</string>
+    <string name="forms_library">Forms Library</string>
+    <string name="filter_by">Filter by</string>
+    <string name="filter_all">All</string>
+    <string name="filter_favourites">Favourites</string>
+    <string name="filter_downloaded_forms">Downloaded Forms</string>
+    <string name="filter_public_forms">Public Forms</string>
+    <string name="filter_team_forms">Team Forms</string>
+    <string name="filter_organizational_forms">Organizational forms</string>
+    <string name="library">Library</string>
+    <string name="fill_form">Fill Form</string>
+    <string name="drafts">Drafts</string>
+    <string name="completed">Completed</string>
+    <string name="failed_uploads">Failed</string>
+    <string name="updates">Updates</string>
+    <string name="general_information">General Information</string>
+    <string name="label_created_by">Created By</string>
+    <string name="label_version">Version</string>
+    <string name="label_created_date">Created Date</string>
+    <string name="label_download_date">Download Date</string>
+    <string name="label_number_of_questions">No of questions</string>
+    <string name="fill_in_form">Fill in form</string>
+    <string name="no_available_forms_to_fill_kindly_download_some">No Available forms to fill, kindly download some</string>
+    <string name="no_available_forms_kindly_download_some">No forms available, kindly download some</string>
 </resources>

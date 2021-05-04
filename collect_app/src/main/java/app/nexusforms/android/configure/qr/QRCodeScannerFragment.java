@@ -8,6 +8,7 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.ActivityUtils;
+import app.nexusforms.android.activities.MainActivity;
 import app.nexusforms.android.activities.MainMenuActivity;
 import app.nexusforms.android.fragments.BarCodeScannerFragment;
 import app.nexusforms.android.injection.DaggerUtils;
@@ -49,7 +50,7 @@ public class QRCodeScannerFragment extends BarCodeScannerFragment {
         if (importSuccess) {
             ToastUtils.showLongToast(getString(R.string.successfully_imported_settings));
             analytics.logEvent(AnalyticsEvents.SETTINGS_IMPORT_QR, "Success", settingsHash);
-            ActivityUtils.startActivityAndCloseAllOthers(requireActivity(), MainMenuActivity.class);
+            ActivityUtils.startActivityAndCloseAllOthers(requireActivity(), MainActivity.class);
         } else {
             ToastUtils.showLongToast(getString(R.string.invalid_qrcode));
             analytics.logEvent(AnalyticsEvents.SETTINGS_IMPORT_QR, "No valid settings", settingsHash);

@@ -8,6 +8,7 @@ import android.widget.Toast;
 import app.nexusforms.android.R;
 
 import app.nexusforms.android.activities.ActivityUtils;
+import app.nexusforms.android.activities.MainActivity;
 import app.nexusforms.android.activities.MainMenuActivity;
 import app.nexusforms.android.utilities.ActivityResultDelegate;
 import app.nexusforms.android.utilities.FileUtils;
@@ -58,7 +59,7 @@ public class QRCodeActivityResultDelegate implements ActivityResultDelegate {
                         if (settingsImporter.fromJSON(response)) {
                             showToast(R.string.successfully_imported_settings);
                             analytics.logEvent(AnalyticsEvents.SETTINGS_IMPORT_QR_IMAGE, "Success", responseHash);
-                            ActivityUtils.startActivityAndCloseAllOthers(activity, MainMenuActivity.class);
+                            ActivityUtils.startActivityAndCloseAllOthers(activity, MainActivity.class);
                         } else {
                             showToast(R.string.invalid_qrcode);
                             analytics.logEvent(AnalyticsEvents.SETTINGS_IMPORT_QR_IMAGE, "No valid settings", responseHash);

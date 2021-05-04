@@ -130,9 +130,6 @@ public class AudioControllerView extends FrameLayout {
         }
     }
 
-    public interface SwipableParent {
-        void allowSwiping(boolean allowSwiping);
-    }
 
     public interface Listener {
 
@@ -153,7 +150,6 @@ public class AudioControllerView extends FrameLayout {
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
             swiping = true;
-            ((SwipableParent) getContext()).allowSwiping(false);
 
             if (playing) {
                 listener.onPauseClicked();
@@ -171,8 +167,6 @@ public class AudioControllerView extends FrameLayout {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             swiping = false;
-            ((SwipableParent) getContext()).allowSwiping(true);
-
             onPositionChanged(position);
 
             if (wasPlaying) {

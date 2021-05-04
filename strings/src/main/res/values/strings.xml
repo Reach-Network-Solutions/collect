@@ -11,6 +11,15 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" tools:locale="en">
     <!-- Text for an action button on the main screen. -->
+
+    <string name="showing_this">SHOWING THIS</string>
+    <string name="save_progress">"Save progress of %s"</string>
+    <string name="submit">Submit</string>
+    <string name="select_sound_from_files_prompt">Select audio from files</string>
+    <string name="record_sound">Record audio</string>
+    <string name="sketch_prompt">Sketch your drawing here</string>
+    <string name="signtaure_prompt">Draw your signature here</string>
+
     <string name="enter_data">Fill Blank Form</string>
     <!-- Text for an action button on the main screen. -->
     <string name="enter_data_button">Fill Blank Form</string>
@@ -982,4 +991,7 @@
     <string name="background_audio_help">This form records the audio from your device\'s microphone.\n\nYou can use the volume indicator to make sure the microphone is close enough to the sound you need to record.\n\nTo stop the recording please exit this form.\n\nFor more information please contact the person who asked you to collect data.</string>
 
     <string name="projects">Projects</string>
+    <string name="form_entry_item_in_list_icon">Form entry item in list</string>
+    <string name="no_entry_in_selection">All set! There\'s no form in here</string>
+    <string name="upload_form">Upload form</string>
 </resources>

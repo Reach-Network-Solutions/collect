@@ -3,4 +3,9 @@
     <style name="Widget.Collect.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="titleTextAppearance">@style/TextAppearance.Collect.Headline6</item>
     </style>
+
+    <style name="Widget.NexusForms.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="titleTextAppearance">@style/TextAppearance.Collect.Headline6</item>
+        <item name="backgroundColor">?attr/colorPrimaryDark</item>
+    </style>
 </resources>

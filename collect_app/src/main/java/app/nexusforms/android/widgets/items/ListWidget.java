@@ -17,10 +17,12 @@ package app.nexusforms.android.widgets.items;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.GradientDrawable;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
@@ -86,10 +88,14 @@ public class ListWidget extends ItemsWidget implements MultiChoiceWidget, OnChec
 
         buttons = new ArrayList<>();
 
-        // Layout holds the horizontal list of buttons
+        // Layout holds the vertical list of buttons
         LinearLayout buttonLayout = findViewById(R.id.answer_container);
 
+        buttonLayout.setOrientation(LinearLayout.VERTICAL);
+
+
         Selection selectedItem = SelectOneWidgetUtils.getSelectedItem(getQuestionDetails().getPrompt(), items);
+
         String s = selectedItem == null ? null : selectedItem.getValue();
 
         if (items != null) {
@@ -99,6 +105,11 @@ public class ListWidget extends ItemsWidget implements MultiChoiceWidget, OnChec
                 r.setTag(i);
                 r.setEnabled(!questionDetails.getPrompt().isReadOnly());
                 r.setFocusable(!questionDetails.getPrompt().isReadOnly());
+
+                if (displayLabel) {
+                    //label.setVisibility(View.GONE);
+                    r.setText(questionDetails.getPrompt().getSelectChoiceText(items.get(i)));
+                }
 
                 buttons.add(r);
 
@@ -176,26 +187,28 @@ public class ListWidget extends ItemsWidget implements MultiChoiceWidget, OnChec
 
                 // build text label. Don't assign the text to the built in label to he
                 // button because it aligns horizontally, and we want the label on top
-                TextView label = new TextView(getContext());
-                label.setText(questionDetails.getPrompt().getSelectChoiceText(items.get(i)));
-                label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
-                label.setGravity(Gravity.CENTER_HORIZONTAL);
-                if (!displayLabel) {
-                    label.setVisibility(View.GONE);
-                }
+               //TextView label = new TextView(getContext());
+                //label.setText(questionDetails.getPrompt().getSelectChoiceText(items.get(i)));
+              //  label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
+                //label.setGravity(Gravity.CENTER_HORIZONTAL);
+
 
                 // answer layout holds the label text/image on top and the radio button on bottom
                 LinearLayout answer = new LinearLayout(getContext());
+
                 answer.setOrientation(LinearLayout.VERTICAL);
+
                 LinearLayout.LayoutParams headerParams =
-                        new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                        new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                                 LayoutParams.WRAP_CONTENT);
-                headerParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+              //  headerParams.gravity = Gravity.CENTER_HORIZONTAL;
 
                 LinearLayout.LayoutParams buttonParams =
-                        new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                        new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                                 LayoutParams.WRAP_CONTENT);
-                buttonParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+                buttonParams.gravity = Gravity.START;
 
                 if (imageView != null) {
                     imageView.setScaleType(ScaleType.CENTER);
@@ -207,8 +220,8 @@ public class ListWidget extends ItemsWidget implements MultiChoiceWidget, OnChec
                     answer.addView(missingImage, headerParams);
                 } else {
                     if (displayLabel) {
-                        label.setId(labelId);
-                        answer.addView(label, headerParams);
+                        //label.setId(labelId);
+                        //answer.addView(label, headerParams);
                     }
 
                 }
@@ -219,6 +232,7 @@ public class ListWidget extends ItemsWidget implements MultiChoiceWidget, OnChec
                 LinearLayout.LayoutParams answerParams =
                         new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                                 LayoutParams.MATCH_PARENT);
+
                 answerParams.weight = 1;
 
                 buttonLayout.addView(answer, answerParams);

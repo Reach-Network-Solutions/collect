@@ -86,9 +86,10 @@ public class SelectOneMinimalWidget extends SelectMinimalWidget {
 
     private void updateAnswer() {
         if (selectedItem == null) {
-            binding.answer.setText(R.string.select_answer);
+            //binding.textAnswerMinimal.setText(R.string.select_answer);
+            binding.textAnswerMinimal.setText("");
         } else {
-            binding.answer.setText(StringUtils.textToHtml(getFormEntryPrompt().getSelectItemText(selectedItem)));
+            binding.textAnswerMinimal.setText(StringUtils.textToHtml(getFormEntryPrompt().getSelectItemText(selectedItem)));
         }
     }
 

@@ -68,6 +68,8 @@ public abstract class BaseSelectListWidget extends ItemsWidget implements MultiC
         ComponentActivity activity = (ComponentActivity) getContext();
         SearchQueryViewModel searchQueryViewModel = new ViewModelProvider(activity).get(SearchQueryViewModel.class);
 
+        //binding.layoutChoiceSearch.setVisibility(View.VISIBLE);
+        //binding.choicesSearchBox.requestFocus();
         binding.choicesSearchBox.setVisibility(View.VISIBLE);
         binding.choicesSearchBox.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
         binding.choicesSearchBox.addTextChangedListener(new TextWatcher() {

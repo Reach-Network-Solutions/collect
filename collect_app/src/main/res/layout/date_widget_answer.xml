@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_date_widget"
+    style="@style/Widget.NexusForms.TextInputLayout.OutlinedBox.Primary"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/margin_standard">
+    android:padding="@dimen/margin_standard"
+    app:endIconDrawable="@drawable/ic_date">
 
-    <app.nexusforms.android.views.MultiClickSafeButton
-        android:id="@+id/date_button"
-        style="@style/Widget.Collect.Button.WidgetAnswer"
-        android:text="@string/select_date" />
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/text_answer_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:inputType="none" />
+</com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/date_answer_text"
-        style="@style/Widget.Collect.TextView.WidgetAnswer"
-        android:text="@string/no_date_selected" />
-
-</LinearLayout>

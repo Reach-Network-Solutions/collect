@@ -289,17 +289,14 @@ public class DrawActivity extends CollectAbstractActivity {
 
         final IconMenuListAdapter adapter = new IconMenuListAdapter(this, items);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                IconMenuItem item = (IconMenuItem) adapter.getItem(position);
-                if (item.getTextResId() == R.string.keep_changes) {
-                    saveAndClose();
-                } else {
-                    cancelAndClose();
-                }
-                alertDialog.dismiss();
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            IconMenuItem item = (IconMenuItem) adapter.getItem(position);
+            if (item.getTextResId() == R.string.keep_changes) {
+                saveAndClose();
+            } else {
+                cancelAndClose();
             }
+            alertDialog.dismiss();
         });
         alertDialog = new AlertDialog.Builder(this)
                 .setTitle(alertTitleString)

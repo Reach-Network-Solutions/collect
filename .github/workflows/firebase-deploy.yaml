@@ -1,4 +1,4 @@
-name: Test workflow
+name: Internal Test deployment workflow
 on:
   pull_request:
     branches:
@@ -40,11 +40,6 @@ jobs:
       #     keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
       #     keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload our APK
-        uses: actions/upload-artifact@v2.2.0
-        with:
-          name: Release artifact
-          path: app/build/outputs/apk/debug/*.apk
       #          path: app/build/outputs/apk/release/app-release-*.apk
 
       #      - name: Create Release
@@ -57,24 +52,30 @@ jobs:
       #          release_name: Release ${{ github.ref }}
       #          draft: false
       #          prerelease: false
+      #      - name: Upload our APK
+      #          uses: actions/upload-artifact@v2.2.0
+      #          with:
+      #            name: Debug artifact
+      #            path: ${{env.ARTIFACT_PATHNAME_APK}}
 
       - name: Save name of our artifact
         id: set-result-artifact
         run: |
-          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/debug/*.apk | head -n 1)
+          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/regular/debug/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
           echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+
       - name: Deploy to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1.3.2
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           #          serviceCredentialsFile: ${{secrets.FIREBASE_SERVICE_KEY}}
           token: ${{secrets.FIREBASE_TOKEN}}
-          file: app/build/outputs/apk/debug/app-debug.apk
+          file: ${{env.ARTIFACT_PATHNAME_APK}}
           #          app_file: app/build/outputs/apk/release/app-release-unsigned.apk
-          groups: qa-team
+          groups: ${{secrets.APP_TESTER_GROUPS}}
 
 
 #      - name: Upload our Artifact Assets

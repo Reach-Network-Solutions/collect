@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class FormDownloadListViewModel extends ViewModel {
 
@@ -196,6 +197,24 @@ public class FormDownloadListViewModel extends ViewModel {
         this.loadingCanceled = loadingCanceled;
     }
 
+//    public void toggleDownloadSelection(String formIdToDownload){
+//        List<String> downloadList = new ArrayList<>(Arrays.asList(formIdsToDownload));
+//        if(downloadList.contains(formIdToDownload)){
+//            downloadList.remove(formIdToDownload);
+//        }else{
+//            downloadList.add(formIdToDownload);
+//        }
+//
+//        String[] downloadListString = new String[downloadList.size()];
+//        //formIdToDownload =
+//                downloadList.toArray(downloadListString) ;
+//
+//        formIdToDownload = downloadList.stream().mapto
+//    }
+
+    public void cleanUpDownloadSelection(){
+        formIdsToDownload = new String[]{};
+    }
     public static class Factory implements ViewModelProvider.Factory {
 
         @SuppressWarnings("unchecked")

@@ -57,21 +57,27 @@ the License.
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/toggle_button"
-                style="@style/Widget.Collect.Button.BottomOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.NexusForms.MaterialButton.Primary"
                 android:layout_marginLeft="@dimen/margin_extra_small"
                 android:layout_marginRight="@dimen/margin_extra_small"
                 android:text="@string/select_all" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/refresh_button"
-                style="@style/Widget.Collect.Button.BottomOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.NexusForms.MaterialButton.Primary"
                 android:layout_marginLeft="@dimen/margin_extra_small"
                 android:layout_marginRight="@dimen/margin_extra_small"
                 android:text="@string/refresh" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_button"
-                style="@style/Widget.Collect.Button.BottomOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.NexusForms.MaterialButton.Primary"
                 android:layout_marginLeft="@dimen/margin_extra_small"
                 android:layout_marginRight="@dimen/margin_extra_small"
                 android:text="@string/download" />

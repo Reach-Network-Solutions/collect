@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/recording_duration"
@@ -16,10 +16,12 @@
         tools:text="00:07" />
 
     <app.nexusforms.android.audio.Waveform
-        android:layout_marginTop="@dimen/margin_small"
         android:id="@+id/waveform"
         android:layout_width="match_parent"
-        android:layout_height="80dp" />
+        android:layout_height="80dp"
+        android:layout_marginTop="@dimen/margin_small" />
+
+
 
     <app.nexusforms.android.audio.AudioControllerView
         android:id="@+id/audio_controller"

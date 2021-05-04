@@ -30,7 +30,7 @@ public class DecimalWidget extends StringWidget {
 
     public DecimalWidget(Context context, QuestionDetails questionDetails) {
         super(context, questionDetails);
-        StringWidgetUtils.adjustEditTextAnswerToDecimalWidget(answerText, questionDetails.getPrompt());
+        StringWidgetUtils.adjustEditTextAnswerToDecimalWidget(answerEditText, questionDetails.getPrompt());
     }
 
     @Override
