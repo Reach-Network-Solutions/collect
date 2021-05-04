@@ -32,6 +32,7 @@ import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns
 import app.nexusforms.android.utilities.ApplicationConstants
 import app.nexusforms.android.utilities.DialogUtils
 import app.nexusforms.android.utilities.PlayServicesChecker
+import timber.log.Timber
 import java.lang.Boolean
 import javax.inject.Inject
 
@@ -40,12 +41,14 @@ class MyFormsFragment : Fragment() {
     lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
 
     @Inject
-   lateinit var connectivityProvider: NetworkStateProvider
+    lateinit var connectivityProvider: NetworkStateProvider
 
-   @Inject
-   lateinit var settingsProvider : SettingsProvider
+    @Inject
+    lateinit var settingsProvider: SettingsProvider
 
     lateinit var alertDialog: AlertDialog
+
+    var currentScreen: Constants.HomeFormSelection = Constants.HomeFormSelection.DRAFTS
 
     companion object {
         fun newInstance() = MyFormsFragment()
@@ -57,6 +60,10 @@ class MyFormsFragment : Fragment() {
         DaggerUtils.getComponent(context).inject(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        initRecyclerView(currentScreen)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -177,6 +184,8 @@ class MyFormsFragment : Fragment() {
 
     private fun initRecyclerView(selectionType: Constants.HomeFormSelection) {
 
+        currentScreen = selectionType
+
         val resultCursor: Cursor?
 
 
@@ -214,7 +223,8 @@ class MyFormsFragment : Fragment() {
 
         with(myFormsFragmentBinding.filterableRecyclerForms) {
 
-            val formsAdapter = NexusFormsAdapter(returnedCursor, selectionType, ::openForm, ::uploadSelectedFiles)
+            val formsAdapter =
+                NexusFormsAdapter(returnedCursor, selectionType, ::openForm, ::uploadSelectedFiles)
 
             layoutManager = LinearLayoutManager(context)
 
@@ -223,12 +233,12 @@ class MyFormsFragment : Fragment() {
         }
     }
 
-    private fun uploadSelectedFiles(selectionId : Long) {
-        val instanceIds = LongArray(1){selectionId}
-            // otherwise, do the normal aggregate/other thing.
-            val i = Intent(requireContext(), InstanceUploaderActivity::class.java)
-            i.putExtra(FormEntryActivity.KEY_INSTANCES, instanceIds)
-            startActivityForResult(i, 0)
+    private fun uploadSelectedFiles(selectionId: Long) {
+        val instanceIds = LongArray(1) { selectionId }
+        // otherwise, do the normal aggregate/other thing.
+        val i = Intent(requireContext(), InstanceUploaderActivity::class.java)
+        i.putExtra(FormEntryActivity.KEY_INSTANCES, instanceIds)
+        startActivityForResult(i, 0)
 
     }
 
