@@ -206,6 +206,7 @@ import static app.nexusforms.android.utilities.DialogUtils.showIfNotShowing;
 import static app.nexusforms.android.utilities.ToastUtils.showLongToast;
 import static app.nexusforms.android.utilities.ToastUtils.showLongToastInMiddle;
 import static app.nexusforms.android.utilities.ToastUtils.showShortToast;
+import static app.nexusforms.android.utilities.ToastUtils.showShortToastInMiddle;
 
 /**
  * FormEntryActivity is responsible for displaying questions, animating
@@ -224,7 +225,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
         WidgetValueChangedListener, ScreenContext, FormLoadingDialogFragment.FormLoadingDialogFragmentListener,
         QuitFormDialogFragment.Listener, DeleteRepeatDialogFragment.DeleteRepeatDialogCallback,
         SelectMinimalDialog.SelectMinimalDialogListener, CustomDatePickerDialog.DateChangeListener,
-        CustomTimePickerDialog.TimeChangeListener{
+        CustomTimePickerDialog.TimeChangeListener {
 
 
     public static final String ANSWER_KEY = "value"; // this value can not be changed because it is also used by external apps
@@ -320,9 +321,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
     private FormEndView endView;
     private List<FormEntryPrompt> questionsPrompt;
-
-
-
 
 
     private boolean showNavigationButtons;
@@ -539,7 +537,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
         try {
             FormController formController = Collect.getInstance().getFormController();
 
-            if(formController == null)return;
+            if (formController == null) return;
 
             Timber.d("REFRESHING QUESTIONS -- AT INDEX %s", formController.getFormIndex());
 
@@ -1195,7 +1193,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
     //Load from Intent
     public void setDataForFields(Bundle bundle) throws JavaRosaException {
-        Timber.d("DATA SETTER - ");
         FormController formController = Collect.getInstance().getFormController();
         if (formController == null) {
             return;
@@ -1309,18 +1306,14 @@ public class FormEntryActivity extends CollectAbstractActivity implements
     }
 
     public void setWidgetData(Object data) {
-        Timber.d("RESULT RECEIVED %s", data.toString());
-
         if (currentView != null) {
             boolean set = false;
             for (QuestionWidget widget : questionWidgetArrayList) {
                 if (widget instanceof WidgetDataReceiver) {
                     if (waitingForDataRegistry.isWaitingForData(widget.getFormEntryPrompt().getIndex())) {
                         try {
-                            Timber.d("WAITER -- set");
                             ((WidgetDataReceiver) widget).setData(data);
                             waitingForDataRegistry.cancelWaitingForData();
-                            Timber.d("DONE setting - data");
                             return;
                         } catch (Exception e) {
                             Timber.e(e);
@@ -1362,7 +1355,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
             return true;
         }
 
-       showLongToast( item.getTitle().toString());
+        showLongToast(item.getTitle().toString());
 
         // These actions should move into the `FormEntryMenuDelegate`
         switch (item.getItemId()) {
@@ -1483,7 +1476,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
     public void deleteGroup() {
         FormController formController = getFormController();
         if (formController != null && !formController.indexIsInFieldList()) {
-           // swipeHandler.setBeenSwiped(true);
+            // swipeHandler.setBeenSwiped(true);
             //onSwipeForward();
             //TODO must figure out what 'delete' does to the displayed questions
         } else {
@@ -1580,6 +1573,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements
             }
         });
 
+        //TODO  java.lang.NullPointerException: Attempt to invoke virtual method 'boolean androidx.recyclerview.widget.RecyclerView$ViewHolder.shouldIgnore()' on a null object reference
+        //Error appears with the background recording widget in the list - when exiting.
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
         recycler.setAdapter(questionsAdapter);
@@ -1604,7 +1599,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements
         odkViewLifecycleFox.destroy();
 
     }
-
 
 
     /**
@@ -1653,6 +1647,9 @@ public class FormEntryActivity extends CollectAbstractActivity implements
             }
         }
 
+        if (newForm) {
+            saveName = "";
+        }
 
         endView = new FormEndView(this, formSaveViewModel.getFormName(),
                 saveName, InstancesDaoHelper.isInstanceComplete(isInstanceCalledFromCompletion,
@@ -1668,12 +1665,9 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
                     @Override
                     public void onSaveClicked(boolean markAsFinalized) {
-
                         if (saveName.length() < 1) {
-
-                            showShortToast(R.string.save_as_error);
+                            showShortToastInMiddle(R.string.save_as_error);
                         } else {
-
                             if (markAsFinalized) {
                                 if (validateFormAnswers(true)) {
                                     formSaveViewModel.saveForm(getIntent().getData(), markAsFinalized, saveName, true);
@@ -1684,7 +1678,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
                         }
                     }
-                });
+                }, newForm);
 
         endView.show();
 
@@ -1772,7 +1766,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
      */
     private void createConstraintToast(FormIndex index, int saveStatus) {
         FormController formController = getFormController();
-        if(formController == null)return;
+        if (formController == null) return;
         String constraintText;
         switch (saveStatus) {
             case FormEntryController.ANSWER_CONSTRAINT_VIOLATED:
@@ -2457,7 +2451,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements
     }
 
 
-
     private class LocationProvidersReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -2738,16 +2731,16 @@ public class FormEntryActivity extends CollectAbstractActivity implements
             return;
         }
 
-            runOnUiThread(() -> {
-                try {
-                    updateQuestionsInViewPerRelevance(changedWidget);
+        runOnUiThread(() -> {
+            try {
+                updateQuestionsInViewPerRelevance(changedWidget);
 
-                } catch (Exception e) {
-                    Timber.e(e);
-                    createErrorDialog(e.getMessage(), false);
-                }
-            });
-        }
+            } catch (Exception e) {
+                Timber.e(e);
+                createErrorDialog(e.getMessage(), false);
+            }
+        });
+    }
 
 
     private void pleaseSaveForUs(QuestionWidget widget) {
