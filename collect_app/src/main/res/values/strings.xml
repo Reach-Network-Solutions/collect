@@ -33,4 +33,5 @@
     <string name="fetching_form_progress">Form %1$s of %2$s form(s).</string>
     <string name="refresh">Refresh</string>
     <string name="connecting_to_server">Connecting to server</string>
+    <string name="no_connection_available_for_updates">No connection available to fetch updates.</string>
 </resources>

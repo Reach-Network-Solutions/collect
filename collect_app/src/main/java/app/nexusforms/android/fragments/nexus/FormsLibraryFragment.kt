@@ -110,18 +110,45 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         setupOnClickListeners(savedInstanceState)
 
-        setUpForms()
+        if (!connectivityProvider.isDeviceOnline) {
+            //No connection display available forms
+            setUpMyForms()
+        }else{
+            setUpFormsUpdate()
+        }
 
         return binding.root
     }
 
-    private fun setUpForms() {
+    private fun setUpMyForms() {
         binding.buttonFilterUpdates.apply {
             setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
             setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         }
 
+        binding.buttonFilterMyForms.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+
+
         initForms()
+
+    }
+
+    private fun setUpFormsUpdate() {
+        binding.buttonFilterMyForms.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        }
+
+        binding.buttonFilterUpdates.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+
+
+        initDownloadFormList()
 
     }
 
@@ -379,10 +406,15 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
      */
     private fun downloadFormList() {
         if (!connectivityProvider.isDeviceOnline) {
-            ToastUtils.showShortToast(R.string.no_connection)
+            //ToastUtils.showShortToast(R.string.no_connection)
+            ToastUtils.showShortToast(R.string.no_connection_available_for_updates)
             if (viewModel.isDownloadOnlyMode) {
                 createAlertDialog("No Connection", getString(R.string.no_connection), false)
             }
+
+            //Display available form list
+            initForms()
+            setUpMyForms()
         } else {
             viewModel.clearFormDetailsByFormId()
             /*DialogUtils.showIfNotShowing(
