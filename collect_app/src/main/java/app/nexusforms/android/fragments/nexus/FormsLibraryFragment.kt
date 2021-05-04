@@ -35,6 +35,7 @@ import app.nexusforms.android.formmanagement.ServerFormsDetailsFetcher
 import app.nexusforms.android.forms.Form
 import app.nexusforms.android.forms.FormSourceException
 import app.nexusforms.android.forms.FormSourceException.AuthRequired
+import app.nexusforms.android.fragments.dialogs.nexus.ConnectingToServerDialog
 import app.nexusforms.android.fragments.dialogs.nexus.DownloadResultDialogFragment
 import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.listeners.DownloadFormsTaskListener
@@ -361,8 +362,12 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             }
         } else {
             viewModel.clearFormDetailsByFormId()
-            DialogUtils.showIfNotShowing(
+            /*DialogUtils.showIfNotShowing(
                 RefreshFormListDialogFragment::class.java,
+                childFragmentManager
+            )*/
+            DialogUtils.showIfNotShowing(
+                ConnectingToServerDialog::class.java,
                 childFragmentManager
             )
             if (downloadFormListTask != null
@@ -408,7 +413,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         cleanUpWebCredentials()
 
         DialogUtils.dismissDialog(
-            RefreshFormListDialogFragment::class.java,
+            ConnectingToServerDialog::class.java,
             childFragmentManager
         )
         /*createAlertDialog(
@@ -457,6 +462,18 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     }
 
+    private fun displayConnectingToServerDialog(downloadResultMessage: String?) {
+        val result = Bundle().apply {
+            putString(DownloadResultDialogFragment.DOWNLOAD_RESULT, downloadResultMessage)
+        }
+
+        val fragment = DownloadResultDialogFragment()
+        fragment.arguments = result
+        fragment.show(childFragmentManager,
+            DownloadResultDialogFragment::class.java.name)
+
+    }
+
     private fun cleanUpWebCredentials() {
         if (viewModel.url != null) {
             val host = Uri.parse(viewModel.url)
@@ -468,7 +485,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     override fun progressUpdate(currentFile: String?, progress: Int, total: Int) {
-        val fragment  : RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
+        /*val fragment  : RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
             RefreshFormListDialogFragment::class.java.name
         ) as RefreshFormListDialogFragment
 
@@ -479,7 +496,21 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 progress.toString(),
                 total.toString()
             )
+        )*/
+
+        val fragment  : ConnectingToServerDialog? = childFragmentManager.findFragmentByTag(
+            ConnectingToServerDialog::class.java.name
+        ) as ConnectingToServerDialog
+
+        fragment?.setMessage(
+            getString(
+                R.string.fetching_file,
+                currentFile,
+                progress.toString(),
+                total.toString()
+            )
         )
+
     }
 
     override fun formsDownloadingCancelled() {
@@ -505,8 +536,12 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         formList: HashMap<String, ServerFormDetails>?,
         exception: FormSourceException?
     ) {
-        DialogUtils.dismissDialog(
+        /*DialogUtils.dismissDialog(
             RefreshFormListDialogFragment::class.java,
+            childFragmentManager
+        )*/
+        DialogUtils.dismissDialog(
+            ConnectingToServerDialog::class.java,
             childFragmentManager
         )
         downloadFormListTask!!.setDownloaderListener(null)
@@ -640,8 +675,12 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         val totalCount = filesToDownload.size
         if (totalCount > 0) {
             // show dialog box
-            DialogUtils.showIfNotShowing(
+            /*DialogUtils.showIfNotShowing(
                 RefreshFormListDialogFragment::class.java,
+                childFragmentManager
+            )*/
+            DialogUtils.showIfNotShowing(
+                ConnectingToServerDialog::class.java,
                 childFragmentManager
             )
             downloadFormsTask = DownloadFormsTask(formDownloader)
