@@ -263,6 +263,8 @@ class MyFormsFragment : Fragment() {
                 ApplicationConstants.FormModes.EDIT_SAVED
             )
 
+            intent.putExtra(FormEntryActivity.NEWFORM, false)
+
             //c.close()
 
             startActivity(intent)

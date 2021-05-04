@@ -243,7 +243,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
     // Identifies whether this is a new form, or reloading a form after a screen
     // rotation (or similar)
-    private static final String NEWFORM = "newform";
+    public static final String NEWFORM = "newform";
     // these are only processed if we shut down and are restoring after an
     // external intent fires
 
@@ -401,6 +401,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements
     private TreeReference contextGroupRef;
 
     List<FormEntryPrompt> readyProcessedQuestions;
+
+    private boolean nexusIsFillingNewForm = true;
 
     /**
      * Called when the activity is first created.
@@ -895,6 +897,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements
                 locationPermissionsPreviouslyGranted = savedInstanceState.getBoolean(KEY_LOCATION_PERMISSIONS_GRANTED);
             }
         }
+
+        nexusIsFillingNewForm = getIntent().getBooleanExtra(NEWFORM, true);
     }
 
     private void loadForm() {
@@ -1647,7 +1651,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
             }
         }
 
-        if (newForm) {
+        if (nexusIsFillingNewForm) {
             saveName = "";
         }
 
@@ -1678,7 +1682,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements
 
                         }
                     }
-                }, newForm);
+                }, nexusIsFillingNewForm);
 
         endView.show();
 
