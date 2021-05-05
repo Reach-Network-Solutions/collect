@@ -18,6 +18,10 @@ class Constants {
 
         private val EXIT = true
         private val DO_NOT_EXIT = false
+
+        const val IS_INTRO_FORMS = "is_intro"
+
+        const val IS_INTRO_DOWNLOAD = "is_intro_download"
     }
 
     enum class HomeFormSelection {
