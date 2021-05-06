@@ -1,9 +1,13 @@
 package app.nexusforms.android.preferences.source
 
+import android.content.Context
 import android.content.SharedPreferences
+import app.nexusforms.android.preferences.nexus.DataStoreManager
+import kotlinx.coroutines.runBlocking
 import java.util.Collections
+import javax.inject.Inject
 
-class SharedPreferencesSettings(private val sharedPreferences: SharedPreferences, private val settingKeysToDefaults: Map<String, Any> = emptyMap()) :
+class SharedPreferencesSettings(private val sharedPreferences: SharedPreferences, private val settingKeysToDefaults: Map<String, Any> = emptyMap(), val context :Context) :
     Settings {
     private lateinit var sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener
 
@@ -19,12 +23,20 @@ class SharedPreferencesSettings(private val sharedPreferences: SharedPreferences
         saveAll(Collections.singletonMap(key, value))
     }
 
-    override fun saveAll(settings: Map<String, Any?>) {
+    override fun saveAll(settings: Map<String, Any?>, ) {
         val editor = sharedPreferences.edit()
         for ((key, value) in settings) {
             when (value) {
                 null, is String -> editor.putString(key, value as String?)
-                is Boolean -> editor.putBoolean(key, value)
+                is Boolean ->{
+
+                    if(key == "is_first_launch"){
+                        runBlocking {
+                            DataStoreManager(context).saveLaunchState(!value)
+                        }
+                    }
+
+                    editor.putBoolean(key, value)}
                 is Long -> editor.putLong(key, value)
                 is Int -> editor.putInt(key, value)
                 is Float -> editor.putFloat(key, value)

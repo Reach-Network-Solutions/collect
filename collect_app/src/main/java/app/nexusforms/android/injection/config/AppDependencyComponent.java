@@ -31,6 +31,7 @@ import app.nexusforms.android.preferences.CaptionedListPreference;
 import app.nexusforms.android.preferences.dialogs.AdminPasswordDialogFragment;
 import app.nexusforms.android.preferences.dialogs.ChangeAdminPasswordDialog;
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment;
+import app.nexusforms.android.preferences.nexus.DataStoreManager;
 import app.nexusforms.android.preferences.screens.AdminPreferencesFragment;
 import app.nexusforms.android.preferences.screens.BaseAdminPreferencesFragment;
 import app.nexusforms.android.preferences.screens.BaseGeneralPreferencesFragment;
@@ -265,6 +266,8 @@ public interface AppDependencyComponent {
     void inject(FormsLibraryFragment formsLibraryFragment);
 
     void inject(MyFormsFragment myFormsFragment);
+
+    void inject(DataStoreManager dataStoreManager);
 
     OpenRosaHttpInterface openRosaHttpInterface();
 

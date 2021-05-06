@@ -1,5 +1,6 @@
 package app.nexusforms.android.activities
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.graphics.Typeface
@@ -30,11 +31,13 @@ import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLO
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
 import app.nexusforms.android.formmanagement.Constants.Companion.LOADER_ID_OTHER__FORMS
 import app.nexusforms.android.injection.DaggerUtils
+import app.nexusforms.android.injection.config.AppDependencyModule
 import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
 import app.nexusforms.android.preferences.nexus.DataStoreManager
 import app.nexusforms.android.preferences.source.SettingsProvider
+import app.nexusforms.android.preferences.source.SettingsProvider.Companion.GENERAL_SETTINGS_NAME
 import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
@@ -68,6 +71,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     @Inject
     lateinit var settingsProvider: SettingsProvider
 
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
+
     private var newFormSyncTask: FormSyncTask? = null
 
     private var otherFormsInstanceSyncTask: InstanceSyncTask? = null
@@ -80,17 +86,17 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     var guideToLibraryBuilder: MaterialTapTargetPrompt.Builder? = null
 
-    private lateinit var dataStore: DataStoreManager
+    //private lateinit var dataStore: DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_NexusForms)
         injectDaggerOnCreation()
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-        dataStore = DataStoreManager(this)
+        //dataStore =
 
         runBlocking {
-            firstIntroAlreadyShown = dataStore.isFirstLaunch.first() ?: false
+            firstIntroAlreadyShown = dataStoreManager.isFirstLaunch.first() ?: false
         }
 
         setContentView(activityMainBinding.root)
@@ -234,8 +240,13 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
             guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
 
+            val runFlag = true
+
             lifecycleScope.launch {
-                dataStore.saveLaunchState(true)
+                dataStoreManager.saveLaunchState(runFlag)
+
+                //re-flag in prefs
+                settingsProvider.getGeneralSettings().save("is_first_launch", !runFlag)
             }
             firstIntroAlreadyShown = true
 
@@ -331,20 +342,22 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
         guideToLibraryBuilder?.setTarget(target)
 
             ?.setPromptBackground(DimmWalkThroughBackground())
-        ?.setPrimaryText(primarySpannerText)
-        ?.setSecondaryText(secondaryTextSpanner)
-        ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
-        ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
-        ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
-        ?.setIconDrawable(ContextCompat.getDrawable(
-            this,
-            if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
-        ))
-        ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
-        ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setPrimaryText(primarySpannerText)
+            ?.setSecondaryText(secondaryTextSpanner)
+            ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
+            ?.setIconDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
+                )
+            )
+            ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
             ?.setFocalPadding(R.dimen.dp40)
-        ?.setCaptureTouchEventOnFocal(true)?.setMaxTextWidth(R.dimen.tap_target_menu_max_width)
-        ?.show()
+            ?.setCaptureTouchEventOnFocal(true)?.setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+            ?.show()
 
     }
 
