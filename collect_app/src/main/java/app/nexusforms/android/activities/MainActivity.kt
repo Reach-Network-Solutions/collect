@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
                     setUpToolbarTitle(R.string.my_forms, R.id.myFormsFragment)
                     setupFab(true)
 
-                    playIntroForPlusFabIfNeedBe(bundleArg)
+                   playIntroForPlusFabIfNeedBe(bundleArg)
                 }
                 R.id.formsLibraryFragment -> {
                     setUpToolbarTitle(R.string.forms_library, R.id.formsLibraryFragment)
@@ -209,7 +209,6 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             }
         }
 
-        playWalkthroughForLibraryNavigation()
     }
 
     private fun playWalkthroughForLibraryNavigation() {
@@ -241,13 +240,11 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
                     if (target == R.id.formsLibraryFragment) {
 
-                        val graph = navController.graph
+                        guideToLibraryBuilder = null
 
                         val argument = NavArgument.Builder().setDefaultValue(true).build()
 
-                        graph.addArgument(IS_INTRO_DOWNLOAD, argument)
-
-                        navController.graph = graph
+                        navController.graph.addArgument(IS_INTRO_DOWNLOAD, argument)
 
                         navController.navigate(R.id.formsLibraryFragment)
 
@@ -259,6 +256,8 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     }
 
     private fun playIntroForPlusFabIfNeedBe(bundle: Bundle?) {
+
+        playWalkthroughForLibraryNavigation()
 
         val shouldRun = bundle?.getBoolean(IS_INTRO_FORMS)
 

@@ -790,11 +790,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         if (shouldPlay) {
             guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
 
-            val graph = navController.graph
-
-            graph.removeArgument(IS_INTRO_DOWNLOAD)
-
-            navController.graph = graph
+            navController.graph.removeArgument(IS_INTRO_DOWNLOAD)
 
             showingGuideToIdentifier = binding.buttonFilterUpdates.id
 
@@ -809,7 +805,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
                 if (showingGuideToIdentifier != binding.buttonFilterUpdates.id) return@setPromptStateChangeListener
 
-                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED) {
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
                     prompt.finish()
                     guideToDownloadItemAdd()
 
@@ -895,6 +891,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         val gotItPrompt = "\n\n Got it!"
 
         val primarySpannerText = SpannableString(primaryText)
+
         primarySpannerText.setSpan(
             StyleSpan(Typeface.BOLD),
             0,
