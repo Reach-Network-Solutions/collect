@@ -34,4 +34,6 @@
     <string name="refresh">Refresh</string>
     <string name="connecting_to_server">Connecting to server</string>
     <string name="no_connection_available_for_updates">No connection available to fetch updates.</string>
+    <string name="sample_text_version_1_0">Version 1.0</string>
+    <string name="sample_text_form_name">Form Name</string>
 </resources>
