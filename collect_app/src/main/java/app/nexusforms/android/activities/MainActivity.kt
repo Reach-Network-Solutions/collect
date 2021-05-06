@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -304,6 +305,26 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
                 "Fill your forms",
                 "Click on this button to select a form to fill for your submission from the list of downloaded forms."
             )
+
+            guideToLibraryBuilder?.setPromptStateChangeListener { prompt, state ->
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    // User has pressed the prompt target
+                    prompt.finish()
+
+                    if (target == activityMainBinding.fabMainBottomBar.id) {
+
+                        guideToLibraryBuilder = null
+
+                        val alertDialog: AlertDialog = AlertDialog.Builder(this).create()
+                        alertDialog.setTitle("Great!")
+                        alertDialog.setMessage("You've completed the basic intro. Enjoy the experience.")
+                        alertDialog.show()
+
+
+                    }
+
+                }
+            }
         }
 
 
