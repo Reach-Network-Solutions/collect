@@ -1,5 +1,6 @@
 package app.nexusforms.android.activities
 
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.graphics.Typeface
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.navigation.NavArgument
@@ -31,11 +33,18 @@ import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
+import app.nexusforms.android.preferences.nexus.DataStoreManager
 import app.nexusforms.android.preferences.source.SettingsProvider
 import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import javax.inject.Inject
@@ -63,29 +72,36 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     lateinit var menuDelegate: BlankFormListMenuDelegate
 
-    private var firstIntroAlreadyShown = false
+    private var firstIntroAlreadyShown: Boolean = false
 
     var target = 0
 
     var guideToLibraryBuilder: MaterialTapTargetPrompt.Builder? = null
+
+    private lateinit var dataStore: DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_NexusForms)
         injectDaggerOnCreation()
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(activityMainBinding.root)
+        dataStore = DataStoreManager(this)
 
+        runBlocking {
+            firstIntroAlreadyShown = dataStore.isFirstLaunch.first() ?: false
+        }
+
+        setContentView(activityMainBinding.root)
         setUpNavigation()
         setClickListeners()
         initializeNewForms()
         initializeOtherForms()
+
     }
 
     private fun injectDaggerOnCreation() {
         DaggerUtils.getComponent(this).Inject(this)
     }
-
 
     private fun initializeOtherForms() {
         otherFormsInstanceSyncTask = InstanceSyncTask(settingsProvider)
@@ -180,8 +196,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
                 R.id.myFormsFragment -> {
                     setUpToolbarTitle(R.string.my_forms, R.id.myFormsFragment)
                     setupFab(true)
-
-                   playIntroForPlusFabIfNeedBe(bundleArg)
+                    playIntroForPlusFabIfNeedBe(bundleArg)
                 }
                 R.id.formsLibraryFragment -> {
                     setUpToolbarTitle(R.string.forms_library, R.id.formsLibraryFragment)
@@ -212,12 +227,14 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     }
 
     private fun playWalkthroughForLibraryNavigation() {
-
         if (!firstIntroAlreadyShown) {
             target = R.id.formsLibraryFragment
 
             guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
 
+            lifecycleScope.launch {
+                dataStore.saveLaunchState(true)
+            }
             firstIntroAlreadyShown = true
 
             guideToLibrary(
@@ -310,19 +327,21 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         guideToLibraryBuilder?.setTarget(target)
-        ?.setPrimaryText(primarySpannerText)
-        ?.setSecondaryText(secondaryTextSpanner)
-        ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
-        ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
-        ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
-        ?.setIconDrawable(ContextCompat.getDrawable(
-            this,
-            if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
-        ))
-        ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
-        ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
-        ?.setCaptureTouchEventOnFocal(true)
-        ?.show()
+            ?.setPrimaryText(primarySpannerText)
+            ?.setSecondaryText(secondaryTextSpanner)
+            ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
+            ?.setIconDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
+                )
+            )
+            ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setCaptureTouchEventOnFocal(true)
+            ?.show()
     }
 
     private fun setupFab(visible: Boolean) {
