@@ -36,6 +36,7 @@ import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
+import app.nexusforms.utilities.DimmWalkThroughBackground
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import javax.inject.Inject
@@ -310,6 +311,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         guideToLibraryBuilder?.setTarget(target)
+            ?.setPromptBackground(DimmWalkThroughBackground())
         ?.setPrimaryText(primarySpannerText)
         ?.setSecondaryText(secondaryTextSpanner)
         ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
@@ -319,9 +321,12 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             this,
             if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
         ))
+            ?.setSecondaryTextSize(R.dimen.text_size_extra_small)
+            ?.setPrimaryTextSize(R.dimen.walk_through_title)
         ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
         ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
-        ?.setCaptureTouchEventOnFocal(true)
+            ?.setFocalPadding(R.dimen.dp40)
+        ?.setCaptureTouchEventOnFocal(true)?.setMaxTextWidth(R.dimen.tap_target_menu_max_width)
         ?.show()
     }
 

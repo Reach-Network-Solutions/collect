@@ -56,6 +56,7 @@ import app.nexusforms.android.tasks.DownloadFormListTask
 import app.nexusforms.android.tasks.DownloadFormsTask
 import app.nexusforms.android.utilities.*
 import app.nexusforms.android.utilities.AuthDialogUtility.AuthDialogUtilityResultListener
+import app.nexusforms.utilities.DimmWalkThroughBackground
 import kotlinx.coroutines.*
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
@@ -929,12 +930,16 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         )
 
         guideToLibraryBuilder?.setPrimaryText(primarySpannerText)
+            ?.setPromptBackground(DimmWalkThroughBackground())
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(requireContext(), R.color.white))
             ?.setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.light_blue))
             ?.setPrimaryTextGravity(Gravity.START)
             ?.setSecondaryTextGravity(Gravity.START)
             ?.setCaptureTouchEventOnFocal(true)
+            ?.setBackButtonDismissEnabled(true)
+            ?.setSecondaryTextSize(R.dimen.text_size_extra_small)
+            ?.setPrimaryTextSize(R.dimen.walk_through_title)
             ?.setPromptStateChangeListener { prompt, state ->
                 if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
                     // User has pressed the prompt target
