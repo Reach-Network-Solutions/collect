@@ -3,9 +3,17 @@ package app.nexusforms.android.fragments.nexus
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +22,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavArgument
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormDownloadListActivity
@@ -27,6 +37,8 @@ import app.nexusforms.android.formentry.RefreshFormListDialogFragment.RefreshFor
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_ID_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_VERSION_KEY
+import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLOAD
+import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
 import app.nexusforms.android.formmanagement.FormDownloader
 import app.nexusforms.android.formmanagement.FormSourceExceptionMapper
 import app.nexusforms.android.formmanagement.ServerFormDetails
@@ -44,7 +56,12 @@ import app.nexusforms.android.tasks.DownloadFormListTask
 import app.nexusforms.android.tasks.DownloadFormsTask
 import app.nexusforms.android.utilities.*
 import app.nexusforms.android.utilities.AuthDialogUtility.AuthDialogUtilityResultListener
+import kotlinx.coroutines.*
 import timber.log.Timber
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import uk.co.samuelwall.materialtaptargetprompt.extras.PromptFocal
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal
 import java.net.URI
 import javax.inject.Inject
 
@@ -68,6 +85,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     private var downloadFormListTask: DownloadFormListTask? = null
 
+
     private var displayOnlyUpdatedForms = false
 
     private val filteredFormList = ArrayList<HashMap<String, String>>()
@@ -82,6 +100,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     private lateinit var binding: FragmentFormsLibraryBinding
 
+    var guideToLibraryBuilder: MaterialTapTargetPrompt.Builder? = null
+
+    var showingGuideToIdentifier = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -95,12 +116,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-       // init(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -112,15 +127,44 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         if (!connectivityProvider.isDeviceOnline) {
             //No connection display available forms
-            setUpMyForms()
-        }else{
+            setUpForms()
+        } else {
             setUpFormsUpdate()
         }
 
         return binding.root
     }
 
-    private fun setUpMyForms() {
+
+    private fun exitWhenCompleteGuides() {
+        //navigate to forms and guide on creating
+
+        val navController = findNavController()
+
+        val initialGraph = navController.graph
+
+        val argument = NavArgument.Builder().setDefaultValue(false).build()
+
+        initialGraph.addArgument(IS_INTRO_FORMS, argument)
+
+        val bundle = Bundle()
+
+        bundle.putBoolean(IS_INTRO_FORMS, true)
+
+        navController.setGraph(initialGraph, bundle)
+
+        navController.navigate(R.id.myFormsFragment)
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        playIntroForUpdateTabIfNeedBe()
+    }
+
+    private fun setUpForms() {
+
         binding.buttonFilterUpdates.apply {
             setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
             setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
@@ -153,6 +197,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     private fun setupOnClickListeners(savedInstanceState: Bundle?) {
+
         binding.fabDownloadSelection.setOnClickListener {
             val filesToDownload: ArrayList<ServerFormDetails> = getFilesToDownload()
             startFormsDownload(filesToDownload)
@@ -166,7 +211,12 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             }
 
             binding.buttonFilterUpdates.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
 
@@ -176,6 +226,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             viewModel.clearSelectedFormIds()
 
             initForms()
+
+
         }
 
         binding.buttonFilterUpdates.setOnClickListener {
@@ -186,7 +238,12 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             }
 
             binding.buttonFilterMyForms.apply {
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.background_color
+                    )
+                )
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
             binding.textViewNoFormAvailable.visibility = View.INVISIBLE
@@ -204,9 +261,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         }
 
         binding.checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 downloadFormsAdapter?.selectAll()
-            }else{
+            } else {
                 downloadFormsAdapter?.deSelectAll()
                 viewModel.clearSelectedFormIds()
             }
@@ -217,9 +274,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     private fun initForms() {
         val formsListAsMutableList = DatabaseFormsRepository().all
 
-        if(formsListAsMutableList.isEmpty()){
+        if (formsListAsMutableList.isEmpty()) {
             binding.textViewNoFormAvailable.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.textViewNoFormAvailable.visibility = View.INVISIBLE
         }
 
@@ -262,13 +319,14 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     private fun getFilesToDownload(): ArrayList<ServerFormDetails> {
         val filesToDownload: ArrayList<ServerFormDetails> = ArrayList()
 
-        for (item in viewModel.selectedFormIds){
+        for (item in viewModel.selectedFormIds) {
 
             val formDetails = viewModel.formDetailsByFormId[item]
 
-            if(formDetails != null){
-                 filesToDownload.add(formDetails)}
-             }
+            if (formDetails != null) {
+                filesToDownload.add(formDetails)
+            }
+        }
 
         return filesToDownload
     }
@@ -414,7 +472,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
             //Display available form list
             initForms()
-            setUpMyForms()
+            setUpForms()
         } else {
             viewModel.clearFormDetailsByFormId()
             /*DialogUtils.showIfNotShowing(
@@ -512,8 +570,10 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         val fragment = DownloadResultDialogFragment()
         fragment.arguments = result
-        fragment.show(childFragmentManager,
-            DownloadResultDialogFragment::class.java.name)
+        fragment.show(
+            childFragmentManager,
+            DownloadResultDialogFragment::class.java.name
+        )
 
     }
 
@@ -524,8 +584,10 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         val fragment = DownloadResultDialogFragment()
         fragment.arguments = result
-        fragment.show(childFragmentManager,
-            DownloadResultDialogFragment::class.java.name)
+        fragment.show(
+            childFragmentManager,
+            DownloadResultDialogFragment::class.java.name
+        )
 
     }
 
@@ -540,7 +602,11 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     override fun progressUpdate(currentFile: String?, progress: Int, total: Int) {
+
         /*val fragment  : RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
+
+        val fragment: RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
+
             RefreshFormListDialogFragment::class.java.name
         ) as RefreshFormListDialogFragment
 
@@ -553,7 +619,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             )
         )*/
 
-        val fragment  : ConnectingToServerDialog? = childFragmentManager.findFragmentByTag(
+        val fragment: ConnectingToServerDialog? = childFragmentManager.findFragmentByTag(
             ConnectingToServerDialog::class.java.name
         ) as ConnectingToServerDialog
 
@@ -585,7 +651,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         }
 
         if (viewModel.isDownloadOnlyMode) {
-            Toast.makeText(requireContext(),  "Download cancelled", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Download cancelled", Toast.LENGTH_SHORT).show()
             //finish()
         }
     }
@@ -688,22 +754,200 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         downloadFormsAdapter = LibraryFormsRecyclerAdapter(
             list,
-            OnClickListener { downloadForms , isChecked->
-                if(isChecked){
+            OnClickListener { downloadForms, isChecked ->
+                if (isChecked) {
                     viewModel.addSelectedFormId(downloadForms.formDetailsKey)
-                }else{
+                } else {
                     viewModel.removeSelectedFormId(downloadForms.formDetailsKey)
                 }
 
-                if(viewModel.selectedFormIds.isEmpty()){
+                if (viewModel.selectedFormIds.isEmpty()) {
                     binding.fabDownloadSelection.visibility = View.INVISIBLE
-                }else{
+                } else {
                     binding.fabDownloadSelection.visibility = View.VISIBLE
                 }
-            },
+            }
+
         )
 
         binding.recyclerFormsLibrary.adapter = downloadFormsAdapter
+    }
+
+    private fun playIntroForUpdateTabIfNeedBe() {
+
+        val navController = findNavController()
+
+        val argument = navController.graph.arguments
+
+        if (!argument.containsKey(IS_INTRO_DOWNLOAD)) return
+
+        val shouldPlayArg = argument.getValue(IS_INTRO_DOWNLOAD)?.defaultValue
+
+        val shouldPlay = if (shouldPlayArg == null) false else shouldPlayArg as Boolean
+
+        val pointer = RectanglePromptFocal()
+
+        if (shouldPlay) {
+            guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
+
+            val graph = navController.graph
+
+            graph.removeArgument(IS_INTRO_DOWNLOAD)
+
+            navController.graph = graph
+
+            showingGuideToIdentifier = binding.buttonFilterUpdates.id
+
+            guideTo(
+                showingGuideToIdentifier,
+                "Check for form updates",
+                "Search for forms in the updates section to download it on your phone.",
+                focalPointer = pointer
+            )
+
+            guideToLibraryBuilder?.setPromptStateChangeListener { prompt, state ->
+
+                if (showingGuideToIdentifier != binding.buttonFilterUpdates.id) return@setPromptStateChangeListener
+
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED) {
+                    prompt.finish()
+                    guideToDownloadItemAdd()
+
+                }
+            }
+
+        }
+
+
+    }
+
+    private fun guideToDownloadItemAdd() {
+
+        binding.guideItemInDownload.root.visibility = View.VISIBLE
+
+        binding.recyclerFormsLibrary.visibility = View.INVISIBLE
+
+        guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
+
+
+        showingGuideToIdentifier = binding.guideItemInDownload.checkboxDownload.id
+
+        val pointer = CirclePromptFocal()
+
+        guideTo(
+            showingGuideToIdentifier, "Select the forms",
+            "Choose your form by ticking the checkbox or you can download all available forms by selecting all.",
+
+            pointer
+        )
+
+        guideToLibraryBuilder?.setPromptStateChangeListener { prompt, state ->
+
+            if (showingGuideToIdentifier != binding.guideItemInDownload.checkboxDownload.id) return@setPromptStateChangeListener
+            if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                //focus on download fab
+                guideToDownloadFabAdd()
+            }
+        }
+
+    }
+
+
+    private fun guideToDownloadFabAdd() {
+        binding.guideItemInDownload.root.visibility = View.GONE
+
+        binding.recyclerFormsLibrary.visibility = View.VISIBLE
+
+        binding.fabDownloadSelection.visibility = View.VISIBLE
+
+        showingGuideToIdentifier = binding.fabDownloadSelection.id
+
+        val pointer = CirclePromptFocal()
+
+        guideToLibraryBuilder =
+            MaterialTapTargetPrompt.Builder(this)
+
+        guideTo(
+            showingGuideToIdentifier,
+            "Download your forms",
+            "Click on this button to download the forms you have selected from the library.",
+            pointer
+        )
+
+        guideToLibraryBuilder?.setPromptStateChangeListener { prompt, state ->
+            if (showingGuideToIdentifier != binding.fabDownloadSelection.id) return@setPromptStateChangeListener
+
+            if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                exitWhenCompleteGuides()
+            }
+        }
+
+    }
+
+    private fun guideTo(
+        target: Int,
+        primaryText: String,
+        secondaryText: String,
+        focalPointer: PromptFocal
+    ) {
+        guideToLibraryBuilder?.setTarget(target)
+
+        val gotItPrompt = "\n\n Got it!"
+
+        val primarySpannerText = SpannableString(primaryText)
+        primarySpannerText.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0,
+            primaryText.length,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
+        val secondaryTextSpanner = SpannableStringBuilder()
+
+        val secondaryGuideTextSpan = ForegroundColorSpan(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.white
+            )
+        )
+
+        secondaryTextSpanner.append(
+            secondaryText,
+            secondaryGuideTextSpan,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        val gotItStyleSpan = StyleSpan(Typeface.BOLD)
+
+        val gotItStyleSpanColor = ForegroundColorSpan(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.guide_action_button
+            )
+        )
+
+        secondaryTextSpanner.append(
+            gotItPrompt,
+            gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        guideToLibraryBuilder?.setPrimaryText(primarySpannerText)
+            ?.setSecondaryText(secondaryTextSpanner)
+            ?.setPrimaryTextColour(ContextCompat.getColor(requireContext(), R.color.white))
+            ?.setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.light_blue))
+            ?.setPrimaryTextGravity(Gravity.START)
+            ?.setSecondaryTextGravity(Gravity.START)
+            ?.setCaptureTouchEventOnFocal(true)
+            ?.setPromptStateChangeListener { prompt, state ->
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    // User has pressed the prompt target
+                    prompt.finish()
+                    guideToLibraryBuilder = null
+                }
+            }?.setPromptFocal(focalPointer)
+
+            ?.create()
+            ?.show()
     }
 
     private fun performDownloadModeDownload() {
@@ -876,8 +1120,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             // DownloadFormTask has a callback when cancelled and has code to handle
             // cancellation when in download mode only
             if (viewModel.isDownloadOnlyMode) {
-                Toast.makeText(requireContext(),"User cancelled the operation" , Toast.LENGTH_SHORT).show()
-               // finish()
+                Toast.makeText(requireContext(), "User cancelled the operation", Toast.LENGTH_SHORT)
+                    .show()
+                // finish()
             }
         }
 

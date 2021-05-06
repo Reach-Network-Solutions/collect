@@ -10,11 +10,15 @@ import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.View
 import app.nexusforms.android.databinding.ItemFormsLibraryBinding
 import app.nexusforms.android.formmanagement.Constants
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_VERSION_KEY
+import uk.co.samuelwall.materialtaptargetprompt.extras.PromptFocal
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal
 import java.util.ArrayList
 
 class LibraryFormsRecyclerAdapter(
     private val list: ArrayList<HashMap<String, String>>,
     val selectForDownloadClickListener: OnClickListener
+
 ) :
     RecyclerView.Adapter<LibraryFormsRecyclerAdapter.ViewHolder>() {
 
@@ -58,7 +62,7 @@ class LibraryFormsRecyclerAdapter(
 
 
     class OnClickListener(val onClickListener: (form: DownloadForms, isChecked: Boolean) -> Unit) {
-        fun onClick(form: DownloadForms, isChecked: Boolean) = onClickListener(form,isChecked)
+        fun onClick(form: DownloadForms, isChecked: Boolean) = onClickListener(form, isChecked)
     }
 
     class ViewHolder(val binding: ItemFormsLibraryBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -94,7 +98,7 @@ class LibraryFormsRecyclerAdapter(
             val formVersion: String?,
             val formId: String?,
             val formIdDisplay: String?,
-            val formDetailsKey : String?,
+            val formDetailsKey: String?,
         )
     }
 }
