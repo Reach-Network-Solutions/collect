@@ -58,7 +58,6 @@ class MyFormsFragment : Fragment() {
 
     @Inject
     lateinit var settingsProvider: SettingsProvider
-
     lateinit var alertDialog: AlertDialog
 
     var currentScreen: Constants.HomeFormSelection = Constants.HomeFormSelection.DRAFTS
