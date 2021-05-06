@@ -1,5 +1,6 @@
 package app.nexusforms.android.preferences.screens;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,7 @@ import app.nexusforms.android.configure.SettingsChangeHandler;
 import app.nexusforms.android.injection.DaggerUtils;
 import app.nexusforms.android.preferences.keys.AdminKeys;
 import app.nexusforms.android.preferences.DisabledPreferencesRemover;
+import app.nexusforms.android.preferences.nexus.DataStoreManager;
 import app.nexusforms.android.preferences.source.Settings;
 import app.nexusforms.android.preferences.source.SettingsProvider;
 

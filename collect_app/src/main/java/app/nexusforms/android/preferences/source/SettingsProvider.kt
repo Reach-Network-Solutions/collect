@@ -8,7 +8,7 @@ import app.nexusforms.android.preferences.keys.MetaKeys.CURRENT_PROJECT_ID
 
 class SettingsProvider(private val context: Context) {
     fun getMetaSettings() = settings.getOrPut(META_SETTINGS_NAME) {
-        SharedPreferencesSettings(context.getSharedPreferences(META_SETTINGS_NAME, Context.MODE_PRIVATE))
+        SharedPreferencesSettings(context.getSharedPreferences(META_SETTINGS_NAME, Context.MODE_PRIVATE), context = context)
     }
 
     @JvmOverloads
@@ -17,9 +17,9 @@ class SettingsProvider(private val context: Context) {
 
         return settings.getOrPut(settingsId) {
             if (settingsId == GENERAL_SETTINGS_NAME) {
-                SharedPreferencesSettings(PreferenceManager.getDefaultSharedPreferences(context), GeneralKeys.DEFAULTS)
+                SharedPreferencesSettings(PreferenceManager.getDefaultSharedPreferences(context), GeneralKeys.DEFAULTS, context = context)
             } else {
-                SharedPreferencesSettings(context.getSharedPreferences(settingsId, Context.MODE_PRIVATE), GeneralKeys.DEFAULTS)
+                SharedPreferencesSettings(context.getSharedPreferences(settingsId, Context.MODE_PRIVATE), GeneralKeys.DEFAULTS, context = context)
             }
         }
     }
@@ -29,7 +29,7 @@ class SettingsProvider(private val context: Context) {
         val settingsId = getSettingsId(ADMIN_SETTINGS_NAME, projectId)
 
         return settings.getOrPut(settingsId) {
-            SharedPreferencesSettings(context.getSharedPreferences(settingsId, Context.MODE_PRIVATE), AdminKeys.getDefaults())
+            SharedPreferencesSettings(context.getSharedPreferences(settingsId, Context.MODE_PRIVATE), AdminKeys.getDefaults(), context = context)
         }
     }
 
@@ -43,7 +43,7 @@ class SettingsProvider(private val context: Context) {
         private val settings = mutableMapOf<String, Settings>()
 
         private const val META_SETTINGS_NAME = "meta"
-        private const val GENERAL_SETTINGS_NAME = "general_prefs"
+        const val GENERAL_SETTINGS_NAME = "general_prefs"
         private const val ADMIN_SETTINGS_NAME = "admin_prefs"
     }
 }
