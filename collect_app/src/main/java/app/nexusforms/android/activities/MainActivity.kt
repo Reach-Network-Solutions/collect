@@ -39,12 +39,14 @@ import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import app.nexusforms.utilities.DimmWalkThroughBackground
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import javax.inject.Inject
@@ -327,21 +329,23 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         guideToLibraryBuilder?.setTarget(target)
-            ?.setPrimaryText(primarySpannerText)
-            ?.setSecondaryText(secondaryTextSpanner)
-            ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
-            ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
-            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
-            ?.setIconDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
-                )
-            )
-            ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
-            ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
-            ?.setCaptureTouchEventOnFocal(true)
-            ?.show()
+
+            ?.setPromptBackground(DimmWalkThroughBackground())
+        ?.setPrimaryText(primarySpannerText)
+        ?.setSecondaryText(secondaryTextSpanner)
+        ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
+        ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
+        ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
+        ?.setIconDrawable(ContextCompat.getDrawable(
+            this,
+            if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
+        ))
+        ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
+        ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setFocalPadding(R.dimen.dp40)
+        ?.setCaptureTouchEventOnFocal(true)?.setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+        ?.show()
+
     }
 
     private fun setupFab(visible: Boolean) {
