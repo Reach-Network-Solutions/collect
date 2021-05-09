@@ -1,12 +1,12 @@
-0.2.0
+Release - v0.2.0
 Features
 - Walk-through guide at first launch of the app
 - Refresh and Select all forms for download
 
-0.1.0 Alpha Release
+Release - 0.1.0 [Alpha]
 Features
 - Added new design
 
-Vertical Scroll
+Release - Vertical Scroll
 Features
 - Question presented in vertical scrollable view.
