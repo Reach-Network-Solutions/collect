@@ -27,4 +27,13 @@
     <string name="fill_in_form">Fill in form</string>
     <string name="no_available_forms_to_fill_kindly_download_some">No Available forms to fill, kindly download some</string>
     <string name="no_available_forms_kindly_download_some">No forms available, kindly download some</string>
+    <string name="download_results">Download Results</string>
+    <string name="please_wait_a_few_moments">Please wait a few moments...</string>
+    <string name="fetching_form">Getting %1$s.</string>
+    <string name="fetching_form_progress">Form %1$s of %2$s form(s).</string>
+    <string name="refresh">Refresh</string>
+    <string name="connecting_to_server">Connecting to server</string>
+    <string name="no_connection_available_for_updates">No connection available to fetch updates.</string>
+    <string name="sample_text_version_1_0">Version 1.0</string>
+    <string name="sample_text_form_name">Form Name</string>
 </resources>

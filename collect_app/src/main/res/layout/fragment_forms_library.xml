@@ -7,43 +7,148 @@
     tools:context=".fragments.nexus.FormsLibraryFragment">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/layout_filter_buttons_forms"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="4dp"
+        app:cardBackgroundColor="@color/background_color"
+        >
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_filter_my_forms"
-            style="@style/Widget.NexusForms.Button.FilterButton"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/const_layout_filter_buttons_forms"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/my_forms"
+            >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_filter_my_forms"
+                style="@style/Widget.NexusForms.Button.FilterButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/my_forms"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_filter_updates"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_filter_updates"
+                style="@style/Widget.NexusForms.Button.FilterButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="@string/updates"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_filter_my_forms"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_refresh_select_all"
+        android:layout_width="0dp"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/layout_filter_buttons_forms"
+        app:layout_constraintStart_toStartOf="@+id/layout_filter_buttons_forms"
+        app:layout_constraintTop_toBottomOf="@id/layout_filter_buttons_forms">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_filter_updates"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@+id/layout_select_all"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_filter_updates"
-            style="@style/Widget.NexusForms.Button.FilterButton"
-            android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_refresh"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_refresh" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/refresh"
+                android:textColor="?attr/colorPrimaryDark"
+                app:layout_constraintBottom_toBottomOf="@+id/image_refresh"
+                app:layout_constraintStart_toEndOf="@id/image_refresh"
+                app:layout_constraintTop_toTopOf="@+id/image_refresh" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_select_all"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/updates"
-            android:enabled="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button_filter_my_forms"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/layout_refresh"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:text="@string/select_all"
+                android:textColor="?attr/colorPrimaryDark"
+                app:layout_constraintBottom_toBottomOf="@+id/checkbox_select_all"
+                app:layout_constraintEnd_toStartOf="@id/checkbox_select_all"
+                app:layout_constraintTop_toTopOf="@+id/checkbox_select_all" />
+
+            <CheckBox
+                android:id="@+id/checkbox_select_all"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:buttonTint="?attr/colorPrimary"
+                android:checked="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <include
+        android:id="@+id/guide_item_in_download"
+        layout="@layout/item_forms_library"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_filter_buttons_forms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_forms_library"
@@ -55,7 +160,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_filter_buttons_forms"
+        app:layout_constraintTop_toBottomOf="@+id/layout_refresh_select_all"
         tools:listitem="@layout/item_forms_library"
         tools:itemCount="3"/>
 
@@ -79,10 +184,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/no_available_forms_kindly_download_some"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textStyle="italic"
         android:visibility="invisible"
-        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

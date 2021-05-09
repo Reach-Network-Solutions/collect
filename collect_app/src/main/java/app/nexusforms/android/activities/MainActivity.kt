@@ -1,14 +1,25 @@
 package app.nexusforms.android.activities
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
+import androidx.navigation.NavArgument
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -17,17 +28,31 @@ import app.nexusforms.android.dao.CursorLoaderFactory
 import app.nexusforms.android.databinding.ActivityMainBinding
 import app.nexusforms.android.formmanagement.BlankFormListMenuDelegate
 import app.nexusforms.android.formmanagement.BlankFormsListViewModel
+import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLOAD
+import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
 import app.nexusforms.android.formmanagement.Constants.Companion.LOADER_ID_OTHER__FORMS
 import app.nexusforms.android.injection.DaggerUtils
+import app.nexusforms.android.injection.config.AppDependencyModule
 import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
+import app.nexusforms.android.preferences.nexus.DataStoreManager
 import app.nexusforms.android.preferences.source.SettingsProvider
+import app.nexusforms.android.preferences.source.SettingsProvider.Companion.GENERAL_SETTINGS_NAME
 import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import app.nexusforms.utilities.DimmWalkThroughBackground
 import timber.log.Timber
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import javax.inject.Inject
 
 
@@ -47,29 +72,45 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     @Inject
     lateinit var settingsProvider: SettingsProvider
 
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
+
     private var newFormSyncTask: FormSyncTask? = null
 
     private var otherFormsInstanceSyncTask: InstanceSyncTask? = null
 
     lateinit var menuDelegate: BlankFormListMenuDelegate
 
+    private var firstIntroAlreadyShown: Boolean = false
+
+    var target = 0
+
+    var guideToLibraryBuilder: MaterialTapTargetPrompt.Builder? = null
+
+    //private lateinit var dataStore: DataStoreManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_NexusForms)
         injectDaggerOnCreation()
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(activityMainBinding.root)
+        //dataStore =
 
+        runBlocking {
+            firstIntroAlreadyShown = dataStoreManager.isFirstLaunch.first() ?: false
+        }
+
+        setContentView(activityMainBinding.root)
         setUpNavigation()
         setClickListeners()
         initializeNewForms()
         initializeOtherForms()
+
     }
 
     private fun injectDaggerOnCreation() {
         DaggerUtils.getComponent(this).Inject(this)
     }
-
 
     private fun initializeOtherForms() {
         otherFormsInstanceSyncTask = InstanceSyncTask(settingsProvider)
@@ -158,14 +199,16 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
         val bottomNavigationView = activityMainBinding.bottomNavMainHome
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+
+        navController.addOnDestinationChangedListener { _, destination, bundleArg ->
             when (destination.id) {
                 R.id.myFormsFragment -> {
-                    setUpToolbarTitle(R.string.my_forms,R.id.myFormsFragment)
+                    setUpToolbarTitle(R.string.my_forms, R.id.myFormsFragment)
                     setupFab(true)
+                    playIntroForPlusFabIfNeedBe(bundleArg)
                 }
                 R.id.formsLibraryFragment -> {
-                    setUpToolbarTitle(R.string.forms_library,R.id.formsLibraryFragment)
+                    setUpToolbarTitle(R.string.forms_library, R.id.formsLibraryFragment)
                     setupFab(false)
                 }
 
@@ -178,43 +221,201 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
                 }
 
                 R.id.profileFragment -> {
-                    setUpToolbarTitle(R.string.my_profile,R.id.profileFragment )
+                    setUpToolbarTitle(R.string.my_profile, R.id.profileFragment)
                     setupFab(false)
                 }
 
-                R.id.fillFormFragment->{
-                    setUpToolbarTitle(R.string.fill_form,R.id.fillFormFragment)
+                R.id.fillFormFragment -> {
+                    setUpToolbarTitle(R.string.fill_form, R.id.fillFormFragment)
                     setupFab(false)
                 }
 
             }
         }
+
+    }
+
+    private fun playWalkthroughForLibraryNavigation() {
+        if (!firstIntroAlreadyShown) {
+            target = R.id.formsLibraryFragment
+
+            guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
+
+            val runFlag = true
+
+            lifecycleScope.launch {
+                dataStoreManager.saveLaunchState(runFlag)
+
+                //re-flag in prefs
+                settingsProvider.getGeneralSettings().save("is_first_launch", !runFlag)
+            }
+            firstIntroAlreadyShown = true
+
+            guideToLibrary(
+                target,
+                "Search your library",
+                "All forms reside in your library. Search " +
+                        "your library to download different forms."
+
+            )
+
+            guideToLibraryBuilder?.setPromptStateChangeListener { prompt, state ->
+
+                if (target != R.id.formsLibraryFragment) return@setPromptStateChangeListener
+
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    // User has pressed the prompt target
+                    prompt.finish()
+
+                    guideToLibraryBuilder = null
+
+                    if (target == R.id.formsLibraryFragment) {
+
+                        guideToLibraryBuilder = null
+
+                        val argument = NavArgument.Builder().setDefaultValue(true).build()
+
+                        navController.graph.addArgument(IS_INTRO_DOWNLOAD, argument)
+
+                        navController.navigate(R.id.formsLibraryFragment)
+
+                    }
+
+                }
+            }
+        }
+    }
+
+    private fun playIntroForPlusFabIfNeedBe(bundle: Bundle?) {
+
+        playWalkthroughForLibraryNavigation()
+
+        val shouldRun = bundle?.getBoolean(IS_INTRO_FORMS)
+
+        val shouldPlay = shouldRun ?: false
+
+        if (shouldPlay) {
+
+            target = activityMainBinding.fabMainBottomBar.id
+
+            guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
+
+            guideToLibrary(
+                target,
+                "Fill your forms",
+                "Click on this button to select a form to fill for your submission from the list of downloaded forms."
+            )
+
+            guideToLibraryBuilder?.setPromptStateChangeListener { prompt, state ->
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    // User has pressed the prompt target
+                    prompt.finish()
+
+                    if (target == activityMainBinding.fabMainBottomBar.id) {
+
+                        guideToLibraryBuilder = null
+
+                        val alertDialog: AlertDialog = AlertDialog.Builder(this).create()
+                        alertDialog.setTitle("Great!")
+                        alertDialog.setMessage("You've completed the basic intro. Enjoy the experience.")
+                        alertDialog.show()
+
+
+                    }
+
+                }
+            }
+        }
+
+
+    }
+
+    private fun guideToLibrary(
+        target: Int,
+        primaryText: String,
+        secondaryText: String,
+    ) {
+        val gotItPrompt = "\n\n Got it!"
+
+        val primarySpannerText = SpannableStringBuilder()
+
+        primarySpannerText.append(
+            primaryText,
+            StyleSpan(Typeface.BOLD),
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
+        val secondaryTextSpanner = SpannableStringBuilder()
+
+        val gotItStyleSpanColor = ForegroundColorSpan(
+            ContextCompat.getColor(
+                this,
+                R.color.guide_action_button
+            )
+        )
+
+        secondaryTextSpanner.append(secondaryText)
+
+        secondaryTextSpanner.append(
+            gotItPrompt,
+            gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        guideToLibraryBuilder?.setTarget(target)
+
+            ?.setPromptBackground(DimmWalkThroughBackground())
+            ?.setPrimaryText(primarySpannerText)
+            ?.setSecondaryText(secondaryTextSpanner)
+            ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
+            ?.setIconDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
+                )
+            )
+            ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
+            ?.setFocalPadding(R.dimen.dp40)
+            ?.setCaptureTouchEventOnFocal(true)?.setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+            ?.show()
+
     }
 
     private fun setupFab(visible: Boolean) {
-        if(visible){
+        if (visible) {
             activityMainBinding.fabMainBottomBar.visibility = View.VISIBLE
-        }else{
+        } else {
             activityMainBinding.fabMainBottomBar.visibility = View.INVISIBLE
         }
     }
 
 
     private fun setUpToolbarTitle(titleId: Int, fragmentId: Int) {
-        if(fragmentId == R.id.fillFormFragment){
+        if (fragmentId == R.id.fillFormFragment) {
             activityMainBinding.bottomNavMainHome.visibility = View.INVISIBLE
             activityMainBinding.menuActionSettings.visibility = View.INVISIBLE
-            activityMainBinding.menuActionSearch.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_arrow_back))
+            activityMainBinding.menuActionSearch.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_arrow_back
+                )
+            )
             activityMainBinding.menuActionSearch.setOnClickListener {
                 navController.navigateUp()
             }
             activityMainBinding.fabMainBottomBar.visibility = View.INVISIBLE
-        }else{
+        } else {
             activityMainBinding.bottomNavMainHome.visibility = View.VISIBLE
             activityMainBinding.menuActionSettings.visibility = View.VISIBLE
-            activityMainBinding.menuActionSearch.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_search))
+            activityMainBinding.menuActionSearch.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_search
+                )
+            )
             activityMainBinding.menuActionSearch.setOnClickListener {
-               // navController.navigateUp()
+                // navController.navigateUp()
             }
             activityMainBinding.fabMainBottomBar.visibility = View.VISIBLE
         }
@@ -222,7 +423,8 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-        return CursorLoaderFactory().createUnsentInstancesCursorLoader("", ""
+        return CursorLoaderFactory().createUnsentInstancesCursorLoader(
+            "", ""
 
         )
     }

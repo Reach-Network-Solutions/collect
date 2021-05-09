@@ -401,8 +401,14 @@ dependencies {
 
     // Navigation Component Java language implementation
     def nav_version = "2.3.5"
-    implementation "androidx.navigation:navigation-fragment:$nav_version"
-    implementation "androidx.navigation:navigation-ui:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    def intro_helper_version = "3.1.0"
+    implementation "uk.co.samuelwall:material-tap-target-prompt:$intro_helper_version"
+
+    def version_datastore = "1.0.0-beta01"
+    implementation "androidx.datastore:datastore-preferences:$version_datastore"
 }
 
 // Must be at bottom to prevent dependency collisions

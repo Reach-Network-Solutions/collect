@@ -1,4 +1,4 @@
-name: Internal Test deployment workflow
+name: QA Testing workflow
 on:
   pull_request:
     branches:
@@ -18,13 +18,10 @@ jobs:
         with:
           java-version: 11
 
-      - run: java -version
-
       - name: build all artifacts
         id: buildAllApks
         uses: eskatos/gradle-command-action@v1
         with:
-          # gradle-version: 6.5
           wrapper-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
@@ -61,7 +58,7 @@ jobs:
       - name: Save name of our artifact
         id: set-result-artifact
         run: |
-          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/regular/debug/*.apk | head -n 1)
+          ARTIFACT_PATHNAME_APK=$(ls collect_app/build/outputs/apk/debug/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
@@ -71,11 +68,12 @@ jobs:
         uses: wzieba/Firebase-Distribution-Github-Action@v1.3.2
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
-          #          serviceCredentialsFile: ${{secrets.FIREBASE_SERVICE_KEY}}
           token: ${{secrets.FIREBASE_TOKEN}}
+          releaseNotesFile: ${{secrets.RELEASE_NOTES_PATH}}
+          groups: qa-testers
           file: ${{env.ARTIFACT_PATHNAME_APK}}
-          #          app_file: app/build/outputs/apk/release/app-release-unsigned.apk
-          groups: ${{secrets.APP_TESTER_GROUPS}}
+
+
 
 
 #      - name: Upload our Artifact Assets

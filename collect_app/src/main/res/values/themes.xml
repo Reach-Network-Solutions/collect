@@ -18,6 +18,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="dialogTheme">@style/Widget.NexusForms.CustomDialog</item>
 
     </style>
 

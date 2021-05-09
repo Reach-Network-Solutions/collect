@@ -21,12 +21,14 @@ public class FormEndView extends Dialog {
     private final String formTitle;
     private final String defaultInstanceName;
     public EditText saveAs;
+    private boolean isStartingNewForm;
 
-    public FormEndView(Context context, String formTitle, String defaultInstanceName, boolean instanceComplete, Listener listener) {
+    public FormEndView(Context context, String formTitle, String defaultInstanceName, boolean instanceComplete, Listener listener, boolean isStartingNewForm) {
         super(context);
         this.formTitle = formTitle;
         this.defaultInstanceName = defaultInstanceName;
         this.listener = listener;
+        this.isStartingNewForm = isStartingNewForm;
         init(context, instanceComplete);
     }
 
@@ -51,7 +53,12 @@ public class FormEndView extends Dialog {
         InputFilter returnFilter = (source, start, end, dest, dstart, dend) -> FormNameUtils.normalizeFormName(source.toString().substring(start, end), true);
         saveAs.setFilters(new InputFilter[]{returnFilter});
 
-        saveAs.setText(defaultInstanceName);
+        if (!isStartingNewForm) {
+            saveAs.setText(defaultInstanceName);
+        } else {
+            saveAs.requestFocus();
+        }
+
         saveAs.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -72,9 +79,7 @@ public class FormEndView extends Dialog {
         markAsFinalized.setChecked(instanceComplete);
 
 
-        findViewById(R.id.save_exit_button).setOnClickListener(v -> {
-            listener.onSaveClicked(markAsFinalized.isChecked());
-        });
+        findViewById(R.id.save_exit_button).setOnClickListener(v -> listener.onSaveClicked(markAsFinalized.isChecked()));
     }
 
     public interface Listener {
