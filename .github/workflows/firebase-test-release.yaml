@@ -62,10 +62,10 @@ jobs:
           prerelease: true
 
       - name: Upload our APK
-          uses: actions/upload-artifact@v2.2.0
-          with:
-            name: Debug artifact
-            path: ${{env.ARTIFACT_PATHNAME_APK}}
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: Debug artifact
+          path: ${{env.ARTIFACT_PATHNAME_APK}}
 
       - name: Upload Artifact Assets
           id: upload-release-asset
