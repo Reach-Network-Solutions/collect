@@ -1,0 +1,93 @@
+name: QA Testing workflow
+on:
+  pull_request:
+    branches:
+      - develop
+    type:
+      - closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - run: java -version
+
+      - name: setup jdk environment
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+
+      - name: build all artifacts
+        id: buildAllApks
+        uses: eskatos/gradle-command-action@v1
+        with:
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+          arguments: assembleDebug
+
+      # - name: sign artifacts
+      #   id: signArtifact
+      #   uses: r0adkll/sign-android-release@v1.0.1
+      #   with:
+      #     releaseDirectory: app/build/outputs/apk/ourbuildtype/release
+      #     alias: ${{ secrets.KEYALIAS }}
+      #     signingKeyBase64: ${{ secrets.KEYSTORE }}
+      #     keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      #          path: app/build/outputs/apk/release/app-release-*.apk
+
+      - name: Save name of our artifact
+        id: set-result-artifact
+        run: |
+          ARTIFACT_PATHNAME_APK=$(ls collect_app/build/outputs/apk/debug/*.apk | head -n 1)
+          ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
+          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
+          echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+
+      - name: Create Pre-Release on Github
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+
+      - name: Upload our APK
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: Debug artifact
+          path: ${{env.ARTIFACT_PATHNAME_APK}}
+
+      - name: Upload Artifact Assets
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.ARTIFACT_PATHNAME_APK }}
+          asset_name: ${{ env.ARTIFACT_NAME_APK }}
+          asset_content_type: application/zip
+
+      - name: Deploy to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.2
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          releaseNotesFile: ${{secrets.RELEASE_NOTES_PATH}}
+          groups: ${{secrets.APP_TESTER_GROUPS}}
+          file: ${{env.ARTIFACT_PATHNAME_APK}}
+
+
+
+
+

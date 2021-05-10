@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormEntryActivity
 import app.nexusforms.android.activities.FormEntryActivity.KEY_FORMPATH
+import app.nexusforms.android.activities.FormEntryActivity.NEWFORM
 import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
 import app.nexusforms.android.database.DatabaseFormsRepository
 import app.nexusforms.android.databinding.FillFormFragmentBinding
@@ -41,6 +42,8 @@ class FillFormFragment : Fragment() {
         val formUri = ContentUris.withAppendedId(FormsProviderAPI.FormsColumns.CONTENT_URI, selectedForm.id)
 
         intent.putExtra(KEY_FORMPATH, selectedForm.formFilePath)
+
+        intent.putExtra(NEWFORM, true)
 
         intent.data = formUri
 

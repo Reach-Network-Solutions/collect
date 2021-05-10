@@ -11,6 +11,7 @@
     <!-- fontSize -->
     <dimen name="text_size_extra_small">12sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
+    <dimen name="walk_through_title">14sp</dimen>
     <dimen name="text_size_medium">20sp</dimen>
     <dimen name="text_size_large">24sp</dimen>
     <dimen name="text_size_extra_large">28sp</dimen>
@@ -39,7 +40,10 @@
     <dimen name="touch_target_size">48dp</dimen>
     <dimen name="padding_touch_target_minimum">8dp</dimen>
     <dimen name="divider_accidental_tap">8dp</dimen>
+    <dimen name="dp40">40dp</dimen>
 
     <!-- corner radius -->
     <dimen name="corner_radius">2dp</dimen>
+
+    <dimen name="tap_target_menu_max_width">350dp</dimen>
 </resources>

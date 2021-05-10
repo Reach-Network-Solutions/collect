@@ -48,6 +48,7 @@ import app.nexusforms.android.permissions.PermissionsProvider;
 import app.nexusforms.android.preferences.keys.AdminKeys;
 import app.nexusforms.android.preferences.keys.GeneralKeys;
 import app.nexusforms.android.preferences.keys.MetaKeys;
+import app.nexusforms.android.preferences.nexus.DataStoreManager;
 import app.nexusforms.android.preferences.source.SettingsProvider;
 import app.nexusforms.android.preferences.source.SettingsStore;
 import app.nexusforms.android.utilities.ActivityAvailability;
@@ -497,5 +498,12 @@ public class AppDependencyModule {
     @Provides
     public ExternalWebPageHelper providesExternalWebPageHelper() {
         return new ExternalWebPageHelper();
+    }
+
+
+
+    @Provides
+    public DataStoreManager providesDataStoreManager(Context context){
+        return new DataStoreManager(context);
     }
 }

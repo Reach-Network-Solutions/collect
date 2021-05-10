@@ -43,4 +43,10 @@ limitations under the License.
         android:key="experimental"
         android:title="@string/experimental"
         app:iconSpaceReserved="false" />
+
+    <CheckBoxPreference
+        android:key="is_first_launch"
+        android:icon="@drawable/ic_repeat"
+        android:title="Replay walkthrough"
+        android:summary="Show guide in the next startup"/>
 </PreferenceScreen>

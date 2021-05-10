@@ -6,59 +6,70 @@
     android:layout_height="match_parent"
     tools:context=".fragments.nexus.MyFormsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/layout_filter_buttons_forms"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/background_color"
+        app:cardCornerRadius="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_filter_draft"
-            style="@style/Widget.NexusForms.Button.FilterButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/drafts"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_filter_completed"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/const_layout_filter_buttons_forms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_filter_completed"
-            style="@style/Widget.NexusForms.Button.FilterButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/completed"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_filter_failed_uploads"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toEndOf="@+id/button_filter_draft"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_filter_draft"
+                style="@style/Widget.NexusForms.Button.FilterButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/drafts"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_filter_completed"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_filter_failed_uploads"
-            style="@style/Widget.NexusForms.Button.FilterButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/failed_uploads"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="2"
-            app:layout_constraintStart_toEndOf="@+id/button_filter_completed"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_filter_completed"
+                style="@style/Widget.NexusForms.Button.FilterButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/completed"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_filter_failed_uploads"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/button_filter_draft"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_filter_failed_uploads"
+                style="@style/Widget.NexusForms.Button.FilterButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/failed_uploads"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="2"
+                app:layout_constraintStart_toEndOf="@+id/button_filter_completed"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterable_recycler_forms"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,12 +84,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        tools:text="Seems like there's no entry here"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Seems like there's no entry here" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
