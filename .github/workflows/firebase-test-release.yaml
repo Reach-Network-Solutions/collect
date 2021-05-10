@@ -50,7 +50,7 @@ jobs:
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
           echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
 
-      - name: Create Pre-Release
+      - name: Create Pre-Release on Github
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -84,7 +84,7 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           releaseNotesFile: ${{secrets.RELEASE_NOTES_PATH}}
-          groups: qa-testers
+          groups: ${{secrets.APP_TESTER_GROUPS}}
           file: ${{env.ARTIFACT_PATHNAME_APK}}
 
 
