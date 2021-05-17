@@ -33,6 +33,7 @@ import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.OnCl
 import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
 import app.nexusforms.android.database.DatabaseFormsRepository
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
+import app.nexusforms.android.formentry.RefreshFormListDialogFragment
 import app.nexusforms.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_ID_KEY
@@ -465,7 +466,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
      */
     private fun downloadFormList() {
         if (!connectivityProvider.isDeviceOnline) {
-            //ToastUtils.showShortToast(R.string.no_connection)
+            ToastUtils.showShortToast(R.string.no_connection)
             ToastUtils.showShortToast(R.string.no_connection_available_for_updates)
             if (viewModel.isDownloadOnlyMode) {
                 createAlertDialog("No Connection", getString(R.string.no_connection), false)
@@ -476,10 +477,10 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             setUpForms()
         } else {
             viewModel.clearFormDetailsByFormId()
-            /*DialogUtils.showIfNotShowing(
+            DialogUtils.showIfNotShowing(
                 RefreshFormListDialogFragment::class.java,
                 childFragmentManager
-            )*/
+            )
             DialogUtils.showIfNotShowing(
                 ConnectingToServerDialog::class.java,
                 childFragmentManager
@@ -661,14 +662,17 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         formList: HashMap<String, ServerFormDetails>?,
         exception: FormSourceException?
     ) {
-        /*DialogUtils.dismissDialog(
-            RefreshFormListDialogFragment::class.java,
-            childFragmentManager
-        )*/
-        DialogUtils.dismissDialog(
-            ConnectingToServerDialog::class.java,
-            childFragmentManager
-        )
+
+        if (isAdded) {
+            DialogUtils.dismissDialog(
+                RefreshFormListDialogFragment::class.java,
+                childFragmentManager
+            )
+            DialogUtils.dismissDialog(
+                ConnectingToServerDialog::class.java,
+                childFragmentManager
+            )
+        }
         downloadFormListTask!!.setDownloaderListener(null)
         downloadFormListTask = null
 
@@ -938,7 +942,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             ?.setSecondaryTextGravity(Gravity.START)
             ?.setCaptureTouchEventOnFocal(true)
             ?.setBackButtonDismissEnabled(true)
-           // ?.setSecondaryTextSize(R.dimen.text_size_extra_small)
+            // ?.setSecondaryTextSize(R.dimen.text_size_extra_small)
             //?.setPrimaryTextSize(R.dimen.walk_through_title)
             ?.setPromptStateChangeListener { prompt, state ->
                 if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
