@@ -9,7 +9,16 @@ buildscript {
         }
     }
 
-    ext.kotlin_version = '1.4.30'
+    ext{
+        kotlin_version = '1.4.30'
+        versionMajor = 0
+        versionMinor = 2
+        versionPatch = 1
+        versionClassifier = false
+        isSnapshot = false
+        minimumSdkVersion = 19
+    }
+
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'

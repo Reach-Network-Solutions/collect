@@ -69,6 +69,21 @@ if (secretsFile.exists()) {
 def googleMapsApiKey = secrets.getProperty('GOOGLE_MAPS_API_KEY', '')
 def mapboxToken = secrets.getProperty('MAPBOX_ACCESS_TOKEN', '')
 
+private Integer generateVersionCode() {
+    return minimumSdkVersion * 10000000 + versionMajor * 10000 + versionMinor * 100 + versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+    if (!versionClassifier && isSnapshot) {
+        versionClassifier = "SNAPSHOT"
+    }
+    if (versionClassifier) {
+        versionName += "-" + versionClassifier
+    }
+    return versionName
+}
+
 android {
     compileSdkVersion rootProject.androidCompileSdk
 
@@ -80,8 +95,8 @@ android {
         applicationId('app.nexusforms.android')
         minSdkVersion rootProject.androidMinSdk
         targetSdkVersion rootProject.androidTargetSdk
-        versionCode LEGACY_BUILD_NUMBER_OFFSET + getMasterCommitCount()
-        versionName getVersionName()
+        versionCode generateVersionCode()
+        versionName generateVersionName()
         testInstrumentationRunner('androidx.test.runner.AndroidJUnitRunner')
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
