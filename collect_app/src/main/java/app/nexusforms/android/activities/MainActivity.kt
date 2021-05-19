@@ -29,6 +29,8 @@ import app.nexusforms.android.formmanagement.BlankFormsListViewModel
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLOAD
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
 import app.nexusforms.android.formmanagement.Constants.Companion.LOADER_ID_OTHER__FORMS
+import app.nexusforms.android.fragments.dialogs.nexus.DownloadResultDialogFragment
+import app.nexusforms.android.fragments.dialogs.nexus.WalkthroughCompleteDialogFragment
 import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
@@ -309,10 +311,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
                         guideToLibraryBuilder = null
 
-                        val alertDialog: AlertDialog = AlertDialog.Builder(this).create()
-                        alertDialog.setTitle("Great!")
-                        alertDialog.setMessage("You've completed the basic intro. Enjoy the experience.")
-                        alertDialog.show()
+                        displayWalkthroughCompleteMessage()
 
 
                     }
@@ -321,6 +320,17 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             }
         }
 
+
+    }
+
+    private fun displayWalkthroughCompleteMessage() {
+
+        val fragment = WalkthroughCompleteDialogFragment()
+
+        fragment.show(
+            supportFragmentManager,
+            WalkthroughCompleteDialogFragment::class.java.name
+        )
 
     }
 
@@ -361,7 +371,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
             ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
-            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
+            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue_walkthrough))
             ?.setIconDrawable(
                 ContextCompat.getDrawable(
                     this,

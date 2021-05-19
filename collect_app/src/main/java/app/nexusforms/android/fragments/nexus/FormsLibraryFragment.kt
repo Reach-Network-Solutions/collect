@@ -929,7 +929,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             ?.setPromptBackground(DimmWalkThroughBackground())
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(requireContext(), R.color.white))
-            ?.setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.light_blue))
+            ?.setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.light_blue_walkthrough))
             ?.setPrimaryTextGravity(Gravity.START)
             ?.setSecondaryTextGravity(Gravity.START)
             ?.setCaptureTouchEventOnFocal(true)

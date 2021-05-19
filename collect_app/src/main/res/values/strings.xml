@@ -36,4 +36,6 @@
     <string name="no_connection_available_for_updates">No connection available to fetch updates.</string>
     <string name="sample_text_version_1_0">Version 1.0</string>
     <string name="sample_text_form_name">Form Name</string>
+    <string name="walkthrough_complete">Walkthrough complete!</string>
+    <string name="you_ve_completed_the_basic_intro_enjoy_the_experience">You\'ve completed the basic intro. Enjoy the experience.</string>
 </resources>

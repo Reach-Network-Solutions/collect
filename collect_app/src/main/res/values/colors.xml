@@ -16,6 +16,7 @@ the License.
 <resources>
     <!-- Material Design color palette -->
     <color name="light_blue">#304B72</color>
+    <color name="light_blue_walkthrough">#99304B72</color>
     <color name="dark_blue">#002446</color>
     <color name="dark_green">#1C9D80</color>
     <color name="dark_red">#E17369</color>
