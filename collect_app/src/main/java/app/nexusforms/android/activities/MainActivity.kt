@@ -372,6 +372,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             gotItPrompt,
             gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
+        if(target == R.id.formsLibraryFragment){
+            guideToLibraryBuilder?.focalColour = ContextCompat.getColor(this, R.color.light_blue)
+            guideToLibraryBuilder?.targetRenderView = bottomNavigationItemView
+        }
         guideToLibraryBuilder?.setTarget(target)
 
             ?.setPromptBackground(DimmWalkThroughBackground())
@@ -379,8 +383,8 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
             ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
-            ?.setFocalColour(ContextCompat.getColor(this, R.color.light_blue))
-            ?.setTargetRenderView(bottomNavigationItemView)
+
+
             ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue_walkthrough))
             ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
             ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
