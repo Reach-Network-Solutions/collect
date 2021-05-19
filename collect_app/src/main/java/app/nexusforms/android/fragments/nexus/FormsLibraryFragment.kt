@@ -111,6 +111,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     private var fragmentManagerRef : FragmentManager? = null
 
+    private var isPlayingIntro = false
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -134,12 +136,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         fragmentManagerRef = childFragmentManager
 
-        if (!connectivityProvider.isDeviceOnline) {
-            //No connection display available forms
-            setUpForms()
-        } else {
-            setUpFormsUpdate()
-        }
+
 
         return binding.root
     }
@@ -170,6 +167,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         super.onViewCreated(view, savedInstanceState)
 
         playIntroForUpdateTabIfNeedBe()
+
+        if (!connectivityProvider.isDeviceOnline) {
+            //No connection display available forms
+            setUpForms()
+        } else {
+            setUpFormsUpdate()
+        }
     }
 
     private fun setUpForms() {
@@ -469,12 +473,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         } else {
             viewModel.clearFormDetailsByFormId()
 
-            DialogUtils.showIfNotShowingFromFragment(
-                ConnectingToServerDialog::class.java,
-               parentFragmentManager,
-                this
-            )
-
+            if(!isPlayingIntro) {
+                DialogUtils.showIfNotShowingFromFragment(
+                    ConnectingToServerDialog::class.java,
+                    parentFragmentManager,
+                    this
+                )
+            }
 
 
             if (downloadFormListTask != null
@@ -780,16 +785,19 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         val shouldPlayArg = argument.getValue(IS_INTRO_DOWNLOAD)?.defaultValue
 
-        val shouldPlay = if (shouldPlayArg == null) false else shouldPlayArg as Boolean
+        isPlayingIntro = if (shouldPlayArg == null) false else shouldPlayArg as Boolean
 
         val pointer = RectanglePromptFocal()
 
-        if (shouldPlay) {
+        if (isPlayingIntro) {
             guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
 
             navController.graph.removeArgument(IS_INTRO_DOWNLOAD)
 
             showingGuideToIdentifier = binding.buttonFilterUpdates.id
+
+            //Hide these dialogs when displaying walk-thorough
+
 
             guideTo(
                 showingGuideToIdentifier,

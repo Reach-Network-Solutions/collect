@@ -46,6 +46,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import app.nexusforms.utilities.DimmWalkThroughBackground
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import javax.inject.Inject
@@ -81,6 +83,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     var target = 0
 
     var guideToLibraryBuilder: MaterialTapTargetPrompt.Builder? = null
+
+    lateinit var bottomNavigationView : BottomNavigationView
+
+    lateinit var bottomNavigationItemView: BottomNavigationItemView
 
     //private lateinit var dataStore: DataStoreManager
 
@@ -193,8 +199,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment?
         navController = navHostFragment!!.navController
 
-        val bottomNavigationView = activityMainBinding.bottomNavMainHome
+         bottomNavigationView = activityMainBinding.bottomNavMainHome
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
+
+        bottomNavigationItemView = bottomNavigationView.findViewById(R.id.formsLibraryFragment)
 
         navController.addOnDestinationChangedListener { _, destination, bundleArg ->
             when (destination.id) {
@@ -371,13 +379,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
             ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
+            ?.setFocalColour(ContextCompat.getColor(this, R.color.light_blue))
+            ?.setTargetRenderView(bottomNavigationItemView)
             ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue_walkthrough))
-            ?.setIconDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
-                )
-            )
             ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
             ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
             ?.setFocalPadding(R.dimen.dp40)
