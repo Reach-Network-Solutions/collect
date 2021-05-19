@@ -26,11 +26,14 @@ import android.widget.TextView;
 
 import app.nexusforms.android.R;
 
-import app.nexusforms.android.activities.FormDownloadListActivity;
 import app.nexusforms.android.formmanagement.ServerFormDetails;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static app.nexusforms.android.formmanagement.Constants.FORMID_DISPLAY;
+import static app.nexusforms.android.formmanagement.Constants.FORMNAME;
+import static app.nexusforms.android.formmanagement.Constants.FORM_ID_KEY;
 
 public class FormDownloadListAdapter extends ArrayAdapter {
 
@@ -71,10 +74,10 @@ public class FormDownloadListAdapter extends ArrayAdapter {
         }
 
         final HashMap<String, String> formAtPosition = filteredFormList.get(position);
-        final String formIDAtPosition = formAtPosition.get(FormDownloadListActivity.FORM_ID_KEY);
+        final String formIDAtPosition = formAtPosition.get(FORM_ID_KEY);
 
-        holder.formTitle.setText(formAtPosition.get(FormDownloadListActivity.FORMNAME));
-        holder.formSubtitle.setText(formAtPosition.get(FormDownloadListActivity.FORMID_DISPLAY));
+        holder.formTitle.setText(formAtPosition.get(FORMNAME));
+        holder.formSubtitle.setText(formAtPosition.get(FORMID_DISPLAY));
 
         if (formIdsToDetails.get(formIDAtPosition) != null
                 && formIdsToDetails.get(formIDAtPosition).isUpdated()) {

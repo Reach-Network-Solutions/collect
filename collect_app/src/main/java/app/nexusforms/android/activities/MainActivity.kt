@@ -1,7 +1,5 @@
 package app.nexusforms.android.activities
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.database.Cursor
 import android.graphics.Typeface
 import android.os.Bundle
@@ -32,24 +30,19 @@ import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLO
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
 import app.nexusforms.android.formmanagement.Constants.Companion.LOADER_ID_OTHER__FORMS
 import app.nexusforms.android.injection.DaggerUtils
-import app.nexusforms.android.injection.config.AppDependencyModule
 import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
 import app.nexusforms.android.preferences.nexus.DataStoreManager
 import app.nexusforms.android.preferences.source.SettingsProvider
-import app.nexusforms.android.preferences.source.SettingsProvider.Companion.GENERAL_SETTINGS_NAME
 import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import app.nexusforms.utilities.DimmWalkThroughBackground
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
@@ -188,6 +181,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             DialogUtils.showIfNotShowing(
                 ProjectSettingsDialog::class.java,
                 supportFragmentManager
+
             )
         }
     }
@@ -235,7 +229,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     }
 
-    private fun playWalkthroughForLibraryNavigation() {
+    private fun playWalkThroughForLibraryNavigation() {
         if (!firstIntroAlreadyShown) {
             target = R.id.formsLibraryFragment
 
@@ -288,7 +282,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     private fun playIntroForPlusFabIfNeedBe(bundle: Bundle?) {
 
-        playWalkthroughForLibraryNavigation()
+        playWalkThroughForLibraryNavigation()
 
         val shouldRun = bundle?.getBoolean(IS_INTRO_FORMS)
 

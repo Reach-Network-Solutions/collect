@@ -51,7 +51,7 @@ import javax.inject.Inject
 
 class MyFormsFragment : Fragment() {
 
-    lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
+    private lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
 
     @Inject
     lateinit var connectivityProvider: NetworkStateProvider

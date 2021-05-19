@@ -49,7 +49,7 @@ public class SelectMultiMinimalWidget extends SelectMinimalWidget {
                 getFormEntryPrompt(), getReferenceManager(),
                 FormMediaUtils.getPlayColor(getFormEntryPrompt(), themeUtils), numColumns, noButtonsMode);
 
-        DialogUtils.showIfNotShowing(dialog, SelectMinimalDialog.class, ((FormEntryActivity) getContext()).getSupportFragmentManager());
+        DialogUtils.showIfNotShowing(dialog, SelectMinimalDialog.class, ((FormEntryActivity) getContext()).getSupportFragmentManager(), null);
     }
 
     @Override

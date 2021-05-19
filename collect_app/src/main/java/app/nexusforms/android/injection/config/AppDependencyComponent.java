@@ -9,7 +9,6 @@ import app.nexusforms.android.activities.AndroidShortcutsActivity;
 import app.nexusforms.android.activities.CollectAbstractActivity;
 import app.nexusforms.android.activities.DeleteSavedFormActivity;
 import app.nexusforms.android.activities.FillBlankFormActivity;
-import app.nexusforms.android.activities.FormDownloadListActivity;
 import app.nexusforms.android.activities.FormEntryActivity;
 import app.nexusforms.android.activities.FormHierarchyActivity;
 import app.nexusforms.android.activities.FormMapActivity;
@@ -140,8 +139,6 @@ public interface AppDependencyComponent {
     void inject(ServerPreferencesFragment serverPreferencesFragment);
 
     void inject(AuthDialogUtility authDialogUtility);
-
-    void inject(FormDownloadListActivity formDownloadListActivity);
 
     void inject(InstanceUploaderListActivity activity);
 

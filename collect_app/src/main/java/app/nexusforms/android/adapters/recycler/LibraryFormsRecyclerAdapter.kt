@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.nexusforms.android.R
-import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.ViewHolder.Companion.from
 import app.nexusforms.android.databinding.ItemFormsLibraryBinding
 import app.nexusforms.android.formmanagement.Constants
+import app.nexusforms.android.formmanagement.Constants.Companion.FORMID_DISPLAY
+import app.nexusforms.android.formmanagement.Constants.Companion.FORMNAME
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_VERSION_KEY
 import uk.co.samuelwall.materialtaptargetprompt.extras.PromptFocal
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
@@ -32,10 +33,10 @@ class LibraryFormsRecyclerAdapter(
         val form = list[position]
         form.map {
             DownloadForms(
-                formName = form[FormDownloadListActivity.FORMNAME],
+                formName = form[FORMNAME],
                 formVersion = form[FORM_VERSION_KEY],
                 formId = form[Constants.FORM_ID_KEY],
-                formIdDisplay = form[FormDownloadListActivity.FORMID_DISPLAY],
+                formIdDisplay = form[FORMID_DISPLAY],
                 formDetailsKey = form[Constants.FORMDETAIL_KEY]
             )
         }.also {
