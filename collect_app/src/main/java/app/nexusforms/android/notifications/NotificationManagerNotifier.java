@@ -11,12 +11,14 @@ import androidx.core.app.NotificationCompat;
 
 import app.nexusforms.android.R;
 
+import app.nexusforms.android.activities.MainActivity;
+import app.nexusforms.android.application.Collect;
 import app.nexusforms.android.formmanagement.FormSourceExceptionMapper;
 import app.nexusforms.android.formmanagement.ServerFormDetails;
 import app.nexusforms.android.activities.FillBlankFormActivity;
-import app.nexusforms.android.activities.FormDownloadListActivity;
 import app.nexusforms.android.activities.NotificationActivity;
 import app.nexusforms.android.forms.FormSourceException;
+import app.nexusforms.android.fragments.nexus.FormsLibraryFragment;
 import app.nexusforms.android.preferences.keys.MetaKeys;
 import app.nexusforms.android.preferences.source.Settings;
 import app.nexusforms.android.preferences.source.SettingsProvider;
@@ -31,8 +33,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static app.nexusforms.android.formmanagement.Constants.DISPLAY_ONLY_UPDATED_FORMS;
 import static java.util.stream.Collectors.toSet;
-import static app.nexusforms.android.activities.FormDownloadListActivity.DISPLAY_ONLY_UPDATED_FORMS;
 import static app.nexusforms.android.utilities.ApplicationConstants.RequestCodes.FORMS_DOWNLOADED_NOTIFICATION;
 import static app.nexusforms.android.utilities.ApplicationConstants.RequestCodes.FORMS_UPLOADED_NOTIFICATION;
 import static app.nexusforms.android.utilities.ApplicationConstants.RequestCodes.FORM_UPDATES_AVAILABLE_NOTIFICATION;
@@ -72,7 +74,7 @@ public class NotificationManagerNotifier implements Notifier {
             return;
         }
 
-        Intent intent = new Intent(application, FormDownloadListActivity.class);
+        Intent intent = new Intent(application, MainActivity.class);
         intent.putExtra(DISPLAY_ONLY_UPDATED_FORMS, true);
         PendingIntent contentIntent = PendingIntent.getActivity(application, FORM_UPDATES_AVAILABLE_NOTIFICATION, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -87,12 +89,25 @@ public class NotificationManagerNotifier implements Notifier {
 
         metaPrefs.save(MetaKeys.LAST_UPDATED_NOTIFICATION, updateId);
     }
+    public static String getDownloadResultMessage(Map<ServerFormDetails, String> result) {
+        Set<ServerFormDetails> keys = result.keySet();
+        StringBuilder b = new StringBuilder();
+        for (ServerFormDetails k : keys) {
+            b.append(k.getFormName() + " ("
+                    + ((k.getFormVersion() != null)
+                    ? (TranslationHandler.getString(Collect.getInstance(), R.string.version) + ": " + k.getFormVersion() + " ")
+                    : "") + "ID: " + k.getFormId() + ") - " + result.get(k));
+            b.append("\n\n");
+        }
+
+        return b.toString().trim();
+    }
 
     @Override
     public void onUpdatesDownloaded(HashMap<ServerFormDetails, String> result) {
         Intent intent = new Intent(application, NotificationActivity.class);
         intent.putExtra(NotificationActivity.NOTIFICATION_TITLE, TranslationHandler.getString(application, R.string.download_forms_result));
-        intent.putExtra(NotificationActivity.NOTIFICATION_MESSAGE, FormDownloadListActivity.getDownloadResultMessage(result));
+        intent.putExtra(NotificationActivity.NOTIFICATION_MESSAGE, getDownloadResultMessage(result));
         PendingIntent contentIntent = PendingIntent.getActivity(application, FORMS_DOWNLOADED_NOTIFICATION, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         String content = TranslationHandler.getString(application, allFormsDownloadedSuccessfully(result) ?

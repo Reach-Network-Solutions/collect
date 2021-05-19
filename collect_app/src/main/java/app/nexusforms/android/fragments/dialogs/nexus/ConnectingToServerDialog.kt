@@ -10,7 +10,7 @@ import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import app.nexusforms.android.R
 import app.nexusforms.android.databinding.DialogConnectingToServerBinding
-import app.nexusforms.android.fragments.dialogs.ProgressDialogFragment
+import app.nexusforms.android.fragments.nexus.FormsLibraryFragment
 
 class ConnectingToServerDialog : DialogFragment() {
 
@@ -32,9 +32,13 @@ class ConnectingToServerDialog : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is ConnectingToServerDialogFragmentListener) {
-            listener = context
+
+        if (targetFragment != null) {
+            if (targetFragment is FormsLibraryFragment) {
+                listener = targetFragment as FormsLibraryFragment
+            }
         }
+
     }
 
     override fun onCreateView(
@@ -59,6 +63,11 @@ class ConnectingToServerDialog : DialogFragment() {
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         binding = null
+
+        if (listener != null) {
+            listener?.onCancelFormLoading()
+        }
+
     }
 
     override fun onDestroy() {

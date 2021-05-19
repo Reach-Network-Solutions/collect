@@ -5,15 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,37 +13,27 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.loader.content.CursorLoader
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
 import app.nexusforms.android.activities.FormEntryActivity
 import app.nexusforms.android.activities.InstanceUploaderActivity
-import app.nexusforms.android.activities.InstanceUploaderListActivity
 import app.nexusforms.android.adapters.NexusFormsAdapter
 import app.nexusforms.android.dao.CursorLoaderFactory
 import app.nexusforms.android.databinding.MyFormsFragmentBinding
 import app.nexusforms.android.formmanagement.Constants
-import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
-import app.nexusforms.android.gdrive.GoogleSheetsUploaderActivity
 import app.nexusforms.android.injection.DaggerUtils
 import app.nexusforms.android.instances.Instance
 import app.nexusforms.android.network.NetworkStateProvider
-import app.nexusforms.android.preferences.keys.GeneralKeys
 import app.nexusforms.android.preferences.source.SettingsProvider
 import app.nexusforms.android.provider.InstanceProviderAPI.InstanceColumns
 import app.nexusforms.android.utilities.ApplicationConstants
 import app.nexusforms.android.utilities.DialogUtils
-import app.nexusforms.android.utilities.PlayServicesChecker
-import timber.log.Timber
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
-import uk.co.samuelwall.materialtaptargetprompt.extras.PromptFocal
-import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
 import java.lang.Boolean
 import javax.inject.Inject
 
 class MyFormsFragment : Fragment() {
 
-    lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
+    private lateinit var myFormsFragmentBinding: MyFormsFragmentBinding
 
     @Inject
     lateinit var connectivityProvider: NetworkStateProvider

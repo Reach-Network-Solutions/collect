@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -125,13 +126,16 @@ public final class DialogUtils {
 
     public static <T extends DialogFragment> void showIfNotShowing(Class<T> dialogClass, FragmentManager fragmentManager) {
         showIfNotShowing(dialogClass, null, fragmentManager);
+
+    }    public static <T extends DialogFragment> void showIfNotShowingFromFragment(Class<T> dialogClass, FragmentManager fragmentManager, @Nullable Fragment caller) {
+        showIfNotShowing(createNewInstance(dialogClass, null), dialogClass, fragmentManager, caller);
     }
 
     public static <T extends DialogFragment> void showIfNotShowing(Class<T> dialogClass, @Nullable Bundle args, FragmentManager fragmentManager) {
-        showIfNotShowing(createNewInstance(dialogClass, args), dialogClass, fragmentManager);
+        showIfNotShowing(createNewInstance(dialogClass, args), dialogClass, fragmentManager, null);
     }
 
-    public static <T extends DialogFragment> void showIfNotShowing(T newDialog, Class<T> dialogClass, FragmentManager fragmentManager) {
+    public static <T extends DialogFragment> void showIfNotShowing(T newDialog, Class<T> dialogClass, FragmentManager fragmentManager, @Nullable Fragment caller) {
         if (fragmentManager.isStateSaved()) {
             return;
         }
@@ -140,6 +144,10 @@ public final class DialogUtils {
         T existingDialog = (T) fragmentManager.findFragmentByTag(tag);
 
         if (existingDialog == null) {
+            if(caller != null){
+                newDialog.setTargetFragment(caller, 0);
+            }
+
             newDialog.show(fragmentManager.beginTransaction(), tag);
 
             // We need to execute this transaction. Otherwise a follow up call to this method
