@@ -109,7 +109,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     var showingGuideToIdentifier = 0
 
-    private var fragmentManagerRef : FragmentManager? = null
 
     private var isPlayingIntro = false
 
@@ -133,10 +132,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         binding = FragmentFormsLibraryBinding.inflate(inflater, container, false)
 
         setupOnClickListeners()
-
-        fragmentManagerRef = childFragmentManager
-
-
 
         return binding.root
     }
@@ -524,20 +519,30 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         cleanUpWebCredentials()
 
+        /**
+         * In the instance of ConnectingToServerDialog that is created for
+         * loading the list of forms, the cancel button needs to report back
+         * to #this FormsLibraryFragment, since this fragment attaches using
+         * MainActivity context -> (parentFragmentManager), the dialog will
+         * attach using the childFragmentManager from this fragment, which means
+         * the two would have different parents and contexts in onAttach will
+         * not match.
+         *
+         * In order to solve this, this fragment starts the dialog fragment
+         * using parentFragmentManager to ensure consistency and also facilitate
+         * communication via callback.
+         *
+         * When dismissing this dialog therefore, it is important to attempt and
+         * dismiss using both fragmentManagers because we are not sure which
+         * instance is running.
+         */
+
+        //dismiss using parent fragment manager
         DialogUtils.dismissDialog(
             ConnectingToServerDialog::class.java,
-            childFragmentManager
+            parentFragmentManager
         )
-        /*createAlertDialog(
-            getString(R.string.download_forms_result),
-            FormDownloadListActivity.getDownloadResultMessage(result),
-            false
-        )*/
 
-        /*DialogUtils.showIfNotShowing(
-            DownloadResultDialogFragment::class.java,
-            childFragmentManager
-        )*/
 
         if(result != null){
         displayDownloadResultDialog(getDownloadResultMessage(result))
@@ -602,7 +607,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         val fragment = DownloadResultDialogFragment()
         fragment.arguments = result
         fragment.show(
-            childFragmentManager,
+            parentFragmentManager,
             DownloadResultDialogFragment::class.java.name
         )
 
@@ -620,7 +625,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     override fun progressUpdate(currentFile: String?, progress: Int, total: Int) {
 
-        val fragment: ConnectingToServerDialog? = childFragmentManager.findFragmentByTag(
+        val fragment: ConnectingToServerDialog? = parentFragmentManager.findFragmentByTag(
             ConnectingToServerDialog::class.java.name
         ) as ConnectingToServerDialog?
 
@@ -663,12 +668,20 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
             DialogUtils.dismissDialog(
                 RefreshFormListDialogFragment::class.java,
-                fragmentManagerRef
+                childFragmentManager
             )
             DialogUtils.dismissDialog(
                 ConnectingToServerDialog::class.java,
-                fragmentManagerRef
+                parentFragmentManager
             )
+
+        /* dismiss using parent fragment manager - refer to docText
+           in formDownloadComplete */
+
+        DialogUtils.dismissDialog(
+            ConnectingToServerDialog::class.java,
+            parentFragmentManager
+        )
 
         downloadFormListTask!!.setDownloaderListener(null)
         downloadFormListTask = null
@@ -795,9 +808,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             navController.graph.removeArgument(IS_INTRO_DOWNLOAD)
 
             showingGuideToIdentifier = binding.buttonFilterUpdates.id
-
-            //Hide these dialogs when displaying walk-thorough
-
 
             guideTo(
                 showingGuideToIdentifier,
