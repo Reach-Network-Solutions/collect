@@ -5,15 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image_walkthrough_complete"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/walkthrough_image_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_directions_walk_24" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_walkthrough_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            app:srcCompat="@drawable/ic_baseline_directions_walk_24" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_walkthrough_dotted"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/image_walkthrough_complete_end"
+            android:layout_toEndOf="@id/image_walkthrough_complete"
+            android:layerType="software"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            app:srcCompat="@drawable/dotted_line_walkthrough_completion" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_walkthrough_complete_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="32dp"
+            app:srcCompat="@drawable/ic_baseline_check_circle_24" />
+
+    </RelativeLayout>
+
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_download_result"
@@ -27,7 +58,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_walkthrough_complete" />
+        app:layout_constraintTop_toBottomOf="@+id/walkthrough_image_parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_download_results"
@@ -37,8 +68,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:textAlignment="center"
         android:text="@string/you_ve_completed_the_basic_intro_enjoy_the_experience"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_download_result"
@@ -53,8 +84,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/ok"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:textColor="@color/dark_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_download_results" />
 </androidx.constraintlayout.widget.ConstraintLayout>
