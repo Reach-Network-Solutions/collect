@@ -47,11 +47,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:text="@string/sample_text_version_1_0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/text_form_name"
             app:layout_constraintStart_toStartOf="@+id/text_form_name"
-            app:layout_constraintTop_toBottomOf="@+id/text_form_name"
-            android:text="@string/sample_text_version_1_0" />
+            app:layout_constraintTop_toBottomOf="@+id/text_form_name" />
 
         <CheckBox
             android:id="@+id/checkbox_download"
@@ -63,6 +63,20 @@
             app:layout_constraintBottom_toBottomOf="@+id/text_forms_version"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_form_name" />
+
+
+        <TextView
+            android:id="@+id/form_update_alert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/newer_version_of_a_form_info"
+            android:textAppearance="@style/TextAppearance.Collect.Body2"
+            android:textColor="?attr/colorSecondary"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/text_forms_version"
+            app:layout_constraintStart_toStartOf="@+id/text_forms_version"
+            app:layout_constraintTop_toBottomOf="@+id/text_forms_version"
+            tools:visibility="visible" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

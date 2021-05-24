@@ -781,7 +781,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 } else {
                     binding.fabDownloadSelection.visibility = View.VISIBLE
                 }
-            }
+            },
+            viewModel
 
         )
 
