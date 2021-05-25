@@ -1,7 +1,5 @@
 package app.nexusforms.android.activities
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.database.Cursor
 import android.graphics.Typeface
 import android.os.Bundle
@@ -31,26 +29,25 @@ import app.nexusforms.android.formmanagement.BlankFormsListViewModel
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLOAD
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_FORMS
 import app.nexusforms.android.formmanagement.Constants.Companion.LOADER_ID_OTHER__FORMS
+import app.nexusforms.android.fragments.dialogs.nexus.DownloadResultDialogFragment
+import app.nexusforms.android.fragments.dialogs.nexus.WalkthroughCompleteDialogFragment
 import app.nexusforms.android.injection.DaggerUtils
-import app.nexusforms.android.injection.config.AppDependencyModule
 import app.nexusforms.android.listeners.DiskSyncListener
 import app.nexusforms.android.network.NetworkStateProvider
 import app.nexusforms.android.preferences.dialogs.ServerAuthDialogFragment
 import app.nexusforms.android.preferences.nexus.DataStoreManager
 import app.nexusforms.android.preferences.source.SettingsProvider
-import app.nexusforms.android.preferences.source.SettingsProvider.Companion.GENERAL_SETTINGS_NAME
 import app.nexusforms.android.project.ProjectSettingsDialog
 import app.nexusforms.android.tasks.FormSyncTask
 import app.nexusforms.android.tasks.InstanceSyncTask
 import app.nexusforms.android.utilities.DialogUtils
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import app.nexusforms.utilities.DimmWalkThroughBackground
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import javax.inject.Inject
@@ -86,6 +83,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
     var target = 0
 
     var guideToLibraryBuilder: MaterialTapTargetPrompt.Builder? = null
+
+    lateinit var bottomNavigationView : BottomNavigationView
+
+    lateinit var bottomNavigationItemView: BottomNavigationItemView
 
     //private lateinit var dataStore: DataStoreManager
 
@@ -188,6 +189,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             DialogUtils.showIfNotShowing(
                 ProjectSettingsDialog::class.java,
                 supportFragmentManager
+
             )
         }
     }
@@ -197,8 +199,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment?
         navController = navHostFragment!!.navController
 
-        val bottomNavigationView = activityMainBinding.bottomNavMainHome
+         bottomNavigationView = activityMainBinding.bottomNavMainHome
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
+
+        bottomNavigationItemView = bottomNavigationView.findViewById(R.id.formsLibraryFragment)
 
         navController.addOnDestinationChangedListener { _, destination, bundleArg ->
             when (destination.id) {
@@ -235,7 +239,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     }
 
-    private fun playWalkthroughForLibraryNavigation() {
+    private fun playWalkThroughForLibraryNavigation() {
         if (!firstIntroAlreadyShown) {
             target = R.id.formsLibraryFragment
 
@@ -288,7 +292,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
     private fun playIntroForPlusFabIfNeedBe(bundle: Bundle?) {
 
-        playWalkthroughForLibraryNavigation()
+        playWalkThroughForLibraryNavigation()
 
         val shouldRun = bundle?.getBoolean(IS_INTRO_FORMS)
 
@@ -315,10 +319,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
 
                         guideToLibraryBuilder = null
 
-                        val alertDialog: AlertDialog = AlertDialog.Builder(this).create()
-                        alertDialog.setTitle("Great!")
-                        alertDialog.setMessage("You've completed the basic intro. Enjoy the experience.")
-                        alertDialog.show()
+                        displayWalkthroughCompleteMessage()
 
 
                     }
@@ -327,6 +328,17 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             }
         }
 
+
+    }
+
+    private fun displayWalkthroughCompleteMessage() {
+
+        val fragment = WalkthroughCompleteDialogFragment()
+
+        fragment.show(
+            supportFragmentManager,
+            WalkthroughCompleteDialogFragment::class.java.name
+        )
 
     }
 
@@ -360,6 +372,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             gotItPrompt,
             gotItStyleSpanColor, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
+        if(target == R.id.formsLibraryFragment){
+            guideToLibraryBuilder?.focalColour = ContextCompat.getColor(this, R.color.light_blue)
+            guideToLibraryBuilder?.targetRenderView = bottomNavigationItemView
+        }
         guideToLibraryBuilder?.setTarget(target)
 
             ?.setPromptBackground(DimmWalkThroughBackground())
@@ -367,13 +383,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(this, R.color.white))
             ?.setSecondaryTextColour(ContextCompat.getColor(this, R.color.white))
-            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue))
-            ?.setIconDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    if (target == R.id.formsLibraryFragment) R.drawable.ic_library else R.drawable.ic_plus
-                )
-            )
+
+
+            ?.setBackgroundColour(ContextCompat.getColor(this, R.color.light_blue_walkthrough))
             ?.setPrimaryTextGravity(Gravity.CENTER_HORIZONTAL)
             ?.setSecondaryTextGravity(Gravity.CENTER_HORIZONTAL)
             ?.setFocalPadding(R.dimen.dp40)

@@ -78,6 +78,7 @@ public final class GeneralKeys {
     public static final String NAVIGATION_BOTH = "swipe_buttons";
     public static final String CONSTRAINT_BEHAVIOR_ON_SWIPE = "on_swipe";
     private static final String AUTOSEND_OFF = "off";
+    private static final String AUTOSEND_WIFI = "wifi_only";
     private static final String GUIDANCE_HINT_OFF = "no";
 
     // basemap section
@@ -102,7 +103,7 @@ public final class GeneralKeys {
         hashMap.put(KEY_USERNAME, "");
         hashMap.put(KEY_PASSWORD, "");
         // form_management_preferences.xml
-        hashMap.put(KEY_AUTOSEND, AUTOSEND_OFF);
+        hashMap.put(KEY_AUTOSEND, AUTOSEND_WIFI);
         hashMap.put(KEY_GUIDANCE_HINT, GUIDANCE_HINT_OFF);
         hashMap.put(KEY_DELETE_AFTER_SEND, false);
         hashMap.put(KEY_COMPLETED_DEFAULT, true);

@@ -1,3 +1,16 @@
+Release - v0.2.1
+Features
+- Added available form update indicator
+- Added autosend finalised form when On Wifi
+- Updated to New Logo
+
+Fixes
+- Fixed Onboarding walkthrough Background
+- Fixed overlapping forms list in library
+- Fixed form download error
+
+
+
 Release - v0.2.0
 Features
 - Walk-through guide at first launch of the app

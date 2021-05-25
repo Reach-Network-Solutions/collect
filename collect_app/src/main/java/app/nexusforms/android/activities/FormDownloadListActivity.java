@@ -86,7 +86,7 @@ import timber.log.Timber;
  *
  * @author Carl Hartung (carlhartung@gmail.com)
  */
-public class FormDownloadListActivity extends FormListActivity implements FormListDownloaderListener,
+class FormDownloadListActivityOriginalODK extends FormListActivity implements FormListDownloaderListener,
         DownloadFormsTaskListener, AuthDialogUtility.AuthDialogUtilityResultListener,
         AdapterView.OnItemClickListener, RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener {
     private static final String FORM_DOWNLOAD_LIST_SORTING_ORDER = "formDownloadListSortingOrder";

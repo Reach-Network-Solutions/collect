@@ -21,20 +21,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavArgument
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.nexusforms.android.R
-import app.nexusforms.android.activities.FormDownloadListActivity
 import app.nexusforms.android.activities.viewmodels.FormDownloadListViewModel
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter
 import app.nexusforms.android.adapters.recycler.LibraryFormsRecyclerAdapter.OnClickListener
 import app.nexusforms.android.adapters.recycler.MyFormsRecyclerAdapter
+import app.nexusforms.android.application.Collect
 import app.nexusforms.android.database.DatabaseFormsRepository
 import app.nexusforms.android.databinding.FragmentFormsLibraryBinding
-import app.nexusforms.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener
+import app.nexusforms.android.formentry.RefreshFormListDialogFragment
+import app.nexusforms.android.formmanagement.Constants.Companion.DISPLAY_ONLY_UPDATED_FORMS
 import app.nexusforms.android.formmanagement.Constants.Companion.FORMDETAIL_KEY
+import app.nexusforms.android.formmanagement.Constants.Companion.FORMID_DISPLAY
+import app.nexusforms.android.formmanagement.Constants.Companion.FORMNAME
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_ID_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.FORM_VERSION_KEY
 import app.nexusforms.android.formmanagement.Constants.Companion.IS_INTRO_DOWNLOAD
@@ -68,7 +72,7 @@ import javax.inject.Inject
 
 
 class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDownloaderListener,
-    AuthDialogUtilityResultListener, RefreshFormListDialogFragmentListener {
+    AuthDialogUtilityResultListener, ConnectingToServerDialog.ConnectingToServerDialogFragmentListener {
 
     @Inject
     lateinit var connectivityProvider: NetworkStateProvider
@@ -105,6 +109,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     var showingGuideToIdentifier = 0
 
+
+    private var isPlayingIntro = false
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -124,14 +131,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         // Inflate the layout for this fragment
         binding = FragmentFormsLibraryBinding.inflate(inflater, container, false)
 
-        setupOnClickListeners(savedInstanceState)
-
-        if (!connectivityProvider.isDeviceOnline) {
-            //No connection display available forms
-            setUpForms()
-        } else {
-            setUpFormsUpdate()
-        }
+        setupOnClickListeners()
 
         return binding.root
     }
@@ -162,6 +162,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         super.onViewCreated(view, savedInstanceState)
 
         playIntroForUpdateTabIfNeedBe()
+
+        if (!connectivityProvider.isDeviceOnline) {
+            //No connection display available forms
+            setUpForms()
+        } else {
+            setUpFormsUpdate()
+        }
     }
 
     private fun setUpForms() {
@@ -197,7 +204,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     }
 
-    private fun setupOnClickListeners(savedInstanceState: Bundle?) {
+    private fun setupOnClickListeners() {
 
         binding.fabDownloadSelection.setOnClickListener {
             val filesToDownload: ArrayList<ServerFormDetails> = getFilesToDownload()
@@ -340,7 +347,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         )
 
         if (options.isNotEmpty()) {
-            if (options.contains(FormDownloadListActivity.DISPLAY_ONLY_UPDATED_FORMS)) {
+            if (options.contains(DISPLAY_ONLY_UPDATED_FORMS)) {
                 displayOnlyUpdatedForms = true
 
             }
@@ -443,29 +450,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 //            R.string.sort_by_name_asc, R.string.sort_by_name_desc
 //        )
     }
-//
-//    private fun getFilesToDownload(): ArrayList<ServerFormDetails?>? {
-//        val filesToDownload = ArrayList<ServerFormDetails?>()
-//
-//        val sba: SparseBooleanArray = listView.getCheckedItemPositions()
-//
-//        for (i in 0 until listView.getCount()) {
-//            if (sba[i, false]) {
-//
-//                val item = listView.getAdapter().getItem(i) as HashMap<String, String>
-//
-//                filesToDownload.add(viewModel.formDetailsByFormId[item[FORMDETAIL_KEY]])
-//            }
-//        }
-//        return filesToDownload
-//    }
 
     /**
      * Starts the download task and shows the progress dialog.
      */
     private fun downloadFormList() {
         if (!connectivityProvider.isDeviceOnline) {
-            //ToastUtils.showShortToast(R.string.no_connection)
+            ToastUtils.showShortToast(R.string.no_connection)
             ToastUtils.showShortToast(R.string.no_connection_available_for_updates)
             if (viewModel.isDownloadOnlyMode) {
                 createAlertDialog("No Connection", getString(R.string.no_connection), false)
@@ -476,14 +467,16 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             setUpForms()
         } else {
             viewModel.clearFormDetailsByFormId()
-            /*DialogUtils.showIfNotShowing(
-                RefreshFormListDialogFragment::class.java,
-                childFragmentManager
-            )*/
-            DialogUtils.showIfNotShowing(
-                ConnectingToServerDialog::class.java,
-                childFragmentManager
-            )
+
+            if(!isPlayingIntro) {
+                DialogUtils.showIfNotShowingFromFragment(
+                    ConnectingToServerDialog::class.java,
+                    parentFragmentManager,
+                    this
+                )
+            }
+
+
             if (downloadFormListTask != null
                 && downloadFormListTask?.status != AsyncTask.Status.FINISHED
             ) {
@@ -526,21 +519,34 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         cleanUpWebCredentials()
 
+        /**
+         * In the instance of ConnectingToServerDialog that is created for
+         * loading the list of forms, the cancel button needs to report back
+         * to #this FormsLibraryFragment, since this fragment attaches using
+         * MainActivity context -> (parentFragmentManager), the dialog will
+         * attach using the childFragmentManager from this fragment, which means
+         * the two would have different parents and contexts in onAttach will
+         * not match.
+         *
+         * In order to solve this, this fragment starts the dialog fragment
+         * using parentFragmentManager to ensure consistency and also facilitate
+         * communication via callback.
+         *
+         * When dismissing this dialog therefore, it is important to attempt and
+         * dismiss using both fragmentManagers because we are not sure which
+         * instance is running.
+         */
+
+        //dismiss using parent fragment manager
         DialogUtils.dismissDialog(
             ConnectingToServerDialog::class.java,
-            childFragmentManager
+            parentFragmentManager
         )
-        /*createAlertDialog(
-            getString(R.string.download_forms_result),
-            FormDownloadListActivity.getDownloadResultMessage(result),
-            false
-        )*/
 
-        /*DialogUtils.showIfNotShowing(
-            DownloadResultDialogFragment::class.java,
-            childFragmentManager
-        )*/
-        displayDownloadResultDialog(FormDownloadListActivity.getDownloadResultMessage(result))
+
+        if(result != null){
+        displayDownloadResultDialog(getDownloadResultMessage(result))
+        }
         // Set result to true for forms which were downloaded
 
         // Set result to true for forms which were downloaded
@@ -562,6 +568,21 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             )
 
         }
+    }
+    fun getDownloadResultMessage(result: Map<ServerFormDetails, String>): String? {
+        val keys = result.keys
+        val b = StringBuilder()
+        for (k: ServerFormDetails in keys) {
+            b.append(
+                k.formName + " ("
+                        + (if (k.formVersion != null) TranslationHandler.getString(
+                    Collect.getInstance(),
+                    R.string.version
+                ) + ": " + k.formVersion + " " else "") + "ID: " + k.formId + ") - " + result[k]
+            )
+            b.append("\n\n")
+        }
+        return b.toString().trim { it <= ' ' }
     }
 
     private fun displayDownloadResultDialog(downloadResultMessage: String?) {
@@ -586,7 +607,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         val fragment = DownloadResultDialogFragment()
         fragment.arguments = result
         fragment.show(
-            childFragmentManager,
+            parentFragmentManager,
             DownloadResultDialogFragment::class.java.name
         )
 
@@ -604,25 +625,9 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
     override fun progressUpdate(currentFile: String?, progress: Int, total: Int) {
 
-        /*val fragment  : RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
-
-        val fragment: RefreshFormListDialogFragment? = childFragmentManager.findFragmentByTag(
-
-            RefreshFormListDialogFragment::class.java.name
-        ) as RefreshFormListDialogFragment
-
-        fragment?.setMessage(
-            getString(
-                R.string.fetching_file,
-                currentFile,
-                progress.toString(),
-                total.toString()
-            )
-        )*/
-
-        val fragment: ConnectingToServerDialog? = childFragmentManager.findFragmentByTag(
+        val fragment: ConnectingToServerDialog? = parentFragmentManager.findFragmentByTag(
             ConnectingToServerDialog::class.java.name
-        ) as ConnectingToServerDialog
+        ) as ConnectingToServerDialog?
 
         fragment?.setMessage(
             getString(
@@ -653,7 +658,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         if (viewModel.isDownloadOnlyMode) {
             Toast.makeText(requireContext(), "Download cancelled", Toast.LENGTH_SHORT).show()
-            //finish()
         }
     }
 
@@ -661,14 +665,24 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         formList: HashMap<String, ServerFormDetails>?,
         exception: FormSourceException?
     ) {
-        /*DialogUtils.dismissDialog(
-            RefreshFormListDialogFragment::class.java,
-            childFragmentManager
-        )*/
+
+            DialogUtils.dismissDialog(
+                RefreshFormListDialogFragment::class.java,
+                childFragmentManager
+            )
+            DialogUtils.dismissDialog(
+                ConnectingToServerDialog::class.java,
+                parentFragmentManager
+            )
+
+        /* dismiss using parent fragment manager - refer to docText
+           in formDownloadComplete */
+
         DialogUtils.dismissDialog(
             ConnectingToServerDialog::class.java,
-            childFragmentManager
+            parentFragmentManager
         )
+
         downloadFormListTask!!.setDownloaderListener(null)
         downloadFormListTask = null
 
@@ -682,8 +696,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 val details = viewModel.formDetailsByFormId[formDetailsKey]
                 if (!displayOnlyUpdatedForms || (details?.isUpdated == true)) {
                     val item = HashMap<String, String>()
-                    item[FormDownloadListActivity.FORMNAME] = details!!.formName
-                    item[FormDownloadListActivity.FORMID_DISPLAY] =
+                    item[FORMNAME] = details!!.formName
+                    item[FORMID_DISPLAY] =
                         (if (details.formVersion == null) "" else getString(R.string.version) + " "
                                 + details.formVersion + " ") + "ID: " + details.formId
                     item[FORMDETAIL_KEY] = formDetailsKey
@@ -699,7 +713,7 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                         j = 0
                         while (j < viewModel.formList.size) {
                             val compareMe = viewModel.formList[j]
-                            val name = compareMe[FormDownloadListActivity.FORMNAME]
+                            val name = compareMe[FORMNAME]
                             if (name!!.compareTo(viewModel.formDetailsByFormId[ids[i]]!!.formName) > 0) {
                                 break
                             }
@@ -767,7 +781,8 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
                 } else {
                     binding.fabDownloadSelection.visibility = View.VISIBLE
                 }
-            }
+            },
+            viewModel
 
         )
 
@@ -784,11 +799,11 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
 
         val shouldPlayArg = argument.getValue(IS_INTRO_DOWNLOAD)?.defaultValue
 
-        val shouldPlay = if (shouldPlayArg == null) false else shouldPlayArg as Boolean
+        isPlayingIntro = if (shouldPlayArg == null) false else shouldPlayArg as Boolean
 
         val pointer = RectanglePromptFocal()
 
-        if (shouldPlay) {
+        if (isPlayingIntro) {
             guideToLibraryBuilder = MaterialTapTargetPrompt.Builder(this)
 
             navController.graph.removeArgument(IS_INTRO_DOWNLOAD)
@@ -933,12 +948,12 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
             ?.setPromptBackground(DimmWalkThroughBackground())
             ?.setSecondaryText(secondaryTextSpanner)
             ?.setPrimaryTextColour(ContextCompat.getColor(requireContext(), R.color.white))
-            ?.setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.light_blue))
+            ?.setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.light_blue_walkthrough))
             ?.setPrimaryTextGravity(Gravity.START)
             ?.setSecondaryTextGravity(Gravity.START)
             ?.setCaptureTouchEventOnFocal(true)
             ?.setBackButtonDismissEnabled(true)
-           // ?.setSecondaryTextSize(R.dimen.text_size_extra_small)
+            // ?.setSecondaryTextSize(R.dimen.text_size_extra_small)
             //?.setPrimaryTextSize(R.dimen.walk_through_title)
             ?.setPromptStateChangeListener { prompt, state ->
                 if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSED) {
@@ -982,13 +997,16 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         val totalCount = filesToDownload.size
         if (totalCount > 0) {
             // show dialog box
-            /*DialogUtils.showIfNotShowing(
+            DialogUtils.showIfNotShowing(
                 RefreshFormListDialogFragment::class.java,
                 childFragmentManager
-            )*/
-            DialogUtils.showIfNotShowing(
+
+            )
+
+            DialogUtils.showIfNotShowingFromFragment(
                 ConnectingToServerDialog::class.java,
-                childFragmentManager
+                parentFragmentManager,
+                this
             )
             downloadFormsTask = DownloadFormsTask(formDownloader)
 
@@ -1112,7 +1130,6 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
     }
 
     override fun onCancelFormLoading() {
-        Timber.d("CANCEL INVOKED")
         if (downloadFormListTask != null) {
             downloadFormListTask!!.setDownloaderListener(null)
             downloadFormListTask!!.cancel(true)
@@ -1144,5 +1161,13 @@ class FormsLibraryFragment : Fragment(), DownloadFormsTaskListener, FormListDown
         cancelDialog?.setCancelable(false)
         viewModel.isCancelDialogShowing = true
         DialogUtils.showDialog(cancelDialog, requireActivity())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        onCancelFormLoading()
+
+        formsDownloadingCancelled()
     }
 }
