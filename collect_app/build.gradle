@@ -153,7 +153,7 @@ android {
 
             minifyEnabled(true)
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            resValue("string", "GOOGLE_MAPS_API_KEY", googleMapsApiKey)
+            resValue("string", "GOOGLE_MAPS_API_KEY", "AIzaSyDkHoEGJpMalT6kmhQa7gY4917xEgA_3Dw")
             buildConfigField 'String', "MAPBOX_ACCESS_TOKEN", '"' + mapboxToken + '"'
 
             matchingFallbacks = ['release'] // So other modules use release build type for this
@@ -162,7 +162,7 @@ android {
         debug {
             debuggable(true)
             testCoverageEnabled((findProperty("enableJacoco") ?: "false").toBoolean())
-            resValue("string", "GOOGLE_MAPS_API_KEY", googleMapsApiKey)
+            resValue("string", "GOOGLE_MAPS_API_KEY", "AIzaSyDkHoEGJpMalT6kmhQa7gY4917xEgA_3Dw")
             buildConfigField 'String', "MAPBOX_ACCESS_TOKEN", '"' + mapboxToken + '"'
             applicationIdSuffix '.debug'
         }
